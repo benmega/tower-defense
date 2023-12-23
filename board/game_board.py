@@ -2,6 +2,7 @@
 
 class GameBoard:
     def __init__(self, width, height):
+        self.enemies = []
         self.width = width
         self.height = height
         self.grid = [[None for _ in range(width)] for _ in range(height)]
@@ -29,15 +30,26 @@ class GameBoard:
         """
         return self.grid[y][x] if self.is_valid_position(x, y) else None
 
+    def add_enemy(self, enemy):
+        """
+        Add an enemy to the game board.
+        """
+        self.enemies.append(enemy)
+
     def update(self):
         """
-        Update the game board state. This might include updating tower attacks, etc.
+        Update the game board state, including moving enemies and tower attacks.
         """
-        # Implement any updates needed for each game loop iteration
+        # Update enemies
+        for enemy in self.enemies:
+            enemy.move()
+
+        # Update towers
+        # Implement logic to let towers attack enemies
         pass
 
     # Additional methods can be added for board functionality
 
 # Example usage
-board = GameBoard(10, 10)
+#board = GameBoard(10, 10)
 # Add towers and perform other operations as needed

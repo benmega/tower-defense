@@ -1,7 +1,8 @@
 # game.py
 
 from board.game_board import GameBoard
-from entities import Tower, Enemy
+from entities.towers.tower import Tower
+from entities.enemies.enemy import Enemy
 
 class Game:
     def __init__(self):

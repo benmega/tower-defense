@@ -1,5 +1,6 @@
 # projectile.py
-
+from entities.enemies.enemy import Enemy
+''
 class Projectile:
     def __init__(self, x, y, speed, damage):
         self.x = x            # X-coordinate of the projectile's position
@@ -33,10 +34,3 @@ class Projectile:
         """
         # Simple distance check - can be more complex in subclasses
         return (self.x == target.x) and (self.y == target.y)
-
-# Example usage
-# Assuming enemy is an instance of an Enemy class
-projectile = Projectile(x=0, y=0, speed=5, damage=10)
-projectile.move()
-if projectile.hit_target(enemy):
-    print("Enemy hit!")
