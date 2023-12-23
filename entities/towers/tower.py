@@ -8,7 +8,7 @@ class Tower:
         self.damage = damage    # Damage dealt per attack
         self.attack_speed = attack_speed  # Time between attacks
         self.cooldown = 0       # Cooldown to track attack timing
-
+        self.image_path = 'assets/images/tower.png'
     def attackMultiple(self, enemies):
         """
         Attack enemies within range. This method can be called each game tick,
@@ -27,7 +27,7 @@ class Tower:
         return distance <= self.attack_range
 
     # Additional methods can be added as needed, like upgrading the tower
-    def update(self, enemies):
+    def update(self, enemies,active_projectiles):
         """
         Update the tower's state, potentially launching attacks if enemies are in range.
         """
@@ -36,10 +36,10 @@ class Tower:
             self.cooldown = self.attack_speed
             for enemy in enemies:
                 if self.is_enemy_in_range(enemy):
-                    self.attack(enemy)
+                    self.attack(enemy, active_projectiles)
                     break  # Attack the first enemy in range and stop checking
 
-    def attack(self, enemy):
+    def attack(self, enemy, active_projectiles):
         """
         Create a projectile and target the specified enemy.
         """

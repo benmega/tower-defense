@@ -12,40 +12,24 @@ def create_file(path):
         pass
     print(f"File created: {path}")
 
+import os
+
+def print_directory_structure(startpath):
+    for root, dirs, files in os.walk(startpath):
+        level = root.replace(startpath, '').count(os.sep)
+        indent = ' ' * 4 * level
+        print(f"{indent}{os.path.basename(root)}/")
+        subindent = ' ' * 4 * (level + 1)
+        for f in files:
+            print(f"{subindent}{f}")
+
 def main():
-    base_path = 'entities'
+    # Replace 'your_project_directory_path' with the path to your project directory
+    project_directory =  os.getcwd()
 
-    # Directories and subdirectories
-    directories = [
-        base_path,
-        os.path.join(base_path, 'towers'),
-        os.path.join(base_path, 'enemies'),
-        os.path.join(base_path, 'projectiles'),
-        os.path.join(base_path, 'gems'),
-        os.path.join(base_path, 'power_ups'),
-        os.path.join(base_path, 'obstacles')
-    ]
 
-    # Files in each directory
-    files = [
-        os.path.join(base_path, '__init__.py'),
-        os.path.join(base_path, 'entity.py'),
-        os.path.join(base_path, 'movable_entity.py'),
-        os.path.join(base_path, 'towers', 'tower.py'),
-        os.path.join(base_path, 'enemies', 'enemy.py'),
-        os.path.join(base_path, 'projectiles', 'projectile.py'),
-        os.path.join(base_path, 'gems', 'gem.py'),
-        os.path.join(base_path, 'power_ups', 'power_up.py'),
-        os.path.join(base_path, 'obstacles', 'obstacle.py')
-    ]
-
-    # Creating directories
-    for directory in directories:
-        create_directory(directory)
-
-    # Creating files
-    for file in files:
-        create_file(file)
+    print_directory_structure(project_directory)
 
 if __name__ == "__main__":
     main()
+
