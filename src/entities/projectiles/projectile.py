@@ -1,48 +1,56 @@
 import pygame
 
-class Projectile:
+from src.entities.entity import Entity
+
+
+class Projectile(Entity):
     def __init__(self, x, y, speed, damage, target, image_path="assets/images/projectile.png"):
+        super().__init__(x, y, image_path)
         self.x = x
         self.y = y
         self.speed = speed
         self.damage = damage
         self.target = target
-        self.state = 'in-flight'  # Possible states: 'in-flight', 'hit-target', 'expired'
-        self.image = pygame.image.load(image_path)  # Load projectile image
+        self.state = 'in-flight'  # Only one state for active projectiles
+        try:
+            self.image = pygame.image.load(image_path)  # Load projectile image
+            # If necessary, scale the image to the desired size
+            # self.image = pygame.transform.scale(self.image, (desired_width, desired_height))
+        except pygame.error as e:
+            print(f"Error loading projectile image: {e}")
+            self.image = None  # Fallback image or None
         self.image_path = image_path
 
     def move(self):
-        # Enhanced movement logic based on projectile type
-        # Example: Straight line movement
         dir_x, dir_y = self.target.x - self.x, self.target.y - self.y
         distance = (dir_x**2 + dir_y**2)**0.5
 
-        if distance != 0:
+        if distance > 0:
             dir_x, dir_y = dir_x / distance, dir_y / distance
 
         self.x += dir_x * self.speed
         self.y += dir_y * self.speed
 
-        # Check if the projectile has reached its target or boundary
         if self.reached_target() or self.out_of_bounds():
-            self.state = 'expired'
+            self.hit_target()  # Apply damage if needed
+            self.state = 'expired'  # Set state to expired regardless of hit
 
     def reached_target(self):
-        # Improved hit detection logic
         return ((self.x - self.target.x) ** 2 + (self.y - self.target.y) ** 2) ** 0.5 <= self.speed
 
     def out_of_bounds(self):
-        # Implement boundary conditions based on your game's design
-        # Example placeholder for a 800x600 window
         return not (0 <= self.x <= 800 and 0 <= self.y <= 600)
 
     def hit_target(self):
-        if self.state == 'in-flight' and self.reached_target():
+        # Apply damage and return True if a hit is detected
+        if self.reached_target():
             self.target.take_damage(self.damage)
-            self.state = 'hit-target'
             return True
         return False
 
     def draw(self, screen):
-        # Draw the projectile on the screen at its current position
-        screen.blit(self.image, (self.x, self.y))
+        if self.image:
+            screen.blit(self.image, (self.x, self.y))
+        else:
+            # Optional: Draw a placeholder if the image failed to load
+            pygame.draw.circle(screen, (255, 0, 0), (int(self.x), int(self.y)), 5)

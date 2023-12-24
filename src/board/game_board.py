@@ -48,7 +48,8 @@ class GameBoard:
             enemy.move()
             if enemy.reached_goal or enemy.health <= 0:
                 self.enemies.remove(enemy)
-
+            if enemy.state == 'dead' and enemy in self.enemies:
+                self.enemies.remove(enemy)
     def update_towers(self, active_projectiles):
         for tower in self.towers:
             tower.update(self.enemies, active_projectiles)
@@ -95,6 +96,7 @@ class GameBoard:
             enemy_image = load_scaled_image(enemy.image_path, (32, 32))
             if enemy_image:
                 screen.blit(enemy_image, (enemy.x, enemy.y))
+
 
     def draw_projectiles(self, screen, active_projectiles):
         for projectile in active_projectiles:

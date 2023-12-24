@@ -1,14 +1,19 @@
 # tower.py
+from src.entities.entity import Entity
 from src.entities.projectiles.projectile import Projectile
-class Tower:
-    def __init__(self, x, y, attack_range, damage, attack_speed):
-        self.x = x              # X-coordinate of the tower's position
-        self.y = y              # Y-coordinate of the tower's position
+
+
+class Tower(Entity):
+    def __init__(self, x, y, attack_range, damage, attack_speed,image_path='assets/images/tower.png'):
+        super().__init__(x, y, image_path='assets/images/tower.png')
+        self.x = x  # X-coordinate of the tower's position
+        self.y = y  # Y-coordinate of the tower's position
         self.attack_range = attack_range  # Range within which the tower can attack
-        self.damage = damage    # Damage dealt per attack
+        self.damage = damage  # Damage dealt per attack
         self.attack_speed = attack_speed  # Time between attacks
-        self.cooldown = 0       # Cooldown to track attack timing
-        self.image_path = 'assets/images/tower.png'
+        self.cooldown = 0  # Cooldown to track attack timing
+        self.image_path = image_path
+
     def attackMultiple(self, enemies):
         """
         Attack enemies within range. This method can be called each game tick,
@@ -27,7 +32,7 @@ class Tower:
         return distance <= self.attack_range
 
     # Additional methods can be added as needed, like upgrading the tower
-    def update(self, enemies,active_projectiles):
+    def update(self, enemies, active_projectiles):
         """
         Update the tower's state, potentially launching attacks if enemies are in range.
         """

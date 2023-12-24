@@ -1,5 +1,12 @@
-class Enemy:
+import pygame
+
+from src.entities.entity import Entity
+from src.utils.helpers import load_scaled_image
+
+
+class Enemy(Entity):
     def __init__(self, health, speed, path, image_path='assets/images/enemies/enemy.png'):
+        super().__init__(path[0][0], path[0][1], image_path)
         self.health = health
         self.speed = speed
         self.path = path
@@ -8,7 +15,8 @@ class Enemy:
         self.image_path = image_path
         self.state = 'moving'  # Possible states: 'moving', 'attacking', 'idle'
         self.reached_goal = False
-
+        self.image = load_scaled_image(image_path, (32, 32)) #TODO make game board size adjustable
+        self.width, self.height = self.image.get_size()
     def move(self):
         if self.path_index < len(self.path):
             next_x, next_y = self.path[self.path_index]
