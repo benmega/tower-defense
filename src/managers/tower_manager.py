@@ -1,5 +1,9 @@
-class TowerManager:
+from src.managers.entity_manager import EntityManager
+
+
+class TowerManager(EntityManager):
     def __init__(self):
+        super().__init__()
         self.towers = []
         self.selected_tower_type = None
         self.tower_cost = {
@@ -10,7 +14,7 @@ class TowerManager:
     def add_tower(self, tower, x, y):
         """ Adds a new tower at specified coordinates if it's a valid position. """
         if self.is_valid_position(x, y) and self.has_enough_resources(tower):
-            self.towers.append(tower(x, y))
+            self.towers.append(tower)
             self.deduct_resources(tower)
         else:
             print("Invalid position or insufficient resources")
@@ -62,5 +66,10 @@ class TowerManager:
         """ Deducts resources from the player based on the tower cost. """
         # Implement logic to deduct resources
         pass
+
+    def update(self, enemies, projectile_manager):
+        """ Updates each tower and handles their attacks. """
+        for tower in self.towers:
+            tower.update(enemies, projectile_manager)
 
     # Additional methods as needed, such as collision detection, selecting towers, etc.

@@ -1,10 +1,11 @@
 import pygame
 
+from src.entities.enemies.enemy import Enemy
 from src.entities.entity import Entity
-
+from src.config import PROJECTILE_IMAGE_PATH
 
 class Projectile(Entity):
-    def __init__(self, x, y, speed, damage, target, image_path="assets/images/projectile.png"):
+    def __init__(self, x, y, target, speed=0, damage=0, image_path=PROJECTILE_IMAGE_PATH):
         super().__init__(x, y, image_path)
         self.x = x
         self.y = y
@@ -12,13 +13,6 @@ class Projectile(Entity):
         self.damage = damage
         self.target = target
         self.state = 'in-flight'  # Only one state for active projectiles
-        try:
-            self.image = pygame.image.load(image_path)  # Load projectile image
-            # If necessary, scale the image to the desired size
-            # self.image = pygame.transform.scale(self.image, (desired_width, desired_height))
-        except pygame.error as e:
-            print(f"Error loading projectile image: {e}")
-            self.image = None  # Fallback image or None
         self.image_path = image_path
 
     def move(self):
@@ -54,3 +48,9 @@ class Projectile(Entity):
         else:
             # Optional: Draw a placeholder if the image failed to load
             pygame.draw.circle(screen, (255, 0, 0), (int(self.x), int(self.y)), 5)
+
+
+    def on_collision(self, other_entity):
+        if isinstance(other_entity, Enemy):
+            other_entity.take_damage(self.damage)
+            self.state = 'expired'  # Mark projectile for removal

@@ -50,3 +50,6 @@ class Enemy(Entity):
         # Logic for enemy death, like updating score or game state
 
     # Additional methods for collision detection and other behaviors can be added here
+    def on_collision(self, other_entity):
+        # Implement collision logic specific to Enemy
+        pass

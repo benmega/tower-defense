@@ -1,0 +1,47 @@
+{
+    "player": {
+        "health": 80,
+        "resources": 1500,
+        "score": 1200,
+        "level": 3
+    },
+    "towers": [
+        {
+            "id": 1,
+            "type": "BasicTower",
+            "x": 100,
+            "y": 150,
+            "level": 2,
+            "upgrades": {
+                "range": 1,
+                "damage": 0,
+                "speed": 1
+            }
+        },
+        {
+            "id": 2,
+            "type": "SniperTower",
+            "x": 200,
+            "y": 250,
+            "level": 1,
+            "upgrades": {
+                "range": 0,
+                "damage": 1,
+                "speed": 0
+            }
+        }
+        // ... other towers ...
+    ],
+    "enemies_defeated": 25,
+    "current_wave": {
+        "wave_number": 5,
+        "enemies_spawned": 10,
+        "total_enemies": 20
+    },
+    "game_settings": {
+        "sound_volume": 0.5,
+        "music_volume": 0.3,
+        "difficulty": "normal"
+    }
+    // Additional save data as needed...
+}

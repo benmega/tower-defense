@@ -1,4 +1,5 @@
 import pygame
+from src.config import TOWER_IMAGE_PATH, ENEMY_IMAGE_PATH
 
 
 class AssetManager:
@@ -40,8 +41,8 @@ class AssetManager:
     def preload_assets(self):
         """ Preloads necessary assets for the game. """
         # Example assets (You'll replace these with your actual asset paths)
-        self.load_image('enemy', 'assets/images/enemy.png')
-        self.load_image('tower', 'assets/images/tower.png')
+        self.load_image('enemy', ENEMY_IMAGE_PATH)
+        self.load_image('tower', TOWER_IMAGE_PATH)
         self.load_sound('explosion', 'assets/sounds/explosion.wav')
         self.load_font('main_font', 'assets/fonts/main_font.ttf', 24)
 

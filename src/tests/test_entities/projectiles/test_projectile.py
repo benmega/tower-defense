@@ -11,7 +11,7 @@ class TestProjectile(unittest.TestCase):
         self.enemy = Mock(spec=BasicEnemy)
         self.enemy.x = 100
         self.enemy.y = 100
-        self.projectile = Projectile(0, 0, 5, 10, self.enemy)  # Starting at (0, 0), speed 5, damage 10
+        self.projectile = Projectile(0, 0, self.enemy, 5, 10)  # Starting at (0, 0) going to enemy speed 5, damage 10
 
     def test_initial_state(self):
         # Test initial state of the projectile

@@ -72,11 +72,12 @@ def create_directory_structure(base_path, structure):
             create_directory_structure(path, content)  # Recursively create subdirectories and files
 
 # Define the base path for the tests directory
-base_path = "/src/tests"
+base_path = "/"
 
 # Create the directory structure
 create_directory_structure(base_path, tests_structure)
 
+print(create_directory_structure(base_path, tests_structure))
 f"Created tests directory structure at '{base_path}'"
 
 
