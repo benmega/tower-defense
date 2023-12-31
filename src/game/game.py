@@ -1,9 +1,9 @@
 from src.board.game_board import GameBoard
-from src.entities.enemies.basic_enemy import BasicEnemy
+# from src.entities.enemies.basic_enemy import BasicEnemy
 from src.entities.towers.tower import Tower
 import pygame
-from src.game.level import Level
-from src.entities.enemies.enemy_wave import EnemyWave
+# from src.game.level import Level
+# from src.entities.enemies.enemy_wave import EnemyWave
 from src.managers.collision_manager import CollisionManager
 from src.managers.enemy_manager import EnemyManager
 from src.managers.level_manager import LevelManager
@@ -11,7 +11,7 @@ from src.managers.projectile_manager import ProjectileManager
 from src.managers.tower_manager import TowerManager
 import src.config.config as configuration
 from src.utils.helpers import load_scaled_image
-import json
+# import json
 
 
 class Game:
