@@ -1,4 +1,6 @@
 import pygame
+
+
 from src.utils.helpers import load_scaled_image
 from src.config.config import ENEMY_IMAGE_PATH, TILE_SIZE
 
@@ -14,6 +16,7 @@ class Enemy(pygame.sprite.Sprite):
         self.speed = speed
         self.path = path
         self.path_index = 0
+        self.active = True
         self.state = 'moving'  # Possible states: 'moving', 'attacking', 'idle'
         self.reached_goal = False
 
@@ -50,8 +53,18 @@ class Enemy(pygame.sprite.Sprite):
 
     def die(self):
         self.state = 'dead'
+        self.active = False
         # Logic for enemy death
 
     def update(self):
+        if self.state == 'dead' or not self.active:
+            return  # Skip updating if the enemy is dead or inactive
         self.move()
         # Add other update logic here if needed
+
+    def on_collision(self, other_entity):
+        from src.entities.projectiles.projectile import Projectile
+        if isinstance(other_entity, Projectile):
+            self.health -= other_entity.damage
+            if self.health <= 0:
+                self.die()

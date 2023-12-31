@@ -36,36 +36,38 @@ class Game:
         gridHeight = configuration.DEFAULT_GRID_SIZE[1]
         self.tower_manager.add_tower(Tower(gridWidth*2,gridHeight*7)) # Example of creating and adding a tower
         self.tower_manager.add_tower(Tower(gridWidth*5,gridHeight*7))  # Example of creating and adding a tower
+        self.tower_manager.add_tower(Tower(gridWidth * 2, gridHeight * 4))  # Example of creating and adding a tower
+        self.tower_manager.add_tower(Tower(gridWidth * 5, gridHeight * 4))  # Example of creating and adding a tower
 
-    def load_levels_from_json(self):
-        with open(configuration.LEVELS_JSON_PATH, 'r') as file:  # Use the path from config
-            data = json.load(file)
-
-        levels = []
-        for level_data in data['levels']:
-            path = level_data['path']
-            enemy_waves = []
-            for wave in level_data['enemy_waves']:
-                enemy_wave = EnemyWave(BasicEnemy, wave['count'], wave['spawn_interval'], path)
-                enemy_waves.append(enemy_wave)
-            levels.append(
-                Level(enemy_wave_list=enemy_waves, path=path, level_number=1))  # Adjust level_number accordingly
-        return levels
+    # def load_levels_from_json(self):
+    #     with open(configuration.LEVELS_JSON_PATH, 'r') as file:  # Use the path from config
+    #         data = json.load(file)
+    #
+    #     levels = []
+    #     for level_data in data['levels']:
+    #         path = level_data['path']
+    #         enemy_waves = []
+    #         for wave in level_data['enemy_waves']:
+    #             enemy_wave = EnemyWave(BasicEnemy, wave['count'], wave['spawn_interval'], path)
+    #             enemy_waves.append(enemy_wave)
+    #         levels.append(
+    #             Level(enemy_wave_list=enemy_waves, path=path, level_number=1))  # Adjust level_number accordingly
+    #     return levels
 
     def load_resources(self):
         # Load and store images for enemies, towers, and projectiles
         self.enemy_image = load_scaled_image(configuration.ENEMY_IMAGE_PATH, configuration.TILE_SIZE)
         self.tower_image = load_scaled_image(configuration.TOWER_IMAGE_PATH, configuration.TILE_SIZE)
         self.projectile_image = load_scaled_image(configuration.PROJECTILE_IMAGE_PATH, configuration.TILE_SIZE)
-    def start(self):
-        self.is_running = True
-        while self.is_running:
-            self.handle_events()
-            self.update()
-            self.draw()
-            pygame.display.flip()
-            self.clock.tick(configuration.FPS)
-        pygame.quit()
+    # def start(self):
+    #     self.is_running = True
+    #     while self.is_running:
+    #         self.handle_events()
+    #         self.update()
+    #         self.draw()
+    #         pygame.display.flip()
+    #         self.clock.tick(configuration.FPS)
+    #     pygame.quit()
 
     def draw(self):
         # Clear the screen with the background color
@@ -89,29 +91,29 @@ class Game:
         pass
 
 
-    def remove_enemy(self, enemy):
-        # Encapsulate any additional logic needed when an enemy is removed
-        self.enemy_manager.remove(enemy)
-        # Additional logic like updating score or triggering effects can be added here
-
-    def spawn_new_enemies(self): #TODO move to gameboard
-        current_time = pygame.time.get_ticks()  # Get the current time
-        if self.current_wave:
-            new_enemy = self.current_wave.update(current_time)
-            if new_enemy:
-                self.enemy_manager.add_enemy(new_enemy)  # Add the new enemy to the list
-                print(f"Added new enemy. Total enemies: {len(self.enemy_manager.enemies)}")
+    # def remove_enemy(self, enemy):
+    #     # Encapsulate any additional logic needed when an enemy is removed
+    #     self.enemy_manager.remove(enemy)
+    #     # Additional logic like updating score or triggering effects can be added here
+    #
+    # def spawn_new_enemies(self): #TODO move to gameboard
+    #     current_time = pygame.time.get_ticks()  # Get the current time
+    #     if self.current_wave:
+    #         new_enemy = self.current_wave.update(current_time)
+    #         if new_enemy:
+    #             self.enemy_manager.add_enemy(new_enemy)  # Add the new enemy to the list
+    #             print(f"Added new enemy. Total enemies: {len(self.enemy_manager.enemies)}")
 
     def check_game_over(self):
         # Check if the game should end (e.g., player health reaches 0)
         pass
 
-    def add_enemy(self, enemy):
-        print(f"Adding enemy at position: {enemy.x}, {enemy.y}")
-        self.enemy_manager.add_enemy(enemy)
+    # def add_enemy(self, enemy):
+    #     print(f"Adding enemy at position: {enemy.x}, {enemy.y}")
+    #     self.enemy_manager.add_enemy(enemy)
 
-    def add_tower(self, tower):
-        self.tower_manager.towers.append(tower)
+    # def add_tower(self, tower):
+    #     self.tower_manager.towers.append(tower)
 
 
 
@@ -170,20 +172,20 @@ class Game:
             self.enemy_manager.entities, self.projectile_manager.projectiles
         )
 
-    def update_projectiles(self):
-        # Iterate through active projectiles and move them
-        for projectile in self.projectile_manager.projectiles[:]:
-            projectile.move()
-            if projectile.hit_target():
-                projectile.target.take_damage(projectile.damage)
-                if projectile.target.health <= 0:
-                    projectile.target.die()
-                    if projectile.target in self.enemy_manager.enemies:
-                        self.enemy_manager.enemies.remove(projectile.target)
-                self.projectile_manager.projectiles.remove(projectile)
-            elif projectile.out_of_bounds():
-                # Remove projectiles that have left the game area
-                self.projectile_manager.projectiles.remove(projectile)
+    # def update_projectiles(self):
+    #     # Iterate through active projectiles and move them
+    #     for projectile in self.projectile_manager.projectiles[:]:
+    #         projectile.move()
+    #         if projectile.hit_target():
+    #             projectile.target.take_damage(projectile.damage)
+    #             if projectile.target.health <= 0:
+    #                 projectile.target.die()
+    #                 if projectile.target in self.enemy_manager.enemies:
+    #                     self.enemy_manager.enemies.remove(projectile.target)
+    #             self.projectile_manager.projectiles.remove(projectile)
+    #         elif projectile.out_of_bounds():
+    #             # Remove projectiles that have left the game area
+    #             self.projectile_manager.projectiles.remove(projectile)
 
     def check_completions(self):
         # Check if any enemies have reached their goal or if any towers have been destroyed

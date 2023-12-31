@@ -1,8 +1,6 @@
 import pygame
 
-from src.config.config import TILE_SIZE
 from src.managers.entity_manager import EntityManager
-from src.utils.helpers import load_scaled_image
 
 
 class EnemyManager(EntityManager):
@@ -24,17 +22,13 @@ class EnemyManager(EntityManager):
                 self.add_enemy(new_enemy)
 
         self.update_entities()
+        for enemy in self.entities:
+            if enemy.state == 'dead':
+                self.entities.remove(enemy)  # Remove dead enemies from the group
 
     def add_enemy(self, enemy):
         """ Add a new enemy to the manager. """
         self.entities.add(enemy)
-
-    # def update_enemies(self):
-    #     """ Update each enemy's position and check for removal conditions. """
-    #     for enemy in self.entities[:]:  # Iterate over a copy to allow removal within the loop
-    #         enemy.move()
-    #         if enemy.health <= 0 or enemy.state == 'dead' or enemy.reached_goal:
-    #             self.entities.remove(enemy)
 
     def get_enemies(self):
         """ Return the list of currently active enemies. """

@@ -10,6 +10,7 @@ class Projectile(Entity):
         super().__init__(x, y, image_path)
         # self.x = x
         # self.y = y
+        self.isPiercing = False
         self.rect.x = x
         self.rect.y = y
         self.speed = speed
@@ -57,9 +58,12 @@ class Projectile(Entity):
         else:
             # Optional: Draw a placeholder if the image failed to load
             pygame.draw.circle(screen, (255, 0, 0), (int(self.rect.x), int(self.rect.y)), 5)
-
-
+            
     def on_collision(self, other_entity):
         if isinstance(other_entity, Enemy):
+            # Apply damage to the enemy
             other_entity.take_damage(self.damage)
-            self.state = 'expired'  # Mark projectile for removal
+
+            # If the projectile is not piercing, mark it for removal
+            if not self.isPiercing:
+                self.state = 'expired'
