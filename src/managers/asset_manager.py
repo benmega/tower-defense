@@ -1,5 +1,5 @@
 import pygame
-from src.config import TOWER_IMAGE_PATH, ENEMY_IMAGE_PATH
+from src.config.config import TOWER_IMAGE_PATH, ENEMY_IMAGE_PATH
 
 
 class AssetManager:

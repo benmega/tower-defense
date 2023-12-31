@@ -1,7 +1,6 @@
 # tower.py
 from src.entities.entity import Entity
-from src.entities.projectiles.projectile import Projectile
-from src.config import TOWER_IMAGE_PATH
+from src.config.config import TOWER_IMAGE_PATH
 
 class Tower(Entity):
     def __init__(self, x=10, y=10, attack_range=100, damage=10, attack_speed=1,image_path=TOWER_IMAGE_PATH,build_cost=0,upgrade_cost=0,width=10,height=10):
@@ -37,12 +36,23 @@ class Tower(Entity):
                 enemy.take_damage(self.damage)
                 # You can add more logic here, such as attacking only the first enemy in range
 
+
     def is_enemy_in_range(self, enemy):
         """
         Check if an enemy is within the attack range of the tower.
         """
-        distance = ((self.x - enemy.x) ** 2 + (self.y - enemy.y) ** 2) ** 0.5
+        enemy_x, enemy_y = enemy.rect.x, enemy.rect.y
+        distance = ((self.x - enemy_x) ** 2 + (self.y - enemy_y) ** 2) ** 0.5
         return distance <= self.attack_range
+
+    def attack(self, target, projectile_manager):
+        """
+        Create a projectile and target the specified enemy.
+        """
+        print("Creating a projectile")
+        target_x, target_y = target.rect.x, target.rect.y
+        projectile_manager.create_projectile(self.x, self.y, self.projectile_type, target)
+        print(f"Projectile created at ({self.x}, {self.y}) with target ({target_x}, {target_y})")
 
     # Additional methods can be added as needed, like upgrading the tower
     def update(self, enemies, active_projectiles):
@@ -56,12 +66,3 @@ class Tower(Entity):
                 if self.is_enemy_in_range(enemy):
                     self.attack(enemy, active_projectiles)
                     break  # Attack the first enemy in range and stop checking
-
-    def attack(self, target, projectile_manager):
-        """
-        Create a projectile and target the specified enemy.
-        """
-
-        print("Creating a projectile")
-        projectile_manager.create_projectile(self.x, self.y, self.projectile_type, target)
-        print(f"Projectile created at ({self.x}, {self.y}) with target ({target.x}, {target.y})")

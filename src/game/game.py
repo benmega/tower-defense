@@ -6,40 +6,12 @@ from src.game.level import Level
 from src.entities.enemies.enemy_wave import EnemyWave
 from src.managers.collision_manager import CollisionManager
 from src.managers.enemy_manager import EnemyManager
+from src.managers.level_manager import LevelManager
 from src.managers.projectile_manager import ProjectileManager
-
 from src.managers.tower_manager import TowerManager
-import src.config as configuration
+import src.config.config as configuration
 from src.utils.helpers import load_scaled_image
-
-# Assume load_scaled_image and other necessary functions are defined elsewhere
-
-
-def load_levels():
-    # Define or load levels here
-    levels = []
-
-    # Example paths and enemy wave lists for each level
-    # Replace these with your actual path and enemy configurations
-    paths = [
-        [(0, 0), (100, 0), (100, 100)],
-        [(0, 0), (200, 0), (200, 200)],
-        # ... more paths for other levels ...
-    ]
-    enemy_wave_lists = [
-        [EnemyWave(BasicEnemy, 5, 1, paths[0]), EnemyWave(BasicEnemy, 2, 2, paths[0])],  # Level 1
-        [EnemyWave(BasicEnemy, 1, 5, paths[1]), EnemyWave(BasicEnemy, 1, 10, paths[1])],  # Level 2
-        # ... more enemy waves for other levels ...
-    ]
-
-    # Create Level objects for each level
-    for i in range(10):
-        path = paths[i % len(paths)]  # Example to reuse paths
-        enemy_wave_list = enemy_wave_lists[i % len(enemy_wave_lists)]  # Example to reuse enemy wave lists
-        # print(f"Creating level {i + 1} with enemy waves: {enemy_wave_list}")
-        levels.append(Level(enemy_wave_list=enemy_wave_list, path=path, level_number=i + 1))
-
-    return levels
+import json
 
 
 class Game:
@@ -47,12 +19,11 @@ class Game:
     def __init__(self):
         self.is_build_mode = False
         pygame.init()
-        self.screen = pygame.display.set_mode((configuration.SCREEN_WIDTH, configuration.SCREEN_HEIGHT))
+        self.screen = pygame.display.set_mode((configuration.SCREEN_WIDTH, configuration.SCREEN_HEIGHT), pygame.DOUBLEBUF)
         pygame.display.set_caption("Tower Defense Game")
         self.clock = pygame.time.Clock()
-        self.board = GameBoard(10, 10, grass_image_path='assets/images/grass.png')
-        self.levels = load_levels()
-        self.current_level_index = 0
+        self.board = GameBoard(10, 10)
+        self.level_manager = LevelManager()
         self.tower_manager = TowerManager()
         self.enemy_manager = EnemyManager()
         self.projectile_manager = ProjectileManager()
@@ -60,15 +31,26 @@ class Game:
         self.is_running = False
         self.initialize_game()
     def initialize_game(self):
-        # Initialize game elements here, like placing towers and spawning enemies
-        # Load images, set up the initial game state, etc.
-
         self.load_resources()
-        tower = Tower()
-        try:
-            self.tower_manager.add_tower(tower, 20, 20) # Example of creating and adding a tower
-        except ValueError as e:
-            print(f"Error adding tower: {e}")
+        gridWidth = configuration.DEFAULT_GRID_SIZE[0]
+        gridHeight = configuration.DEFAULT_GRID_SIZE[1]
+        self.tower_manager.add_tower(Tower(gridWidth*2,gridHeight*7)) # Example of creating and adding a tower
+        self.tower_manager.add_tower(Tower(gridWidth*5,gridHeight*7))  # Example of creating and adding a tower
+
+    def load_levels_from_json(self):
+        with open(configuration.LEVELS_JSON_PATH, 'r') as file:  # Use the path from config
+            data = json.load(file)
+
+        levels = []
+        for level_data in data['levels']:
+            path = level_data['path']
+            enemy_waves = []
+            for wave in level_data['enemy_waves']:
+                enemy_wave = EnemyWave(BasicEnemy, wave['count'], wave['spawn_interval'], path)
+                enemy_waves.append(enemy_wave)
+            levels.append(
+                Level(enemy_wave_list=enemy_waves, path=path, level_number=1))  # Adjust level_number accordingly
+        return levels
 
     def load_resources(self):
         # Load and store images for enemies, towers, and projectiles
@@ -90,11 +72,10 @@ class Game:
         self.screen.fill(configuration.BACKGROUND_COLOR)
 
         # Draw the game board
-        self.board.draw_board(self.screen, self.enemy_manager, self.tower_manager, self.projectile_manager)
-
+        self.board.draw_board(self.screen, self.level_manager.get_current_level().path)
         # Draw towers, enemies, and projectiles
         self.tower_manager.draw_towers(self.screen)
-        self.enemy_manager.draw_enemies(self.screen)
+        self.enemy_manager.draw(self.screen)
         self.projectile_manager.draw_projectiles(self.screen)
 
         # Draw the game UI
@@ -127,18 +108,11 @@ class Game:
 
     def add_enemy(self, enemy):
         print(f"Adding enemy at position: {enemy.x}, {enemy.y}")
-        self.board.add_enemy(enemy)
-        self.board.enemies.append(enemy)
+        self.enemy_manager.add_enemy(enemy)
 
     def add_tower(self, tower):
         self.tower_manager.towers.append(tower)
-        self.board.add_tower(tower)
 
-    def start_level(self, level_index):
-        self.current_level = self.levels[level_index]
-        self.current_wave = self.current_level.get_next_wave()  # Store the current wave object
-        self.enemy_manager.reset()
-        print(f"Starting level {level_index + 1}")
 
 
 
@@ -146,13 +120,13 @@ class Game:
         print("Game is running")
         self.is_running = True
         self.load_resources()  # Load images and other resources
-        self.start_level(self.current_level_index)
+        self.level_manager.next_level()
+        self.enemy_manager.reset()
 
         while self.is_running:
             self.handle_events()
             self.update()
             self.draw()
-            self.render()
             pygame.display.flip()
             self.clock.tick(configuration.FPS)
 
@@ -182,15 +156,19 @@ class Game:
     def update(self):
         print("Updating game state")
         # Main game update logic for each frame
+        new_enemies = self.level_manager.update_levels()
+        for enemy in new_enemies:
+            self.enemy_manager.add_enemy(enemy)
         self.enemy_manager.update()
-        self.spawn_new_enemies() # TODO move to gameboard
         self.tower_manager.update(self.enemy_manager.get_enemies(), self.projectile_manager)
-        self.projectile_manager.update()
+        self.projectile_manager.update_entities()
         self.check_game_over()
-        self.update_projectiles()
+
         self.check_completions()
-        all_entities = self.enemy_manager.enemies + self.projectile_manager.projectiles
-        self.collision_manager.handle_collisions(all_entities)
+        #yall_entities = self.enemy_manager.enemies + self.projectile_manager.projectiles
+        self.collision_manager.handle_group_collisions(
+            self.enemy_manager.entities, self.projectile_manager.projectiles
+        )
 
     def update_projectiles(self):
         # Iterate through active projectiles and move them
@@ -211,14 +189,3 @@ class Game:
         # Check if any enemies have reached their goal or if any towers have been destroyed
         # This can also include checking if the player has won or lost the level
         pass
-
-    def render(self):
-        self.screen.fill(configuration.BACKGROUND_COLOR)
-        self.board.draw_board(self.screen,
-                              self.enemy_manager, self.tower_manager, self.projectile_manager)  # This method should draw enemies, towers, and projectiles
-
-    def load_resources(self):
-        # Load and store images for enemies, towers, and projectiles
-        configuration.enemy_image = load_scaled_image(configuration.ENEMY_IMAGE_PATH, configuration.TILE_SIZE)
-        configuration.tower_image = load_scaled_image(configuration.TOWER_IMAGE_PATH, configuration.TILE_SIZE)
-        configuration.projectile_image = load_scaled_image(configuration.PROJECTILE_IMAGE_PATH, configuration.TILE_SIZE)

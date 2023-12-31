@@ -21,7 +21,7 @@ class ProjectileManager(EntityManager):
 
         self.projectiles.append(projectile)
 
-    def update_projectiles(self):
+    def update_entities(self):
         for projectile in self.projectiles[:]:  # Iterate over a copy to avoid modification issues
             projectile.move()
             if projectile.state == 'expired':

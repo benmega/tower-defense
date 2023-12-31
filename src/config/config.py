@@ -1,5 +1,5 @@
 # Configuration settings for the game
-
+DEBUG = True
 SCREEN_WIDTH, SCREEN_HEIGHT = 800, 600
 BACKGROUND_COLOR = (0, 0, 0)
 FPS = 60
@@ -48,8 +48,12 @@ PROJECTILE_IMAGE_PATH = 'assets/images/projectiles/basic_projectile.png'
 
 # Level configuration
 LEVEL_COUNT = 10
-LEVEL_BACKGROUND_PATH = 'assets/images/backgrounds/level_background.png'
-
+LEVEL_BACKGROUND_PATH = 'assets/images/backgrounds/grass.png'
+GRASS_IMAGE_PATH = 'assets/images/backgrounds/grass.png'
+ENTRANCE_IMAGE_PATH = 'assets/images/backgrounds/entrance.png'
+EXIT_IMAGE_PATH = 'assets/images/backgrounds/exit.png'
+PATH_IMAGE_PATH = 'assets/images/backgrounds/path.png'
+LEVELS_JSON_PATH = 'src/config/TestLevels.json'
 
 # UI elements
 UI_FONT = 'Arial'
@@ -66,4 +70,5 @@ BACKGROUND_MUSIC_VOLUME = 0.5
 
 # Other settings
 DEBUG_MODE = True
-SAVE_GAME_PATH = 'save_data/game_save.json'
+SAVE_GAME_PATH = '../save_data/game_save.json'
+

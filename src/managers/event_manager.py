@@ -1,6 +1,10 @@
+import pygame
+
+
 class EventManager:
     def __init__(self):
         self.events = []
+
 
     def process_events(self, game):
         """ Process and handle all events in the queue. """
@@ -34,4 +38,3 @@ class EventManager:
         # Example: game.pause()
 
     # Additional methods for handling specific event types
-

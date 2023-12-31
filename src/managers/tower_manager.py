@@ -1,3 +1,4 @@
+from src.config.config import DEBUG
 from src.managers.entity_manager import EntityManager
 
 
@@ -11,9 +12,9 @@ class TowerManager(EntityManager):
             # ... other tower types and their costs ...
         }
 
-    def add_tower(self, tower, x, y):
+    def add_tower(self, tower):
         """ Adds a new tower at specified coordinates if it's a valid position. """
-        if self.is_valid_position(x, y) and self.has_enough_resources(tower):
+        if self.is_valid_position(tower.x, tower.y) and self.has_enough_resources(tower):
             self.towers.append(tower)
             self.deduct_resources(tower)
         else:
@@ -45,6 +46,8 @@ class TowerManager(EntityManager):
 
     def draw_towers(self, screen):
         """ Draws all towers onto the screen. """
+        if DEBUG == True:
+            print(f'drawing {len(self.towers)} towers')
         for tower in self.towers:
             tower.draw(screen)
 
