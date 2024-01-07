@@ -1,9 +1,10 @@
 # tower.py
 from src.entities.entity import Entity
-from src.config.config import TOWER_IMAGE_PATH
+from src.config.config import TOWER_IMAGE_PATH, DEBUG
+
 
 class Tower(Entity):
-    def __init__(self, x=10, y=10, attack_range=100, damage=10, attack_speed=1,image_path=TOWER_IMAGE_PATH,build_cost=0,upgrade_cost=0,width=10,height=10):
+    def __init__(self, x=10, y=10, attack_range=100, damage=10, attack_speed=20,image_path=TOWER_IMAGE_PATH,build_cost=0,upgrade_cost=0,width=10,height=10):
         super().__init__(x, y, image_path=TOWER_IMAGE_PATH)
         self.x = x  # X-coordinate of the tower's position
         self.y = y  # Y-coordinate of the tower's position
@@ -49,10 +50,12 @@ class Tower(Entity):
         """
         Create a projectile and target the specified enemy.
         """
-        print("Creating a projectile")
+        if DEBUG:
+            print("Creating a projectile")
         target_x, target_y = target.rect.x, target.rect.y
         projectile_manager.create_projectile(self.x, self.y, self.projectile_type, target)
-        print(f"Projectile created at ({self.x}, {self.y}) with target ({target_x}, {target_y})")
+        if DEBUG:
+            print(f"Projectile created at ({self.x}, {self.y}) with target ({target_x}, {target_y})")
 
     # Additional methods can be added as needed, like upgrading the tower
     def update(self, enemies, active_projectiles):

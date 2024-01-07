@@ -1,10 +1,12 @@
 # Configuration settings for the game
-DEBUG = True
+DEBUG = False
 SCREEN_WIDTH, SCREEN_HEIGHT = 800, 600
 BACKGROUND_COLOR = (0, 0, 0)
 FPS = 60
-TILE_SIZE = (32, 32)
-DEFAULT_GRID_SIZE = (32, 32)
+TILE_SIZE = (30, 30)
+DEFAULT_GRID_SIZE = (25, 20)
+GAME_BOARD_WIDTH = DEFAULT_GRID_SIZE[0]
+GAME_BOARD_HEIGHT = DEFAULT_GRID_SIZE[1]
 
 # Player starting health
 PLAYER_HEALTH = 100
@@ -19,6 +21,15 @@ PLAYER_SCORE = 0
 ENEMY_HEALTH = 50
 ENEMY_SPEED = 2
 ENEMY_IMAGE_PATH = 'assets/images/enemies/enemy.png'
+SIEGE_ENEMY_IMAGE_PATH = 'assets/images/enemies/tank_enemy.png'
+FAST_ENEMY_IMAGE_PATH = 'assets/images/enemies/fast_enemy.png'
+FLYING_ENEMY_IMAGE_PATH = 'assets/images/enemies/flying_enemy.png'
+HEALER_ENEMY_IMAGE_PATH = 'assets/images/enemies/healer_enemy.png'
+STEALTH_ENEMY_IMAGE_PATH = 'assets/images/enemies/stealth_enemy.png'
+SWARM_ENEMY_IMAGE_PATH = 'assets/images/enemies/swarm_enemy.png'
+TANK_ENEMY_IMAGE_PATH = 'assets/images/enemies/tank_enemy.png'
+BASIC_ENEMY_IMAGE_PATH = 'assets/images/enemies/basic_enemy.png'
+
 
 # Spawn settings
 ENEMY_SPAWN_INTERVAL = 2000  # Milliseconds
@@ -69,6 +80,6 @@ BACKGROUND_MUSIC_PATH = 'assets/audio/background_music.mp3'
 BACKGROUND_MUSIC_VOLUME = 0.5
 
 # Other settings
-DEBUG_MODE = True
+DEBUG_MODE = DEBUG
 SAVE_GAME_PATH = '../save_data/game_save.json'
 

@@ -1,4 +1,12 @@
+from src.config.config import FPS
 from src.entities.enemies.basic_enemy import BasicEnemy
+from src.entities.enemies.fast_enemy import FastEnemy
+from src.entities.enemies.flying_enemy import FlyingEnemy
+from src.entities.enemies.healer_enemy import HealerEnemy
+from src.entities.enemies.siege_enemy import SiegeEnemy
+from src.entities.enemies.stealth_enemy import StealthEnemy
+from src.entities.enemies.swarm_enemy import SwarmEnemy
+from src.entities.enemies.tank_enemy import TankEnemy
 
 
 class EnemyWave:
@@ -8,8 +16,8 @@ class EnemyWave:
 
         :param enemy_type: The type of enemy in this wave.
         :param count: The number of enemies in this wave.
-        :param spawn_interval: Time interval between enemy spawns.
-        :param path: Walking path. TODO Make this part of level or path_manager class
+        :param spawn_interval: Time interval between enemy spawns. (milliseconds)
+        :param path: Walking path.
         """
         self.enemy_type = enemy_type
         self.count = count
@@ -25,6 +33,7 @@ class EnemyWave:
         :param current_time: Current time in the game.
         :return: An enemy instance if it's time to spawn, else None.
         """
+
         if self.spawned_count < self.count and current_time - self.last_spawn_time >= self.spawn_interval:
             self.spawned_count += 1
             self.last_spawn_time = current_time
@@ -59,6 +68,12 @@ class EnemyWave:
         """
         enemy_class_map = {
             'BasicEnemy': BasicEnemy,
-            # Add other mappings here...
+            'FastEnemy':FastEnemy,
+            'FlyingEnemy':FlyingEnemy,
+            'HealerEnemy':HealerEnemy,
+            'SiegeEnemy':SiegeEnemy,
+            'StealthEnemy':StealthEnemy,
+            'SwarmEnemy':SwarmEnemy,
+            'TankEnemy':TankEnemy
         }
-        return enemy_class_map.get(enemy_type_str, BasicEnemy)  # Default to BasicEnemy if not found
+        return enemy_class_map.get(enemy_type_str, BasicEnemy)  # Default to BasicEnemy if not found'

@@ -8,6 +8,7 @@ from src.game.level import Level
 
 class LevelManager:
     def __init__(self):
+        self.current_wave = None
         self.levels = []
         self.current_level_index = -1
         self.load_levels()
@@ -33,9 +34,8 @@ class LevelManager:
         return parsed_levels
 
     def next_level(self):
-        self.current_level_index += 1
-        if self.current_level_index < len(self.levels):
-            return self.levels[self.current_level_index]
+        if self.current_level_index < len(self.levels)-1:
+            return self.levels[self.current_level_index+1]
         else:
             return None  # No more levels
 
@@ -45,25 +45,48 @@ class LevelManager:
             self.levels[self.current_level_index].reset()
 
     def get_current_level(self):
-        if self.current_level_index != -1:
+        if self.current_level_index != -1 and self.current_level_index < len(self.levels):
             return self.levels[self.current_level_index]
         return None
 
     # Additional methods as necessary for level management
     def start_level(self, level_index):
+
         self.current_level = self.levels[level_index]
+        self.current_level.start_time = pygame.time.get_ticks()
         self.current_wave = self.current_level.get_next_wave()  # Store the current wave object
         print(f"Starting level {level_index + 1}")
 
-
     def update_levels(self):
-        # Get the current time from Pygame
         current_time = pygame.time.get_ticks()
-
-        # Logic to update the current level and enemy waves
         new_enemies = []
-        for wave in self.get_current_level().enemy_wave_list:
-            enemy = wave.update(current_time)
-            if enemy:
-                new_enemies.append(enemy)
+
+        current_level = self.get_current_level()
+        if current_level:
+            for wave in current_level.enemy_wave_list:
+                enemy = wave.update(current_time)
+                if enemy:
+                    new_enemies.append(enemy)
+                else:
+                    pass
+                    #current_level.get_next_wave()
+            if current_level.is_completed():
+                self.start_next_level()
+
         return new_enemies
+
+    def check_level_complete(self):
+        current_level = self.get_current_level()
+        for wave in current_level.enemy_wave_list:
+            if wave.spawned_count < wave.count:
+                return False
+        return True
+    def start_next_level(self):
+        next_level = self.next_level()
+        if next_level:
+            self.current_level_index += 1
+            self.current_level = next_level
+            print(f"Starting next level: {self.current_level_index + 1}")
+        else:
+            print("All levels completed!")
+            # Handle the game completion scenario here (e.g., go to a victory screen)

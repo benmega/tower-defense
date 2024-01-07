@@ -2,42 +2,82 @@
   "levels": [
     {
       "level_number": 1,
-      "path": [
-        {"x": 0, "y": 0},
-        {"x": 100, "y": 0},
-        {"x": 100, "y": 300}
-      ],
+      "path": [{"x": 0, "y": 0}, {"x": 100, "y": 0}, {"x": 100, "y": 300}, {"x": 500, "y": 300}],
       "enemy_waves": [
-        {
-          "enemy_type": "BasicEnemy",
-          "count": 2,
-          "spawn_interval": 1
-        },
-        {
-          "enemy_type": "BasicEnemy",
-          "count": 10,
-          "spawn_interval": 2
-        }
+        {"enemy_type": "BasicEnemy", "count": 15, "spawn_interval": 1000},
+        {"enemy_type": "FastEnemy", "count": 10, "spawn_interval": 800}
       ]
     },
     {
       "level_number": 2,
-      "path": [
-        {"x": 0, "y": 0},
-        {"x": 200, "y": 0},
-        {"x": 200, "y": 200}
-      ],
+      "path": [{"x": 0, "y": 0}, {"x": 200, "y": 0}, {"x": 200, "y": 300}, {"x": 500, "y": 300}],
       "enemy_waves": [
-        {
-          "enemy_type": "BasicEnemy",
-          "count": 10,
-          "spawn_interval": 5
-        },
-        {
-          "enemy_type": "BasicEnemy",
-          "count": 10,
-          "spawn_interval": 10
-        }
+        {"enemy_type": "FlyingEnemy", "count": 8, "spawn_interval": 1200},
+        {"enemy_type": "TankEnemy", "count": 5, "spawn_interval": 2000}
+      ]
+    },
+    {
+      "level_number": 3,
+      "path": [{"x": 0, "y": 0}, {"x": 300, "y": 0}, {"x": 300, "y": 300}, {"x": 500, "y": 300}],
+      "enemy_waves": [
+        {"enemy_type": "StealthEnemy", "count": 12, "spawn_interval": 900},
+        {"enemy_type": "SwarmEnemy", "count": 20, "spawn_interval": 500}
+      ]
+    },
+    {
+      "level_number": 4,
+      "path": [{"x": 0, "y": 0}, {"x": 400, "y": 0}, {"x": 400, "y": 300}, {"x": 500, "y": 300}],
+      "enemy_waves": [
+        {"enemy_type": "SiegeEnemy", "count": 7, "spawn_interval": 1500},
+        {"enemy_type": "HealerEnemy", "count": 10, "spawn_interval": 700}
+      ]
+    },
+    {
+      "level_number": 5,
+      "path": [{"x": 0, "y": 0}, {"x": 100, "y": 100}, {"x": 200, "y": 200}, {"x": 500, "y": 300}],
+      "enemy_waves": [
+        {"enemy_type": "TankEnemy", "count": 6, "spawn_interval": 1800},
+        {"enemy_type": "FastEnemy", "count": 15, "spawn_interval": 600}
+      ]
+    },
+    {
+      "level_number": 6,
+      "path": [{"x": 0, "y": 0}, {"x": 200, "y": 100}, {"x": 300, "y": 200}, {"x": 500, "y": 300}],
+      "enemy_waves": [
+        {"enemy_type": "BasicEnemy", "count": 20, "spawn_interval": 1000},
+        {"enemy_type": "FlyingEnemy", "count": 10, "spawn_interval": 800}
+      ]
+    },
+    {
+      "level_number": 7,
+      "path": [{"x": 0, "y": 0}, {"x": 300, "y": 100}, {"x": 400, "y": 200}, {"x": 500, "y": 300}],
+      "enemy_waves": [
+        {"enemy_type": "SiegeEnemy", "count": 8, "spawn_interval": 1400},
+        {"enemy_type": "HealerEnemy", "count": 12, "spawn_interval": 700}
+      ]
+    },
+    {
+      "level_number": 8,
+      "path": [{"x": 0, "y": 0}, {"x": 400, "y": 100}, {"x": 400, "y": 200}, {"x": 500, "y": 300}],
+      "enemy_waves": [
+        {"enemy_type": "StealthEnemy", "count": 10, "spawn_interval": 900},
+        {"enemy_type": "SwarmEnemy", "count": 25, "spawn_interval": 400}
+      ]
+    },
+    {
+      "level_number": 9,
+      "path": [{"x": 0, "y": 0}, {"x": 100, "y": 200}, {"x": 200, "y": 300}, {"x": 500, "y": 400}],
+      "enemy_waves": [
+        {"enemy_type": "TankEnemy", "count": 7, "spawn_interval": 1700},
+        {"enemy_type": "BasicEnemy", "count": 18, "spawn_interval": 1100}
+      ]
+    },
+    {
+      "level_number": 10,
+      "path": [{"x": 0, "y": 0}, {"x": 200, "y": 200}, {"x": 300, "y": 400}, {"x": 500, "y": 500}],
+      "enemy_waves": [
+        {"enemy_type": "FlyingEnemy", "count": 9, "spawn_interval": 1300},
+        {"enemy_type": "FastEnemy", "count": 20, "spawn_interval": 700}
       ]
     }
   ]

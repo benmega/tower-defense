@@ -2,7 +2,8 @@ import pygame
 
 
 from src.utils.helpers import load_scaled_image
-from src.config.config import ENEMY_IMAGE_PATH, TILE_SIZE
+from src.config.config import ENEMY_IMAGE_PATH, TILE_SIZE, DEBUG
+
 
 class Enemy(pygame.sprite.Sprite):
     def __init__(self, health, speed, path, image_path=ENEMY_IMAGE_PATH):
@@ -31,7 +32,8 @@ class Enemy(pygame.sprite.Sprite):
             # Additional logic when path is complete
 
     def move_towards(self, next_x, next_y):
-        print(f'enemy moving towards {next_x}, {next_y}')
+        if DEBUG:
+            print(f'enemy moving towards {next_x}, {next_y}')
         dir_x, dir_y = next_x - self.rect.x, next_y - self.rect.y
         distance = (dir_x**2 + dir_y**2)**0.5
 

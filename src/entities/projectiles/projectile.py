@@ -55,9 +55,7 @@ class Projectile(Entity):
     def draw(self, screen):
         if self.image:
             screen.blit(self.image, (self.rect.x, self.rect.y))
-        else:
-            # Optional: Draw a placeholder if the image failed to load
-            pygame.draw.circle(screen, (255, 0, 0), (int(self.rect.x), int(self.rect.y)), 5)
+
             
     def on_collision(self, other_entity):
         if isinstance(other_entity, Enemy):

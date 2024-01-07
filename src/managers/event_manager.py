@@ -1,6 +1,8 @@
 import pygame
 
 
+
+
 class EventManager:
     def __init__(self):
         self.events = []
@@ -8,6 +10,16 @@ class EventManager:
 
     def process_events(self, game):
         """ Process and handle all events in the queue. """
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                game.is_running = False
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                # Check if the click is for building a tower
+                game.UI_manager.process_events(event)
+                self.handle_build_tower(event, game)
+                if game.is_build_mode and game.is_build_mode:
+                    pos = pygame.mouse.get_pos()
+                    game.handle_build(pos)
         for event in self.events:
             if event.type == 'build_tower':
                 self.handle_build_tower(event, game)
@@ -24,6 +36,9 @@ class EventManager:
 
     def handle_build_tower(self, event, game):
         """ Handle the 'build_tower' event. """
+        from src.entities.towers.tower import Tower
+        sampleTower = Tower(event.pos[0],event.pos[1])
+        game.tower_manager.add_tower(sampleTower)
         # Implementation to handle building a tower
         # Example: game.build_tower(event.position, event.tower_type)
 

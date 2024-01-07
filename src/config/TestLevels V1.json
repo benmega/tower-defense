@@ -1,0 +1,77 @@
+{
+  "levels": [
+    {
+      "level_number": 1,
+      "path": [
+        {"x": 0, "y": 0},
+        {"x": 100, "y": 0},
+        {"x": 100, "y": 300},
+        {"x": 500, "y": 300}
+      ],
+      "enemy_waves": [
+        {
+          "enemy_type": "FastEnemy",
+          "count": 6,
+          "spawn_interval": 1000
+        },
+        {
+          "enemy_type": "SiegeEnemy",
+          "count": 10,
+          "spawn_interval": 2000
+        },
+        {
+          "enemy_type": "healerEnemy",
+          "count": 10,
+          "spawn_interval": 500
+        }
+      ]
+    },
+    {
+      "level_number": 2,
+      "path": [
+        {"x": 0, "y": 0},
+        {"x": 100, "y": 0},
+        {"x": 100, "y": 300},
+        {"x": 500, "y": 300}
+      ],
+      "enemy_waves": [
+        {
+          "enemy_type": "BasicEnemy",
+          "count": 100,
+          "spawn_interval": 500
+        },
+        {
+          "enemy_type": "BasicEnemy",
+          "count": 10,
+          "spawn_interval": 1000
+        }
+      ]
+    },
+    {
+      "level_number": 3,
+      "path": [
+        {"x": 0, "y": 0},
+        {"x": 100, "y": 0},
+        {"x": 100, "y": 300},
+        {"x": 500, "y": 300}
+      ],
+      "enemy_waves": [
+        {
+          "enemy_type": "FastEnemy",
+          "count": 6,
+          "spawn_interval": 1000
+        },
+        {
+          "enemy_type": "SiegeEnemy",
+          "count": 10,
+          "spawn_interval": 2000
+        },
+        {
+          "enemy_type": "healerEnemy",
+          "count": 10,
+          "spawn_interval": 500
+        }
+      ]
+    }
+  ]
+}

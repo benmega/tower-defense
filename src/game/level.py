@@ -1,14 +1,16 @@
 import json
 from src.entities.enemies.enemy_wave import EnemyWave
 from src.config.config import LEVELS_JSON_PATH
+import pygame
 
 class Level:
     def __init__(self, enemy_wave_list, path, level_number):
+        self.current_wave = None
         self.enemy_wave_list = enemy_wave_list
         self.path = path
         self.level_number = level_number
         self.current_wave_index = 0
-
+        self.start_time = pygame.time.get_ticks()
 
     @classmethod
     def from_json(cls, level_data):
@@ -52,5 +54,12 @@ class Level:
             level_data = json.load(file)
             return [Level.from_json(level) for level in level_data['levels']]
 
+    def is_completed(self):
+        # Example condition: all waves are completed
+        if self.current_wave_index >= len(self.enemy_wave_list)-1:
+            return True
+        if not self.enemy_wave_list:
+            return True
+        return False
 # Example usage
 # levels = Level.load_levels()
