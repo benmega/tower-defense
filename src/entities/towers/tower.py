@@ -4,7 +4,7 @@ from src.config.config import TOWER_IMAGE_PATH, DEBUG
 
 
 class Tower(Entity):
-    def __init__(self, x=10, y=10, attack_range=100, damage=10, attack_speed=20,image_path=TOWER_IMAGE_PATH,build_cost=0,upgrade_cost=0,width=10,height=10):
+    def __init__(self, x=10, y=10, attack_range=100, damage=10, attack_speed=20,image_path=TOWER_IMAGE_PATH,build_cost=10,upgrade_cost=0,width=10,height=10):
         super().__init__(x, y, image_path=TOWER_IMAGE_PATH)
         self.x = x  # X-coordinate of the tower's position
         self.y = y  # Y-coordinate of the tower's position

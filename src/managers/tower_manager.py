@@ -6,11 +6,6 @@ class TowerManager(EntityManager):
     def __init__(self):
         super().__init__()
         self.towers = []
-        self.selected_tower_type = None
-        self.tower_cost = {
-            'BasicTower': 100,  # Example costs, adjust as per your game design
-            # ... other tower types and their costs ...
-        }
 
     def add_tower(self, tower):
         """ Adds a new tower at specified coordinates if it's a valid position. """
@@ -19,6 +14,7 @@ class TowerManager(EntityManager):
             self.deduct_resources(tower)
         else:
             print("Invalid position or insufficient resources")
+
 
     def upgrade_tower(self, tower_id, upgrade_type):
         """ Upgrades a tower based on an upgrade type. """
@@ -57,17 +53,17 @@ class TowerManager(EntityManager):
 
     def is_valid_position(self, x, y):
         """ Checks if the position is valid for placing a tower. """
-        # Implement logic to determine if the position is valid (e.g., not on a path)
+        # TODO Implement logic to determine if the position is valid (e.g., not on a path)
         return True
 
     def has_enough_resources(self, tower):
         """ Checks if the player has enough resources to build the selected tower. """
-        # Implement logic to check player resources against tower cost
+        # TODO Implement logic to check player resources against tower cost
         return True
 
     def deduct_resources(self, tower):
         """ Deducts resources from the player based on the tower cost. """
-        # Implement logic to deduct resources
+        # TODO Implement logic to deduct resources
         pass
 
     def update(self, enemies, projectile_manager):

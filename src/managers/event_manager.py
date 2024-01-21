@@ -37,8 +37,10 @@ class EventManager:
     def handle_build_tower(self, event, game):
         """ Handle the 'build_tower' event. """
         from src.entities.towers.tower import Tower
-        sampleTower = Tower(event.pos[0],event.pos[1])
-        game.tower_manager.add_tower(sampleTower)
+        sampleTower = Tower(event.pos[0], event.pos[1])
+        if game.player.gold >= sampleTower.build_cost:
+            game.tower_manager.add_tower(sampleTower)
+            game.player.gold -= sampleTower.build_cost
         # Implementation to handle building a tower
         # Example: game.build_tower(event.position, event.tower_type)
 

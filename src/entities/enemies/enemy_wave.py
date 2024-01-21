@@ -1,4 +1,4 @@
-from src.config.config import FPS
+from src.config.config import FPS, DEBUG
 from src.entities.enemies.basic_enemy import BasicEnemy
 from src.entities.enemies.fast_enemy import FastEnemy
 from src.entities.enemies.flying_enemy import FlyingEnemy
@@ -37,7 +37,8 @@ class EnemyWave:
         if self.spawned_count < self.count and current_time - self.last_spawn_time >= self.spawn_interval:
             self.spawned_count += 1
             self.last_spawn_time = current_time
-            print(f"Spawning enemy {self.spawned_count}/{self.count}")
+            if DEBUG:
+                print(f"Spawning enemy {self.spawned_count}/{self.count}")
             return self.enemy_type(self.path)  # Assumes enemy_type creates an enemy instance
         return None
 

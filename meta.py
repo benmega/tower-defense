@@ -27,60 +27,14 @@ def main():
     # Replace 'your_project_directory_path' with the path to your project directory
     project_directory =  os.getcwd()
 
-
+    project_directory = project_directory + "/assets"
     print_directory_structure(project_directory)
-
-import os
-
-# Define the structure of the tests directory
-tests_structure = {
-    "tests": {
-        "conftest.py": None,
-        "test_entities": {
-            "test_towers.py": None,
-            "test_enemies.py": None,
-            "test_projectiles.py": None
-        },
-        "test_game_logic": {
-            "test_game.py": None,
-            "test_level.py": None,
-            "test_tower_manager.py": None
-        },
-        "test_utils": {
-            "test_helpers.py": None,
-            "test_pathfinding.py": None
-        },
-        "test_board": {
-            "test_game_board.py": None,
-            "test_board_layout.py": None
-        },
-        "integration_tests": {
-            "test_game_flow.py": None,
-            "test_enemy_wave_integration.py": None
-        }
-    }
-}
-
-def create_directory_structure(base_path, structure):
-    """ Recursively creates a directory structure with files """
-    for name, content in structure.items():
-        path = os.path.join(base_path, name)
-        if content is None:  # If it's a file
-            open(path, 'w').close()  # Create an empty file
-        else:
-            os.makedirs(path, exist_ok=True)
-            create_directory_structure(path, content)  # Recursively create subdirectories and files
 
 # Define the base path for the tests directory
 base_path = "/"
 
-# Create the directory structure
-create_directory_structure(base_path, tests_structure)
 
-print(create_directory_structure(base_path, tests_structure))
-f"Created tests directory structure at '{base_path}'"
-
-
+main()
 
 
 current_structure = '''

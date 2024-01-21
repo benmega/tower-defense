@@ -69,9 +69,11 @@ LEVELS_JSON_PATH = 'src/config/TestLevels.json'
 # UI elements
 UI_FONT = 'Arial'
 UI_FONT_SIZE = 14
+UI_FONT_COLOR = (255,255,255)
 UI_HEALTH_BAR_COLOR = (255, 0, 0)
 UI_SCORE_POSITION = (10, 10)
 UI_HEALTH_POSITION = (10, 30)
+
 
 
 # Sound effects and music

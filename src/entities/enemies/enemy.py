@@ -26,10 +26,9 @@ class Enemy(pygame.sprite.Sprite):
         if self.path_index < len(self.path):
             next_x, next_y = self.path[self.path_index]
             self.move_towards(next_x, next_y)
-        else:
+        else: #path complete
             print('idle')
             self.state = 'idle'
-            # Additional logic when path is complete
 
     def move_towards(self, next_x, next_y):
         if DEBUG:
@@ -48,21 +47,25 @@ class Enemy(pygame.sprite.Sprite):
             if self.path_index < len(self.path) - 1:
                 self.path_index += 1
 
+    def is_invisible(self):
+        if self.state == 'dead':
+            return  True
+        if self.state == 'idle':
+            return  True
     def take_damage(self, amount):
-        self.health -= amount
-        if self.health <= 0:
-            self.die()
+        if not self.is_invisible():
+            self.health -= amount
+            if self.health <= 0:
+                self.die()
 
     def die(self):
         self.state = 'dead'
         self.active = False
-        # Logic for enemy death
 
     def update(self):
         if self.state == 'dead' or not self.active:
             return  # Skip updating if the enemy is dead or inactive
         self.move()
-        # Add other update logic here if needed
 
     def on_collision(self, other_entity):
         from src.entities.projectiles.projectile import Projectile
