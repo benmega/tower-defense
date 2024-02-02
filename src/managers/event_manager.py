@@ -1,12 +1,9 @@
 import pygame
 
 
-
-
 class EventManager:
     def __init__(self):
         self.events = []
-
 
     def process_events(self, game):
         """ Process and handle all events in the queue. """
@@ -34,13 +31,14 @@ class EventManager:
         """ Add an event to the queue. """
         self.events.append(event)
 
-    def handle_build_tower(self, event, game):
+    @staticmethod
+    def handle_build_tower(event, game):
         """ Handle the 'build_tower' event. """
         from src.entities.towers.tower import Tower
-        sampleTower = Tower(event.pos[0], event.pos[1])
-        if game.player.gold >= sampleTower.build_cost:
-            game.tower_manager.add_tower(sampleTower)
-            game.player.gold -= sampleTower.build_cost
+        sampletower = Tower(event.pos[0], event.pos[1])
+        if game.player.gold >= sampletower.build_cost:
+            game.tower_manager.add_tower(sampletower)
+            game.player.gold -= sampletower.build_cost
             game.UI_manager.resources = game.player.gold
         # Implementation to handle building a tower
         # Example: game.build_tower(event.position, event.tower_type)

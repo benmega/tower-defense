@@ -51,14 +51,13 @@ class UIManager(pygame_gui.UIManager):
         # Blit the score surface onto the screen
         screen.blit(score_surface, UI_SCORE_POSITION)
 
-    def update_health(self, game_state):
+    def update_health(self, health):
         """ Updates the player's health based on the game state. """
-        self.health = game_state.health
+        self.health = health
 
     def draw_health(self, screen):
         health_text = f"Health: {self.health}"
         health_surface = self.font.render(health_text, True, UI_FONT_COLOR)
-        health_position = (10, 50)  # Adjust position as needed
         screen.blit(health_surface, UI_HEALTH_POSITION)
 
 

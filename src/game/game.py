@@ -31,7 +31,6 @@ class Game:
         self.board = GameBoard(configuration.GAME_BOARD_WIDTH, configuration.GAME_BOARD_HEIGHT)
         self.level_manager = LevelManager()
         self.tower_manager = TowerManager()
-        self.enemy_manager = EnemyManager(self.enemy_defeated_callback)
         self.projectile_manager = ProjectileManager()
         self.collision_manager = CollisionManager()
         self.UI_manager = UIManager(configuration.DEFAULT_GRID_SIZE)
@@ -39,13 +38,14 @@ class Game:
         self.is_running = False
         self.checkCounter = 0
         self.player = Player()
+        self.enemy_manager = EnemyManager(self.enemy_defeated_callback, self.player_take_damage_callback)
         self.initialize_game()
     def initialize_game(self):
         self.load_resources()
         gridWidth = configuration.DEFAULT_GRID_SIZE[0]
         gridHeight = configuration.DEFAULT_GRID_SIZE[1]
-        self.tower_manager.add_tower(Tower(gridWidth*2,gridHeight*7)) # Example of creating and adding a tower
-        self.tower_manager.add_tower(Tower(gridWidth*5,gridHeight*7))  # Example of creating and adding a tower
+        self.tower_manager.add_tower(Tower(gridWidth*2, gridHeight*7))  # Example of creating and adding a tower
+        self.tower_manager.add_tower(Tower(gridWidth*5, gridHeight*7))  # Example of creating and adding a tower
         self.tower_manager.add_tower(Tower(gridWidth * 2, gridHeight * 4))  # Example of creating and adding a tower
         self.tower_manager.add_tower(Tower(gridWidth * 5, gridHeight * 4))  # Example of creating and adding a tower
         button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((350, 275), (100, 50)),
@@ -147,7 +147,22 @@ class Game:
         return False
 
     def enemy_defeated_callback(self, enemy):
-        self.player.score += enemy.gold_value  # Assuming `score_value` attribute exists
-        self.player.gold += enemy.gold_value  # Assuming `gold_value` attribute exists
+        self.player.score += enemy.gold_value
+        self.player.gold += enemy.gold_value
         self.UI_manager.update_score(self.player.score)
         self.UI_manager.update_resources(self.player.gold)
+
+    def player_take_damage_callback(self,amount):
+        self.player.health -= amount
+        self.UI_manager.update_health(self.player.health)
+        if self.player.health <= 0:
+            self.player.health = 0
+            self.game_over()
+
+    def game_over(self):
+        self.is_running = False
+        self.display_game_over_screen()
+
+    def display_game_over_screen(self):
+        # Code to display your game over screen...
+        print("GAME OVER!!!!")

@@ -1,5 +1,7 @@
 # Configuration settings for the game
 DEBUG = False
+SCREEN_WIDTH: int
+SCREEN_HEIGHT: int
 SCREEN_WIDTH, SCREEN_HEIGHT = 800, 600
 BACKGROUND_COLOR = (0, 0, 0)
 FPS = 60
@@ -10,16 +12,15 @@ GAME_BOARD_HEIGHT = DEFAULT_GRID_SIZE[1]
 
 # Player starting health
 PLAYER_HEALTH = 100
-
-# Player starting resources/money
-PLAYER_RESOURCES = 1000
-
-# Player score
+PLAYER_GOLD = 1000
 PLAYER_SCORE = 0
 
 # Default enemy attributes
 ENEMY_HEALTH = 50
 ENEMY_SPEED = 2
+ENEMY_SCORE_VALUE = 100
+ENEMY_GOLD_VALUE = 10
+ENEMY_DAMAGE_TO_PLAYER = 10
 ENEMY_IMAGE_PATH = 'assets/images/enemies/enemy.png'
 SIEGE_ENEMY_IMAGE_PATH = 'assets/images/enemies/tank_enemy.png'
 FAST_ENEMY_IMAGE_PATH = 'assets/images/enemies/fast_enemy.png'

@@ -1,4 +1,3 @@
-import pygame
 from src.entities.projectiles.projectile import Projectile
 from src.managers.entity_manager import EntityManager
 
@@ -9,10 +8,10 @@ class ProjectileManager(EntityManager):
         self.projectiles = []
 
     def create_projectile(self, x, y, projectile_type, target):
-        #self.x, self.y, self.damage, self.projectile_speed, target
+        # self.x, self.y, self.damage, self.projectile_speed, target
         if projectile_type == "BasicProjectile":
-            projectile = Projectile(x,y,target,5,10)
-        elif projectile_type == "missle":
+            projectile = Projectile(x, y, target, 5, 10)
+        elif projectile_type == "missile":
             projectile = Projectile(x, y, target, 10, 100)
         elif projectile_type == "bullet":
             projectile = Projectile(x, y, target, 100, 1000)

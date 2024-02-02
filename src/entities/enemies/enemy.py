@@ -2,7 +2,8 @@ import pygame
 
 
 from src.utils.helpers import load_scaled_image
-from src.config.config import ENEMY_IMAGE_PATH, TILE_SIZE, DEBUG
+from src.config.config import ENEMY_IMAGE_PATH, TILE_SIZE, DEBUG, ENEMY_GOLD_VALUE, ENEMY_SCORE_VALUE, \
+    ENEMY_DAMAGE_TO_PLAYER
 
 
 class Enemy(pygame.sprite.Sprite):
@@ -18,10 +19,11 @@ class Enemy(pygame.sprite.Sprite):
         self.path = path
         self.path_index = 0
         self.active = True
-        self.state = 'moving'  # Possible states: 'moving', 'attacking', 'idle'
+        self.state = 'moving'  # Possible states: 'moving', 'attacking', 'idle', 'finished'
         self.reached_goal = False
-        self.score_value = 100
-        self.gold_value = 100
+        self.score_value = ENEMY_SCORE_VALUE
+        self.gold_value = ENEMY_GOLD_VALUE
+        self.damage_to_player = ENEMY_DAMAGE_TO_PLAYER
 
     def move(self):
 
@@ -29,8 +31,9 @@ class Enemy(pygame.sprite.Sprite):
             next_x, next_y = self.path[self.path_index]
             self.move_towards(next_x, next_y)
         else: #path complete
-            print('idle')
-            self.state = 'idle'
+            # print('idle')
+            self.state = 'finished'
+            self.reached_goal = True
 
     def move_towards(self, next_x, next_y):
         if DEBUG:
@@ -46,7 +49,7 @@ class Enemy(pygame.sprite.Sprite):
 
         if abs(self.rect.x - next_x) <= self.speed and abs(self.rect.y - next_y) <= self.speed:
             self.rect.x, self.rect.y = next_x, next_y
-            if self.path_index < len(self.path) - 1:
+            if self.path_index < len(self.path):
                 self.path_index += 1
 
     def is_invisible(self):

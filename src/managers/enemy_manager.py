@@ -4,12 +4,12 @@ from src.managers.entity_manager import EntityManager
 
 
 class EnemyManager(EntityManager):
-    def __init__(self, defeat_callback=None):
+    def __init__(self, defeat_callback=None, reach_end_callback=None):
         super().__init__()
         self.entities = pygame.sprite.Group()
         self.current_wave = None
         self.defeat_callback = defeat_callback
-
+        self.reach_end_callback = reach_end_callback
 
 
     def set_current_wave(self, wave):
@@ -30,6 +30,10 @@ class EnemyManager(EntityManager):
             if enemy.state == 'dead':
                 if self.defeat_callback:
                     self.defeat_callback(enemy)
+                self.entities.remove(enemy)
+            elif enemy.reached_goal:
+                if self.reach_end_callback:
+                    self.reach_end_callback(enemy.damage_to_player)
                 self.entities.remove(enemy)
     def add_enemy(self, enemy):
         """ Add a new enemy to the manager. """
