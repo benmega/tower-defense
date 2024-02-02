@@ -31,7 +31,7 @@ class Game:
         self.board = GameBoard(configuration.GAME_BOARD_WIDTH, configuration.GAME_BOARD_HEIGHT)
         self.level_manager = LevelManager()
         self.tower_manager = TowerManager()
-        self.enemy_manager = EnemyManager()
+        self.enemy_manager = EnemyManager(self.enemy_defeated_callback)
         self.projectile_manager = ProjectileManager()
         self.collision_manager = CollisionManager()
         self.UI_manager = UIManager(configuration.DEFAULT_GRID_SIZE)
@@ -52,16 +52,16 @@ class Game:
                                               text='Say Hello',
                                               manager=self.UI_manager)
         # Initialize UI elements
-        self.gold_label = pygame_gui.elements.UILabel(relative_rect=pygame.Rect((10, 10), (100, 50)),
+        self.gold_label = pygame_gui.elements.UILabel(relative_rect=pygame.Rect((100, 10), (100, 50)),
                                                       text=f"Gold: {self.player.gold}",
                                                       manager=self.UI_manager)
-        self.health_label = pygame_gui.elements.UILabel(relative_rect=pygame.Rect((10, 60), (100, 50)),
+        self.health_label = pygame_gui.elements.UILabel(relative_rect=pygame.Rect((100, 60), (100, 50)),
                                                         text=f"Health: {self.player.health}",
                                                         manager=self.UI_manager)
-        self.score_label = pygame_gui.elements.UILabel(relative_rect=pygame.Rect((10, 110), (100, 50)),
+        self.score_label = pygame_gui.elements.UILabel(relative_rect=pygame.Rect((100, 110), (100, 50)),
                                                        text=f"Score: {self.player.score}",
                                                        manager=self.UI_manager)
-        self.enemy_count_label = pygame_gui.elements.UILabel(relative_rect=pygame.Rect((10, 160), (150, 50)),
+        self.enemy_count_label = pygame_gui.elements.UILabel(relative_rect=pygame.Rect((100, 160), (150, 50)),
                                                              text="Enemies: 0",
                                                              manager=self.UI_manager)
         # Add other UI elements as needed
@@ -146,3 +146,8 @@ class Game:
                 return True
         return False
 
+    def enemy_defeated_callback(self, enemy):
+        self.player.score += enemy.gold_value  # Assuming `score_value` attribute exists
+        self.player.gold += enemy.gold_value  # Assuming `gold_value` attribute exists
+        self.UI_manager.update_score(self.player.score)
+        self.UI_manager.update_resources(self.player.gold)

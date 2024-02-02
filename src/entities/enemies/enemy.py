@@ -20,6 +20,8 @@ class Enemy(pygame.sprite.Sprite):
         self.active = True
         self.state = 'moving'  # Possible states: 'moving', 'attacking', 'idle'
         self.reached_goal = False
+        self.score_value = 100
+        self.gold_value = 100
 
     def move(self):
 

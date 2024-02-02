@@ -41,6 +41,7 @@ class EventManager:
         if game.player.gold >= sampleTower.build_cost:
             game.tower_manager.add_tower(sampleTower)
             game.player.gold -= sampleTower.build_cost
+            game.UI_manager.resources = game.player.gold
         # Implementation to handle building a tower
         # Example: game.build_tower(event.position, event.tower_type)
 
@@ -55,3 +56,4 @@ class EventManager:
         # Example: game.pause()
 
     # Additional methods for handling specific event types
+

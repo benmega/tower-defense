@@ -4,14 +4,18 @@ from src.managers.entity_manager import EntityManager
 
 
 class EnemyManager(EntityManager):
-    def __init__(self):
+    def __init__(self, defeat_callback=None):
         super().__init__()
         self.entities = pygame.sprite.Group()
         self.current_wave = None
+        self.defeat_callback = defeat_callback
+
+
 
     def set_current_wave(self, wave):
         """ Set the current enemy wave for spawning. """
         self.current_wave = wave
+
 
     def update(self):
         """ Update the state of all enemies and spawn new ones from the current wave. """
@@ -22,10 +26,11 @@ class EnemyManager(EntityManager):
                 self.add_enemy(new_enemy)
 
         self.update_entities()
-        for enemy in self.entities:
+        for enemy in list(self.entities):  # Make a copy of the group list to iterate over
             if enemy.state == 'dead':
-                self.entities.remove(enemy)  # Remove dead enemies from the group
-
+                if self.defeat_callback:
+                    self.defeat_callback(enemy)
+                self.entities.remove(enemy)
     def add_enemy(self, enemy):
         """ Add a new enemy to the manager. """
         self.entities.add(enemy)
