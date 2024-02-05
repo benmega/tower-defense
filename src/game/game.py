@@ -16,7 +16,7 @@ import src.config.config as configuration
 from src.managers.ui_manager import UIManager
 from src.scenes.main_menu import MainMenu
 from src.utils.helpers import load_scaled_image
-
+import os
 
 class Game:
 
@@ -32,7 +32,8 @@ class Game:
         self.tower_manager = TowerManager()
         self.projectile_manager = ProjectileManager()
         self.collision_manager = CollisionManager()
-        self.UI_manager = pygame_gui.UIManager((configuration.SCREEN_WIDTH, configuration.SCREEN_HEIGHT))
+        theme_path = os.path.join(os.path.dirname(__file__), '..', 'config', 'label.json')
+        self.UI_manager = pygame_gui.UIManager((configuration.SCREEN_WIDTH, configuration.SCREEN_HEIGHT), theme_path)
         #self.UI_manager = UIManager((configuration.SCREEN_WIDTH, configuration.SCREEN_HEIGHT))
         self.event_manager = EventManager()
         self.is_running = False
@@ -41,6 +42,7 @@ class Game:
         self.enemy_manager = EnemyManager(self.enemy_defeated_callback, self.player_take_damage_callback)
         self.current_state = GameState.MAIN_MENU
         self.main_menu = MainMenu(self.screen, self.UI_manager)
+
         #self.initialize_game()
 
     def initialize_game(self):
@@ -52,9 +54,17 @@ class Game:
         self.tower_manager.add_tower(Tower(gridWidth * 2, gridHeight * 4))  # Example of creating and adding a tower
         self.tower_manager.add_tower(Tower(gridWidth * 5, gridHeight * 4))  # Example of creating and adding a tower
         # Initialize UI elements
-        self.gold_label = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(configuration.UI_RESOURCES_POSITION, (100, 50)),
-                                                      text=f"Gold: {self.player.gold}",
-                                                      manager=self.UI_manager)
+        self.gold_label = pygame_gui.elements.UILabel(
+            relative_rect=pygame.Rect(configuration.UI_RESOURCES_POSITION, (150, 50)),
+            text=f"Gold: {self.player.gold}",
+            manager=self.UI_manager,
+            object_id=pygame_gui.core.ObjectID(class_id="@label"),  # Apply the custom theme
+            container=None,  # Specify if it's within another container/UI element
+            anchors=None  # Specify anchoring if needed
+        )
+        # self.gold_label = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(configuration.UI_RESOURCES_POSITION, (100, 50)),
+        #                                               text=f"Gold: {self.player.gold}",
+        #                                               manager=self.UI_manager)
         self.health_label = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(configuration.UI_HEALTH_POSITION, (100, 50)),
                                                         text=f"Health: {self.player.health}",
                                                         manager=self.UI_manager)
