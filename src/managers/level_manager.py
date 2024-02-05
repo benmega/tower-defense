@@ -52,6 +52,7 @@ class LevelManager:
     # Additional methods as necessary for level management
     def start_level(self, level_index):
 
+        self.current_level_index = level_index
         self.current_level = self.levels[level_index]
         self.current_level.start_time = pygame.time.get_ticks()
         self.current_wave = self.current_level.get_next_wave()  # Store the current wave object
@@ -77,6 +78,8 @@ class LevelManager:
 
     def check_level_complete(self):
         current_level = self.get_current_level()
+        if not current_level:
+            return False
         for wave in current_level.enemy_wave_list:
             if wave.spawned_count < wave.count:
                 return False

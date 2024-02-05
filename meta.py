@@ -27,7 +27,7 @@ def main():
     # Replace 'your_project_directory_path' with the path to your project directory
     project_directory =  os.getcwd()
 
-    project_directory = project_directory + "/assets"
+    project_directory = project_directory + "/src"
     print_directory_structure(project_directory)
 
 # Define the base path for the tests directory

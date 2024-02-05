@@ -2,11 +2,10 @@ import pygame_gui
 
 from src.board.game_board import GameBoard
 from src.entities.Player import Player
-# from src.entities.enemies.basic_enemy import BasicEnemy
 from src.entities.towers.tower import Tower
 import pygame
-# from src.game.level import Level
-# from src.entities.enemies.enemy_wave import EnemyWave
+
+from src.game.game_state import GameState
 from src.managers.collision_manager import CollisionManager
 from src.managers.enemy_manager import EnemyManager
 from src.managers.event_manager import EventManager
@@ -15,8 +14,8 @@ from src.managers.projectile_manager import ProjectileManager
 from src.managers.tower_manager import TowerManager
 import src.config.config as configuration
 from src.managers.ui_manager import UIManager
+from src.scenes.main_menu import MainMenu
 from src.utils.helpers import load_scaled_image
-# import json
 
 
 class Game:
@@ -33,13 +32,17 @@ class Game:
         self.tower_manager = TowerManager()
         self.projectile_manager = ProjectileManager()
         self.collision_manager = CollisionManager()
-        self.UI_manager = UIManager(configuration.DEFAULT_GRID_SIZE)
+        self.UI_manager = pygame_gui.UIManager((configuration.SCREEN_WIDTH, configuration.SCREEN_HEIGHT))
+        #self.UI_manager = UIManager((configuration.SCREEN_WIDTH, configuration.SCREEN_HEIGHT))
         self.event_manager = EventManager()
         self.is_running = False
         self.checkCounter = 0
         self.player = Player()
         self.enemy_manager = EnemyManager(self.enemy_defeated_callback, self.player_take_damage_callback)
-        self.initialize_game()
+        self.current_state = GameState.MAIN_MENU
+        self.main_menu = MainMenu(self.screen, self.UI_manager)
+        #self.initialize_game()
+
     def initialize_game(self):
         self.load_resources()
         gridWidth = configuration.DEFAULT_GRID_SIZE[0]
@@ -48,23 +51,19 @@ class Game:
         self.tower_manager.add_tower(Tower(gridWidth*5, gridHeight*7))  # Example of creating and adding a tower
         self.tower_manager.add_tower(Tower(gridWidth * 2, gridHeight * 4))  # Example of creating and adding a tower
         self.tower_manager.add_tower(Tower(gridWidth * 5, gridHeight * 4))  # Example of creating and adding a tower
-        button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((350, 275), (100, 50)),
-                                              text='Say Hello',
-                                              manager=self.UI_manager)
         # Initialize UI elements
-        self.gold_label = pygame_gui.elements.UILabel(relative_rect=pygame.Rect((100, 10), (100, 50)),
+        self.gold_label = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(configuration.UI_RESOURCES_POSITION, (100, 50)),
                                                       text=f"Gold: {self.player.gold}",
                                                       manager=self.UI_manager)
-        self.health_label = pygame_gui.elements.UILabel(relative_rect=pygame.Rect((100, 60), (100, 50)),
+        self.health_label = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(configuration.UI_HEALTH_POSITION, (100, 50)),
                                                         text=f"Health: {self.player.health}",
                                                         manager=self.UI_manager)
-        self.score_label = pygame_gui.elements.UILabel(relative_rect=pygame.Rect((100, 110), (100, 50)),
+        self.score_label = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(configuration.UI_SCORE_POSITION, (100, 50)),
                                                        text=f"Score: {self.player.score}",
                                                        manager=self.UI_manager)
         self.enemy_count_label = pygame_gui.elements.UILabel(relative_rect=pygame.Rect((100, 160), (150, 50)),
-                                                             text="Enemies: 0",
+                                                             text=f"Enemies: {len(self.enemy_manager.entities)}",
                                                              manager=self.UI_manager)
-        # Add other UI elements as needed
 
     def load_resources(self):
         # Load and store images for enemies, towers, and projectiles
@@ -74,11 +73,14 @@ class Game:
 
 
     def draw(self):
-        self.screen.fill(configuration.BACKGROUND_COLOR) # Clear the screen with the background color
-        self.board.draw_board(self.screen, self.level_manager.get_current_level().path) # Draw the game board
-        self.tower_manager.draw_towers(self.screen)
-        self.enemy_manager.draw(self.screen)
-        self.projectile_manager.draw_projectiles(self.screen)
+        self.screen.fill(configuration.BACKGROUND_COLOR)  # Clear the screen with the background color
+        if self.current_state == GameState.MAIN_MENU:
+            self.main_menu.draw()
+        elif self.current_state == GameState.PLAYING:
+            self.board.draw_board(self.screen, self.level_manager.get_current_level().path) # Draw the game board
+            self.tower_manager.draw_towers(self.screen)
+            self.enemy_manager.draw(self.screen)
+            self.projectile_manager.draw_projectiles(self.screen)
         self.UI_manager.draw_ui(self.screen)  # Draw the game UI
         pygame.display.flip() # Update the display
 
@@ -87,54 +89,50 @@ class Game:
         if configuration.DEBUG:
             print("Game is running")
         self.is_running = True
-        self.load_resources()  # Load images and other resources
-        self.level_manager.start_next_level()
-        self.enemy_manager.reset()
+        # self.load_resources()  # Load images and other resources
+        # self.level_manager.start_next_level()
+        # self.enemy_manager.reset()
 
         while self.is_running:
+            time_delta = self.clock.tick(configuration.FPS) / 1000.0
             self.event_manager.process_events(self)
-            self.update()
+            self.update(time_delta)
+
+            self.UI_manager.update(time_delta)
             self.draw()
+            pygame.display.update()
             pygame.display.flip()
             self.clock.tick(configuration.FPS)
 
         pygame.quit()
 
-
-    # def handle_build(self, pos):
-    #     x, y = pos
-    #     new_tower = Tower(x, y, ...)
-    #     if self.is_valid_build_position(x, y) and self.player.gold >= new_tower.build_cost:
-    #         self.tower_manager.add_tower(new_tower)
-    #         self.player.gold -= new_tower.build_cost
-    #
-    # def is_valid_build_position(self, x, y):
-    #     # Logic to check if the position is valid for building
-    #     # Example: Not on a path, not overlapping with other towers
-    #     pass
-    def update(self):
+    def update(self, time_delta):
         if configuration.DEBUG:
             print("Updating game state")
-        # Main game update logic for each frame
-        new_enemies = self.level_manager.update_levels()
-        if not new_enemies and len(self.enemy_manager.entities) == 0:
-            if self.level_manager.check_level_complete():
-                if self.level_manager.next_level():
-                    self.level_manager.start_next_level()
-                else: # no new enemies, no enemies to manage, and no next level
-                    print("Congrats! You win!")
-                    self.is_running = False
-        for enemy in new_enemies:
-            self.enemy_manager.add_enemy(enemy)
-        self.enemy_manager.update()
-        self.tower_manager.update(self.enemy_manager.get_enemies(), self.projectile_manager)
-        self.projectile_manager.update_entities()
-        self.score_label.set_text(f"Score: {self.player.score}")
-        self.UI_manager.update(configuration.FPS/1000)
-        self.check_game_over()
-        self.collision_manager.handle_group_collisions(
-            self.enemy_manager.entities, self.projectile_manager.projectiles
-        )
+
+        if self.current_state == GameState.MAIN_MENU:
+            self.main_menu.update(time_delta)
+        elif self.current_state == GameState.PLAYING:
+            # Main game update logic for each frame
+            new_enemies = self.level_manager.update_levels()
+            if not new_enemies and len(self.enemy_manager.entities) == 0:
+                if self.level_manager.check_level_complete():
+                    if self.level_manager.next_level():
+                        self.level_manager.start_next_level()
+                    else: # no new enemies, no enemies to manage, and no next level
+                        print("Congrats! You win!")
+                        self.is_running = False
+            for enemy in new_enemies:
+                self.enemy_manager.add_enemy(enemy)
+            self.enemy_manager.update()
+            self.tower_manager.update(self.enemy_manager.get_enemies(), self.projectile_manager)
+            self.projectile_manager.update_entities()
+            #self.score_label.set_text(f"Score: {self.player.score}")
+            self.UI_manager.update(configuration.FPS/1000)
+            self.check_game_over()
+            self.collision_manager.handle_group_collisions(
+                self.enemy_manager.entities, self.projectile_manager.projectiles
+            )
 
     def check_game_over(self):
         # Check if the game should end (e.g., player health reaches 0)
@@ -149,12 +147,16 @@ class Game:
     def enemy_defeated_callback(self, enemy):
         self.player.score += enemy.gold_value
         self.player.gold += enemy.gold_value
-        self.UI_manager.update_score(self.player.score)
-        self.UI_manager.update_resources(self.player.gold)
+        self.gold_label.set_text(f"Gold: {self.player.gold}")
+        self.score_label.set_text(f"Score: {self.player.score}")
+        #self.UI_manager.draw_ui(self.screen)
+        #self.UI_manager.update_score(self.player.score)
+        #self.UI_manager.update_resources(self.player.gold)
 
     def player_take_damage_callback(self,amount):
         self.player.health -= amount
-        self.UI_manager.update_health(self.player.health)
+        self.health_label.set_text('health: {self.player.health}')
+        #self.UI_manager.update_health(self.player.health)
         if self.player.health <= 0:
             self.player.health = 0
             self.game_over()

@@ -56,10 +56,9 @@ class Level:
 
     def is_completed(self):
         # Example condition: all waves are completed
-        if self.current_wave_index >= len(self.enemy_wave_list)-1:
+        if self.current_wave_index >= len(self.enemy_wave_list):
             return True
         if not self.enemy_wave_list:
             return True
         return False
-# Example usage
-# levels = Level.load_levels()
+
