@@ -65,13 +65,13 @@ class Game:
         # self.gold_label = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(configuration.UI_RESOURCES_POSITION, (100, 50)),
         #                                               text=f"Gold: {self.player.gold}",
         #                                               manager=self.UI_manager)
-        self.health_label = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(configuration.UI_HEALTH_POSITION, (100, 50)),
+        self.health_label = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(configuration.UI_HEALTH_POSITION, (100, configuration.UI_LABEL_HEIGHT)),
                                                         text=f"Health: {self.player.health}",
                                                         manager=self.UI_manager)
-        self.score_label = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(configuration.UI_SCORE_POSITION, (100, 50)),
+        self.score_label = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(configuration.UI_SCORE_POSITION, (100, configuration.UI_LABEL_HEIGHT)),
                                                        text=f"Score: {self.player.score}",
                                                        manager=self.UI_manager)
-        self.enemy_count_label = pygame_gui.elements.UILabel(relative_rect=pygame.Rect((100, 160), (150, 50)),
+        self.enemy_count_label = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(configuration.UI_ENEMY_COUNT_POSITION, (100, configuration.UI_LABEL_HEIGHT)),
                                                              text=f"Enemies: {len(self.enemy_manager.entities)}",
                                                              manager=self.UI_manager)
 
@@ -165,7 +165,7 @@ class Game:
 
     def player_take_damage_callback(self,amount):
         self.player.health -= amount
-        self.health_label.set_text('health: {self.player.health}')
+        self.health_label.set_text(f'health: {self.player.health}')
         #self.UI_manager.update_health(self.player.health)
         if self.player.health <= 0:
             self.player.health = 0
