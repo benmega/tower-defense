@@ -1,6 +1,6 @@
 # game_board.py
 
-import pygame
+# import pygame
 
 from src.config.config import TILE_SIZE, GRASS_IMAGE_PATH, ENTRANCE_IMAGE_PATH, PATH_IMAGE_PATH, EXIT_IMAGE_PATH
 from src.utils.helpers import load_scaled_image
@@ -14,7 +14,6 @@ class GameBoard:
         self.entrance_image = load_scaled_image(ENTRANCE_IMAGE_PATH, TILE_SIZE)
         self.exit_image = load_scaled_image(EXIT_IMAGE_PATH, TILE_SIZE)
         self.grid = [[None for _ in range(width)] for _ in range(height)]
-        #self.path_layout = self.create_path_layout(path)
 
     def is_valid_position(self, x, y):
         return 0 <= x < self.width and 0 <= y < self.height
@@ -36,66 +35,22 @@ class GameBoard:
         else:
             return self.grass_image  # Default to grass if unknown type
 
-    def add_enemy(self, enemy):
-        self.enemies.append(enemy)
-
-    def update_board(self):
-        self.update_enemies()
-        self.update_towers()
-        self.update_projectiles()
-
-    def update_enemies(self):
-        for enemy in self.enemies[:]:
-            enemy.move()
-            if enemy.reached_goal or enemy.health <= 0 or enemy.state == 'dead':
-                self.enemies.remove(enemy)
-
-    def update_towers(self):
-        for tower in self.towers:
-            tower.update(self.enemies, self.active_projectiles)
-
-    def update_projectiles(self):
-        for projectile in self.active_projectiles[:]:
-            projectile.move()
-            if projectile.state == 'expired':
-                self.active_projectiles.remove(projectile)
 
     def draw_board(self, screen: object, path: object) -> object:
         # Draw the background
         self.draw_background(screen, path)
-        # Draw towers
-        #tower_manager.draw_towers(screen,path)
-        # Draw enemies
-        #enemy_manager.draw_enemies(screen)
-        # Draw projectiles
-        #projectile_manager.draw_projectiles(screen)
-        # Additional drawing logic as needed
+
 
     def draw_background(self, screen, path):
         for y in range(self.height):
             for x in range(self.width):
                 image = self.get_tile_image(x, y, path)
-                screen.blit(image, (x * 32, y * 32))
+                screen.blit(image, (x * TILE_SIZE[0], y * TILE_SIZE[1]))
 
-    def draw_towers(self, screen):
-        for tower in self.towers:
-            tower_image = load_scaled_image(tower.image_path, TILE_SIZE)
-            if tower_image:
-                screen.blit(tower_image, (tower.x, tower.y))
-
-
-
-    def draw_projectiles(self, screen):
-        for projectile in self.active_projectiles:
-            projectile_image = load_scaled_image(projectile.image_path, (32, 32))
-            if projectile_image:
-                screen.blit(projectile_image, (projectile.x, projectile.y))
-
-    # Additional methods for collision detection, score tracking, etc. can be added here
     def create_path_layout(self, path):
 
-        # Convert path points to grid coordinates TODO set path to be gride based
-        path = [(x // 32, y // 32) for x, y in path]
+        # Convert path points to grid coordinates TODO set path to be grid based
+        path = [(x // TILE_SIZE[0], y // TILE_SIZE[1]) for x, y in path]
 
         # Initialize layout with grass
         layout = [['G' for _ in range(self.width)] for _ in range(self.height)]

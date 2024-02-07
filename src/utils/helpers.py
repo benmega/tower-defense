@@ -7,10 +7,11 @@ def load_scaled_image(path, size):
     project_root = os.path.join(current_dir, '../..')  # Adjust this as needed
     absolute_path = os.path.join(project_root, path)  # Construct the absolute path
 
-    image = pygame.image.load(absolute_path)
     try:
         image = pygame.image.load(path)
         return pygame.transform.scale(image, size)
     except pygame.error as e:
         print(f"Error loading image {path}: {e}")
         return None
+
+

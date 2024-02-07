@@ -13,8 +13,9 @@ from src.managers.level_manager import LevelManager
 from src.managers.projectile_manager import ProjectileManager
 from src.managers.tower_manager import TowerManager
 import src.config.config as configuration
-from src.managers.ui_manager import UIManager
+#from src.managers.ui_manager import UIManager
 from src.scenes.main_menu import MainMenu
+from src.scenes.options_screen import OptionsScreen
 from src.utils.helpers import load_scaled_image
 import os
 
@@ -32,7 +33,7 @@ class Game:
         self.tower_manager = TowerManager()
         self.projectile_manager = ProjectileManager()
         self.collision_manager = CollisionManager()
-        theme_path = os.path.join(os.path.dirname(__file__), '..', 'config', 'label.json')
+        theme_path = os.path.join(os.path.dirname(__file__), '..', 'config', 'theme.json')
         self.UI_manager = pygame_gui.UIManager((configuration.SCREEN_WIDTH, configuration.SCREEN_HEIGHT), theme_path)
         #self.UI_manager = UIManager((configuration.SCREEN_WIDTH, configuration.SCREEN_HEIGHT))
         self.event_manager = EventManager()
@@ -42,6 +43,7 @@ class Game:
         self.enemy_manager = EnemyManager(self.enemy_defeated_callback, self.player_take_damage_callback)
         self.current_state = GameState.MAIN_MENU
         self.main_menu = MainMenu(self.screen, self.UI_manager)
+        self.options_screen = OptionsScreen(self.screen,self.UI_manager)
 
         #self.initialize_game()
 
@@ -86,6 +88,8 @@ class Game:
         self.screen.fill(configuration.BACKGROUND_COLOR)  # Clear the screen with the background color
         if self.current_state == GameState.MAIN_MENU:
             self.main_menu.draw()
+        elif self.current_state == GameState.OPTIONS:
+            self.options_screen.draw()
         elif self.current_state == GameState.PLAYING:
             self.board.draw_board(self.screen, self.level_manager.get_current_level().path) # Draw the game board
             self.tower_manager.draw_towers(self.screen)
@@ -159,9 +163,7 @@ class Game:
         self.player.gold += enemy.gold_value
         self.gold_label.set_text(f"Gold: {self.player.gold}")
         self.score_label.set_text(f"Score: {self.player.score}")
-        #self.UI_manager.draw_ui(self.screen)
-        #self.UI_manager.update_score(self.player.score)
-        #self.UI_manager.update_resources(self.player.gold)
+        self.enemy_count_label.set_text(f"Enemies: {len(self.enemy_manager.entities)}")
 
     def player_take_damage_callback(self,amount):
         self.player.health -= amount
