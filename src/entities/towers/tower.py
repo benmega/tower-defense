@@ -18,7 +18,7 @@ class Tower(Entity):
         self.upgrade_level = 0
         self.upgrade_effects = {"range": 0, "damage": 0}
         self.tower_type = tower_type
-        self.projectile_type = "BasicProjectile"
+        self.projectile_type = tower_type
         self.build_cost = TOWER_TYPES[self.tower_type]['cost']
         self.upgrade_cost = upgrade_cost
         self.targeting_mode = "closest"  # or "strongest", "weakest", etc.

@@ -1,18 +1,22 @@
 # Configuration settings for the game
+
 DEBUG = False
 SCREEN_WIDTH: int
 SCREEN_HEIGHT: int
-SCREEN_WIDTH, SCREEN_HEIGHT = 800, 600
+
+SCREEN_WIDTH, SCREEN_HEIGHT = 1067, 800 # orginally 800, 600
+SCALE = SCREEN_HEIGHT/600
 BACKGROUND_COLOR = (0, 0, 0)
 FPS = 60
-TILE_SIZE = (30, 30)
 DEFAULT_GRID_SIZE = (27, 20)
+TILE_SIZE = (SCREEN_WIDTH//DEFAULT_GRID_SIZE[0], SCREEN_HEIGHT//DEFAULT_GRID_SIZE[1])
+
 GAME_BOARD_WIDTH = DEFAULT_GRID_SIZE[0]
 GAME_BOARD_HEIGHT = DEFAULT_GRID_SIZE[1]
 
 # Player starting health
 PLAYER_HEALTH = 100
-PLAYER_GOLD = 1000
+PLAYER_GOLD = 10000
 PLAYER_SCORE = 0
 
 # Default enemy attributes
@@ -44,6 +48,7 @@ TOWER_TYPES = {
     'Advanced': {
         'image_path': 'assets/images/towers/advanced_tower.png',
         'cost': 150,
+        'image_path': 'assets/images/towers/advanced_tower.png',
     },
     'Basic': {
         'image_path': 'assets/images/towers/basic_tower.png',
@@ -102,53 +107,123 @@ TOWER_TYPES = {
         'cost': 600,
     },
 }
-#
-# TOWER_COSTS = {
-#     'Advanced': 150,
-#     'Basic': 100,
-#     'Cannon': 250,
-#     'Debuff': 800,
-#     'Electric': 400,
-#     'Flame': 300,
-#     'Frost': 350,
-#     'GoldBoost': 750,
-#     'Laser': 450,
-#     'Missile': 500,
-#     'Multi': 650,
-#     'Poison': 550,
-#     'Sniper': 200,
-#     'SpeedBoost': 700,
-#     'Splash': 600
-# }
-# TOWER_IMAGE_PATHS = {
-#     'Advanced': 'assets/images/towers/advanced_tower.png',
-#     'Basic': 'assets/images/towers/basic_tower.png',
-#     'Cannon': 'assets/images/towers/cannon_tower.png',
-#     'Debuff': 'assets/images/towers/debuff_tower.png',
-#     'Electric': 'assets/images/towers/electric_tower.png',
-#     'Flame': 'assets/images/towers/flame_tower.png',
-#     'Frost': 'assets/images/towers/frost_tower.png',
-#     'GoldBoost': 'assets/images/towers/gold_boost_tower.png',
-#     'Laser': 'assets/images/towers/laser_tower.png',
-#     'Missile': 'assets/images/towers/missile_tower.png',
-#     'Multi': 'assets/images/towers/multi_target_tower.png',
-#     #'Poison': 'assets/images/towers/poison_tower.png',
-#     'Sniper': 'assets/images/towers/sniper_tower.png'
-#     #'SpeedBoost': 'assets/images/towers/speed_boost_tower.png',
-#     #'Splash': 'assets/images/towers/splash_tower.png',
-# }
-# # Upgrades
-# TOWER_UPGRADE_COST = {
-#     "range": 50,
-#     "damage": 75,
-#     "speed": 60,
-# }
 
 
 # Projectile attributes
 PROJECTILE_SPEED = 5
 PROJECTILE_DAMAGE = 10
 PROJECTILE_IMAGE_PATH = 'assets/images/projectiles/basic_projectile.png'
+PROJECTILE_TYPES = {
+    'Basic': {
+        'image_path': 'assets/images/projectiles/basic_projectile.png',
+        'speed': 5,
+        'damage': 10,
+        'effect': None,
+    },
+    'Advanced': {
+        'image_path': 'assets/images/projectiles/advanced_projectile.png',
+        'speed': 7,
+        'damage': 15,
+        'effect': None,
+    },
+    'Sniper': {
+        'image_path': 'assets/images/projectiles/sniper_projectile.png',
+        'speed': 10,
+        'damage': 25,
+        'effect': 'pierce',
+        'pierce_targets': 2,  # Number of enemies the projectile can pass through
+    },
+    'Cannon': {
+        'image_path': 'assets/images/projectiles/cannon_projectile.png',
+        'speed': 4,
+        'damage': 20,
+        'effect': 'splash',
+        'splash_radius': 50,
+    },
+    'Flame': {
+        'image_path': 'assets/images/projectiles/flame_projectile.png',
+        'speed': 6,
+        'damage': 8,
+        'effect': 'burn',
+        'burn_duration': 3,
+        'burn_damage': 2,
+    },
+    'Frost': {
+        'image_path': 'assets/images/projectiles/frost_projectile.png',
+        'speed': 5,
+        'damage': 10,
+        'effect': 'slow',
+        'slow_duration': 2,
+        'slow_effect': 0.5,
+    },
+    'Electric': {
+        'image_path': 'assets/images/projectiles/electric_projectile.png',
+        'speed': 8,
+        'damage': 12,
+        'effect': 'chain',
+        'chain_targets': 3,
+        'chain_damage_reduction': 0.2,
+    },
+    'Laser': {
+        'image_path': 'assets/images/projectiles/laser_beam.png',
+        'speed': float('inf'),  # Instantaneous hit
+        'damage': 18,
+        'effect': 'continuous',
+        'duration': 2,  # Seconds the beam stays active
+    },
+    'Missile': {
+        'image_path': 'assets/images/projectiles/missile_projectile.png',
+        'speed': 3,
+        'damage': 30,
+        'effect': 'explode',
+        'explosion_radius': 75,
+    },
+    'Poison': {
+        'image_path': 'assets/images/projectiles/poison_projectile.png',
+        'speed': 5,
+        'damage': 5,
+        'effect': 'poison',
+        'poison_duration': 5,
+        'poison_damage': 1,
+    },
+    'Splash': {
+        'image_path': 'assets/images/projectiles/splash_projectile.png',
+        'speed': 6,
+        'damage': 12,
+        'effect': 'splash',
+        'splash_radius': 60,
+    },
+    'Multi': {
+        'image_path': 'assets/images/projectiles/multi_target_projectile.png',
+        'speed': 7,
+        'damage': 8,
+        'effect': 'multi',
+        'target_count': 3,  # Number of enemies simultaneously targeted
+    },
+    'SpeedBoost': {
+        'image_path': 'assets/images/projectiles/speed_boost.png',
+        'speed': 0,  # Not applicable
+        'damage': 0,  # Not applicable
+        'effect': 'speed_boost',
+        'boost_amount': 0.2,  # Speed increase percentage for nearby towers
+        'duration': 5,  # Seconds the boost lasts
+    },
+    'GoldBoost': {
+        'image_path': 'assets/images/projectiles/gold_boost.png',
+        'speed': 0,  # Not applicable
+        'damage': 0,  # Not applicable
+        'effect': 'gold_boost',
+        'extra_gold': 1.2,  # Multiplier to gold earned from enemies hit
+    },
+    'Debuff': {
+        'image_path': 'assets/images/projectiles/debuff_projectile.png',
+        'speed': 5,
+        'damage': 0,  # Primarily for debuff effect
+        'effect': 'debuff',
+        'debuff_effect': 'slow',  # Example debuff effect
+        'duration': 3,
+    },
+}
 
 
 # Level configuration
@@ -162,22 +237,24 @@ LEVELS_JSON_PATH = 'src/config/TestLevels.json'
 
 # UI elements
 UI_FONT = 'Arial'
-UI_FONT_SIZE = 14
+UI_FONT_SIZE = int(14 * SCALE)
 UI_FONT_COLOR = (255,255,255)
 UI_HEALTH_BAR_COLOR = (255, 0, 0)
-UI_LABEL_HEIGHT = 50
-UI_SCORE_POSITION = (SCREEN_WIDTH-200, 10)
-UI_HEALTH_POSITION = (SCREEN_WIDTH-200, 10+UI_LABEL_HEIGHT)
-UI_RESOURCES_POSITION = (SCREEN_WIDTH-200, 10+UI_LABEL_HEIGHT*2)
-UI_ENEMY_COUNT_POSITION = (SCREEN_WIDTH-200, 10+UI_LABEL_HEIGHT*3)
-UI_BUTTON_SIZE = (95, 30)
+UI_LABEL_HEIGHT = 50 * SCALE
+UI_LABEL_PAD_X = 200 * SCALE
+UI_LABEL_PAD_Y = 10 * SCALE
+UI_SCORE_POSITION = (SCREEN_WIDTH-UI_LABEL_PAD_X, UI_LABEL_PAD_Y)
+UI_HEALTH_POSITION = (SCREEN_WIDTH-UI_LABEL_PAD_X, UI_LABEL_PAD_Y+UI_LABEL_HEIGHT)
+UI_RESOURCES_POSITION = (SCREEN_WIDTH-UI_LABEL_PAD_X, UI_LABEL_PAD_Y+UI_LABEL_HEIGHT*2)
+UI_ENEMY_COUNT_POSITION = (SCREEN_WIDTH-UI_LABEL_PAD_X, UI_LABEL_PAD_Y+UI_LABEL_HEIGHT*3)
+UI_BUTTON_SIZE = (95*SCALE, 30*SCALE)
 
 # Main Menu Elements
 MAIN_MENU_BACKGROUND_PATH = 'assets/images/screens/main_menu_screen.png'
-MAIN_MENU_START_BUTTON_POSITION = (360, 253)
-MAIN_MENU_LOAD_BUTTON_POSITION = (360, 300)
-MAIN_MENU_SETTINGS_BUTTON_POSITION = (360, 350)
-MAIN_MENU_EXIT_BUTTON_POSITION = (360, 407)
+MAIN_MENU_START_BUTTON_POSITION = (360*SCALE, 253*SCALE)
+MAIN_MENU_LOAD_BUTTON_POSITION = (360*SCALE, 300*SCALE)
+MAIN_MENU_SETTINGS_BUTTON_POSITION = (360*SCALE, 350*SCALE)
+MAIN_MENU_EXIT_BUTTON_POSITION = (360*SCALE, 407*SCALE)
 
 
 # Sound effects and music

@@ -1,3 +1,4 @@
+from src.config.config import PROJECTILE_TYPES
 from src.entities.projectiles.projectile import Projectile
 from src.managers.entity_manager import EntityManager
 
@@ -9,14 +10,10 @@ class ProjectileManager(EntityManager):
 
     def create_projectile(self, x, y, projectile_type, target):
         # self.x, self.y, self.damage, self.projectile_speed, target
-        if projectile_type == "BasicProjectile":
-            projectile = Projectile(x, y, target, 5, 10)
-        elif projectile_type == "missile":
-            projectile = Projectile(x, y, target, 10, 100)
-        elif projectile_type == "bullet":
-            projectile = Projectile(x, y, target, 100, 1000)
-        else:
-            projectile = Projectile(x, y, target, 5, 10)
+        damage = PROJECTILE_TYPES[projectile_type]['damage']
+        speed = PROJECTILE_TYPES[projectile_type]['speed']
+        image_path = PROJECTILE_TYPES[projectile_type]['image_path']
+        projectile = Projectile(x, y, target, speed=speed, damage=damage,image_path=image_path)
 
         self.projectiles.append(projectile)
 
