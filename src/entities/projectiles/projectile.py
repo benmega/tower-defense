@@ -27,8 +27,6 @@ class Projectile(Entity):
     '''
     def __init__(self, x, y, target, speed=0, damage=0, image_path=PROJECTILE_IMAGE_PATH):
         super().__init__(x, y, image_path)
-        # self.x = x
-        # self.y = y
         self.isPiercing = False
         self.rect.x = x
         self.rect.y = y

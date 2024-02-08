@@ -1,6 +1,6 @@
 import json
 from src.entities.enemies.enemy_wave import EnemyWave
-from src.config.config import LEVELS_JSON_PATH
+from src.config.config import LEVELS_JSON_PATH, SCALE
 import pygame
 
 class Level:
