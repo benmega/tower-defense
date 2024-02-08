@@ -16,6 +16,7 @@ import src.config.config as configuration
 #from src.managers.ui_manager import UIManager
 from src.scenes.main_menu import MainMenu
 from src.scenes.options_screen import OptionsScreen
+from src.scenes.tower_selection_panel import TowerSelectionPanel
 from src.utils.helpers import load_scaled_image
 import os
 
@@ -48,6 +49,7 @@ class Game:
         self.main_menu = MainMenu(self.screen, self.UI_manager)
         self.options_screen = OptionsScreen(self.screen,self.UI_manager)
         self.is_build_mode = True
+        self.tower_selection_panel = TowerSelectionPanel(self.screen, self.tower_manager)
         #self.initialize_game()
 
     def initialize_game(self):
@@ -98,6 +100,7 @@ class Game:
             self.tower_manager.draw_towers(self.screen)
             self.enemy_manager.draw(self.screen)
             self.projectile_manager.draw_projectiles(self.screen)
+            self.tower_selection_panel.draw()
         self.UI_manager.draw_ui(self.screen)  # Draw the game UI
         pygame.display.flip() # Update the display
 

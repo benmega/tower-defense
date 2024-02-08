@@ -1,4 +1,4 @@
-from src.config.config import DEBUG, TOWER_COSTS
+from src.config.config import DEBUG
 from src.managers.entity_manager import EntityManager
 from src.entities.towers.tower_types import *
 
@@ -26,7 +26,8 @@ class TowerManager(EntityManager):
             'GoldBoost': GoldBoostTower,
             'Debuff': DebuffTower,
         }
-        self.tower_costs = TOWER_COSTS
+
+
     def add_tower(self, x, y):
         """ Adds a new tower at specified coordinates if it's a valid position. """
         if self.is_valid_position(x, y) and self.has_enough_resources_to_build():

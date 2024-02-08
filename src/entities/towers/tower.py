@@ -1,11 +1,12 @@
 # tower.py
 from src.entities.entity import Entity
-from src.config.config import TOWER_IMAGE_PATHS, DEBUG, TOWER_COSTS, TILE_SIZE
+from src.config.config import DEBUG, TOWER_TYPES, TILE_SIZE
 
 
 class Tower(Entity):
-    def __init__(self, x=10, y=10, attack_range=100, damage=10, attack_speed=20,image_path=TOWER_IMAGE_PATHS['Basic'],build_cost=TOWER_COSTS['Basic'],upgrade_cost=0,width=10,height=10):
-        super().__init__(x, y, image_path=image_path)
+    def __init__(self, x, y, tower_type="Basic", attack_range=100, damage=10, attack_speed=20, upgrade_cost=0,width=10,height=10):
+        self.image_path = TOWER_TYPES[tower_type]['image_path']
+        super().__init__(x, y, image_path=self.image_path)
         self.x = x // TILE_SIZE[0] * TILE_SIZE[0]  # X-coordinate of the tower's position. Rounded to nearest grid multiple
         self.y = y // TILE_SIZE[1] * TILE_SIZE[1] # Y-coordinate of the tower's position
         self.width = width
@@ -14,12 +15,11 @@ class Tower(Entity):
         self.damage = damage  # Damage dealt per attack
         self.attack_speed = attack_speed  # Time between attacks
         self.cooldown = 0  # Cooldown to track attack timing
-        self.image_path = image_path
         self.upgrade_level = 0
         self.upgrade_effects = {"range": 0, "damage": 0}
-        self.tower_type = "BasicTower"
+        self.tower_type = tower_type
         self.projectile_type = "BasicProjectile"
-        self.build_cost = build_cost
+        self.build_cost = TOWER_TYPES[self.tower_type]['cost']
         self.upgrade_cost = upgrade_cost
         self.targeting_mode = "closest"  # or "strongest", "weakest", etc.
         self.animation_state = ...
@@ -27,6 +27,8 @@ class Tower(Entity):
         self.state = "active"  # "disabled", "enhanced", etc.
         self.special_abilities = {"slow": 0.5, "AOE_radius": 50}
         self.sell_value = int(self.build_cost * 0.75)
+
+
     def attackMultiple(self, enemies):
         """
         Attack enemies within range. This method can be called each game tick,

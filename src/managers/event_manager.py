@@ -1,5 +1,6 @@
 import pygame
 
+from src.config.config import TOWER_TYPES
 from src.game.game_state import GameState
 
 
@@ -17,7 +18,9 @@ class EventManager:
                     # Check if the click is for building a tower
                     #game.UI_manager.process_events(event)
                     #self.handle_build_tower(event, game)
-                    if game.is_build_mode:
+                    if game.tower_selection_panel.is_within_panel(event.pos):
+                        game.tower_selection_panel.handle_mouse_click(event.pos)
+                    elif game.is_build_mode:
                         self.handle_build_tower(event, game)
             elif game.current_state == GameState.MAIN_MENU:
                 # Here, handle main menu specific events
@@ -43,6 +46,7 @@ class EventManager:
             # Add more event types as needed
             self.events.remove(event)
 
+
     def add_event(self, event):
         """ Add an event to the queue. """
         self.events.append(event)
@@ -54,7 +58,7 @@ class EventManager:
 
         #sampletower = Tower(event.pos[0], event.pos[1])
         build_type = game.tower_manager.selected_tower_type
-        build_cost = game.tower_manager.tower_costs[build_type]
+        build_cost = TOWER_TYPES[build_type]['cost']
         if game.player.gold >= build_cost:
             game.tower_manager.add_tower(event.pos[0],event.pos[1])
             game.player.gold -= build_cost
