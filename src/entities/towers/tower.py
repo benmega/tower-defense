@@ -1,13 +1,13 @@
 # tower.py
 from src.entities.entity import Entity
-from src.config.config import TOWER_IMAGE_PATH, DEBUG, TOWER_COST
+from src.config.config import TOWER_IMAGE_PATHS, DEBUG, TOWER_COSTS, TILE_SIZE
 
 
 class Tower(Entity):
-    def __init__(self, x=10, y=10, attack_range=100, damage=10, attack_speed=20,image_path=TOWER_IMAGE_PATH,build_cost=TOWER_COST,upgrade_cost=0,width=10,height=10):
-        super().__init__(x, y, image_path=TOWER_IMAGE_PATH)
-        self.x = x  # X-coordinate of the tower's position
-        self.y = y  # Y-coordinate of the tower's position
+    def __init__(self, x=10, y=10, attack_range=100, damage=10, attack_speed=20,image_path=TOWER_IMAGE_PATHS['Basic'],build_cost=TOWER_COSTS['Basic'],upgrade_cost=0,width=10,height=10):
+        super().__init__(x, y, image_path=image_path)
+        self.x = x // TILE_SIZE[0] * TILE_SIZE[0]  # X-coordinate of the tower's position. Rounded to nearest grid multiple
+        self.y = y // TILE_SIZE[1] * TILE_SIZE[1] # Y-coordinate of the tower's position
         self.width = width
         self.height = height
         self.attack_range = attack_range  # Range within which the tower can attack

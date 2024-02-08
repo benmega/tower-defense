@@ -36,14 +36,44 @@ BASIC_ENEMY_IMAGE_PATH = 'assets/images/enemies/basic_enemy.png'
 ENEMY_SPAWN_INTERVAL = 2000  # Milliseconds
 MAX_ENEMIES_PER_LEVEL = 20
 
-
 # Tower default attributes
 TOWER_RANGE = 100
 TOWER_DAMAGE = 10
 TOWER_ATTACK_SPEED = 1  # Attacks per second
-TOWER_COST = 200
-TOWER_IMAGE_PATH = 'assets/images/towers/basic_tower.png'
-
+TOWER_COSTS = {
+    'Advanced': 150,
+    'Basic': 100,
+    'Cannon': 250,
+    'Debuff': 800,
+    'Electric': 400,
+    'Flame': 300,
+    'Frost': 350,
+    'GoldBoost': 750,
+    'Laser': 450,
+    'Missile': 500,
+    'Multi': 650,
+    'Poison': 550,
+    'Sniper': 200,
+    'SpeedBoost': 700,
+    'Splash': 600
+}
+TOWER_IMAGE_PATHS = {
+    'Advanced': 'assets/images/towers/advanced_tower.png',
+    'Basic': 'assets/images/towers/basic_tower.png',
+    'Cannon': 'assets/images/towers/cannon_tower.png',
+    'Debuff': 'assets/images/towers/debuff_tower.png',
+    'Electric': 'assets/images/towers/electric_tower.png',
+    'Flame': 'assets/images/towers/flame_tower.png',
+    'Frost': 'assets/images/towers/frost_tower.png',
+    'GoldBoost': 'assets/images/towers/gold_boost_tower.png',
+    'Laser': 'assets/images/towers/laser_tower.png',
+    'Missile': 'assets/images/towers/missile_tower.png',
+    'Multi': 'assets/images/towers/multi_target_tower.png',
+    #'Poison': 'assets/images/towers/poison_tower.png',
+    'Sniper': 'assets/images/towers/sniper_tower.png'
+    #'SpeedBoost': 'assets/images/towers/speed_boost_tower.png',
+    #'Splash': 'assets/images/towers/splash_tower.png',
+}
 # Upgrades
 TOWER_UPGRADE_COST = {
     "range": 50,
@@ -77,10 +107,15 @@ UI_SCORE_POSITION = (SCREEN_WIDTH-200, 10)
 UI_HEALTH_POSITION = (SCREEN_WIDTH-200, 10+UI_LABEL_HEIGHT)
 UI_RESOURCES_POSITION = (SCREEN_WIDTH-200, 10+UI_LABEL_HEIGHT*2)
 UI_ENEMY_COUNT_POSITION = (SCREEN_WIDTH-200, 10+UI_LABEL_HEIGHT*3)
+UI_BUTTON_SIZE = (95, 30)
+
+# Main Menu Elements
+MAIN_MENU_BACKGROUND_PATH = 'assets/images/screens/main_menu_screen.png'
 MAIN_MENU_START_BUTTON_POSITION = (360, 253)
 MAIN_MENU_LOAD_BUTTON_POSITION = (360, 300)
 MAIN_MENU_SETTINGS_BUTTON_POSITION = (360, 350)
 MAIN_MENU_EXIT_BUTTON_POSITION = (360, 407)
+
 
 # Sound effects and music
 SOUND_EFFECTS_VOLUME = 0.7

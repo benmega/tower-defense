@@ -20,7 +20,10 @@ from src.utils.helpers import load_scaled_image
 import os
 
 class Game:
-
+    '''
+    Core game class responsible for initializing the game, running the main loop, handling game state transitions (like starting, game over), and managing high-level game events.
+    Potential TODOs: Implementing efficient game state management, optimizing the main game loop for performance, and handling transitions between different parts of the game smoothly.
+    '''
     def __init__(self):
         self.score_label = None
         self.is_build_mode = False
@@ -44,17 +47,17 @@ class Game:
         self.current_state = GameState.MAIN_MENU
         self.main_menu = MainMenu(self.screen, self.UI_manager)
         self.options_screen = OptionsScreen(self.screen,self.UI_manager)
-
+        self.is_build_mode = True
         #self.initialize_game()
 
     def initialize_game(self):
         self.load_resources()
         gridWidth = configuration.DEFAULT_GRID_SIZE[0]
         gridHeight = configuration.DEFAULT_GRID_SIZE[1]
-        self.tower_manager.add_tower(Tower(gridWidth*2, gridHeight*7))  # Example of creating and adding a tower
-        self.tower_manager.add_tower(Tower(gridWidth*5, gridHeight*7))  # Example of creating and adding a tower
-        self.tower_manager.add_tower(Tower(gridWidth * 2, gridHeight * 4))  # Example of creating and adding a tower
-        self.tower_manager.add_tower(Tower(gridWidth * 5, gridHeight * 4))  # Example of creating and adding a tower
+        self.tower_manager.add_tower(gridWidth*2, gridHeight*7)  # Example of creating and adding a tower
+        self.tower_manager.add_tower(gridWidth*5, gridHeight*7)  # Example of creating and adding a tower
+        self.tower_manager.add_tower(gridWidth * 2, gridHeight * 4)  # Example of creating and adding a tower
+        self.tower_manager.add_tower(gridWidth * 5, gridHeight * 4)  # Example of creating and adding a tower
         # Initialize UI elements
         self.gold_label = pygame_gui.elements.UILabel(
             relative_rect=pygame.Rect(configuration.UI_RESOURCES_POSITION, (150, 50)),
@@ -79,10 +82,10 @@ class Game:
 
     def load_resources(self):
         # Load and store images for enemies, towers, and projectiles
-        self.enemy_image = load_scaled_image(configuration.ENEMY_IMAGE_PATH, configuration.TILE_SIZE)
-        self.tower_image = load_scaled_image(configuration.TOWER_IMAGE_PATH, configuration.TILE_SIZE)
-        self.projectile_image = load_scaled_image(configuration.PROJECTILE_IMAGE_PATH, configuration.TILE_SIZE)
-
+        # self.enemy_image = load_scaled_image(configuration.ENEMY_IMAGE_PATH, configuration.TILE_SIZE)
+        # self.tower_image = load_scaled_image(configuration.TOWER_IMAGE_PATH, configuration.TILE_SIZE)
+        # self.projectile_image = load_scaled_image(configuration.PROJECTILE_IMAGE_PATH, configuration.TILE_SIZE)
+        pass
 
     def draw(self):
         self.screen.fill(configuration.BACKGROUND_COLOR)  # Clear the screen with the background color

@@ -1,17 +1,45 @@
-from src.config.config import DEBUG
+from src.config.config import DEBUG, TOWER_COSTS
 from src.managers.entity_manager import EntityManager
+from src.entities.towers.tower_types import *
+
 
 
 class TowerManager(EntityManager):
     def __init__(self):
         super().__init__()
         self.towers = []
-
-    def add_tower(self, tower):
+        self.selected_tower_type = 'Electric'
+        self.tower_types = {
+            'Basic': BasicTower,
+            'Advanced': AdvancedTower,
+            'Sniper': SniperTower,
+            'Cannon': CannonTower,
+            'Flame': FlameTower,
+            'Frost': FrostTower,
+            'Electric': ElectricTower,
+            'Laser': LaserTower,
+            'Missile': MissileTower,
+            'Poison': PoisonTower,
+            'Splash': SplashTower,
+            'Multi': MultiTargetTower,
+            'SpeedBoost': SpeedBoostTower,
+            'GoldBoost': GoldBoostTower,
+            'Debuff': DebuffTower,
+        }
+        self.tower_costs = TOWER_COSTS
+    def add_tower(self, x, y):
         """ Adds a new tower at specified coordinates if it's a valid position. """
-        if self.is_valid_position(tower.x, tower.y) and self.has_enough_resources(tower):
-            self.towers.append(tower)
-            self.deduct_resources(tower)
+        if self.is_valid_position(x, y) and self.has_enough_resources_to_build():
+            # Get the tower class from the selected tower type
+            tower_class = self.tower_types.get(self.selected_tower_type, None)
+            if tower_class:
+                tower = tower_class(x, y)  # Create an instance of the tower
+                if self.deduct_resources(tower.build_cost):
+                    self.towers.append(tower)
+                else:
+                    print("Insufficient resources to build the tower.")
+            else:
+                print(f"Unknown tower type: {self.selected_tower_type}")
         else:
             print("Invalid position or insufficient resources")
 
@@ -56,7 +84,7 @@ class TowerManager(EntityManager):
         # TODO Implement logic to determine if the position is valid (e.g., not on a path)
         return True
 
-    def has_enough_resources(self, tower):
+    def has_enough_resources_to_build(self):
         """ Checks if the player has enough resources to build the selected tower. """
         # TODO Implement logic to check player resources against tower cost
         return True
@@ -64,7 +92,7 @@ class TowerManager(EntityManager):
     def deduct_resources(self, tower):
         """ Deducts resources from the player based on the tower cost. """
         # TODO Implement logic to deduct resources
-        pass
+        return True
 
     def update(self, enemies, projectile_manager):
         """ Updates each tower and handles their attacks. """

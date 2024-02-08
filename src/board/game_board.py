@@ -6,6 +6,10 @@ from src.config.config import TILE_SIZE, GRASS_IMAGE_PATH, ENTRANCE_IMAGE_PATH, 
 from src.utils.helpers import load_scaled_image
 
 class GameBoard:
+    '''
+    Core game class responsible for initializing the game, running the main loop, handling game state transitions (like starting, game over), and managing high-level game events.
+    Potential TODOs: Implementing efficient game state management, optimizing the main game loop for performance, and handling transitions between different parts of the game smoothly.
+    '''
     def __init__(self, width, height):
         self.width = width
         self.height = height
