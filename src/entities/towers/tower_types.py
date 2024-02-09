@@ -1,4 +1,4 @@
-from src.config.config import TOWER_TYPES
+from src.config.config import TOWER_TYPES, DEBUG
 from src.effects.damage_effects import AoeDamageEffect
 from src.entities.towers.tower import Tower
 
@@ -72,7 +72,15 @@ class FlameTower(Tower):
 class FrostTower(Tower):
     def __init__(self, x, y):
         super().__init__(x, y, tower_type='Frost', attack_range=120, damage=5, attack_speed=20)
-        # FrostTower specific initialization, could slow enemies
+        self.slow_percentage = 0.5  # 50% reduction in speed
+        self.slow_duration = 60  # Duration of slow effect in frames or ticks
+
+    def attack(self, target, projectile_manager):
+        """
+        Create a projectile and target the specified enemy.
+        """
+        target_x, target_y = target.rect.x, target.rect.y
+        projectile_manager.create_projectile(self.x, self.y, self.projectile_type, target, effect_type='slow')
 
 class ElectricTower(Tower):
     def __init__(self, x, y):
@@ -91,8 +99,26 @@ class MissileTower(Tower):
 
 class PoisonTower(Tower):
     def __init__(self, x, y):
-        super().__init__(x, y, tower_type='Poison',attack_range=120, damage=10, attack_speed=20)
-        # PoisonTower specific initialization, could apply damage over time
+        super().__init__(x, y, tower_type='Poison')
+        # No need to pass poison_damage or poison_duration here since it's handled within the projectile
+
+    def attack(self, target, projectile_manager):
+        """
+        Override the attack method to create a poison projectile without explicitly passing 'damage'.
+        """
+
+        # Ensure self.projectile_type is a string that corresponds to a key in PROJECTILE_TYPES
+        # For example, 'Poison' if your PROJECTILE_TYPES dictionary has a 'Poison' key for poison projectiles
+        projectile_type = 'Poison'  # This should be dynamically set based on the tower type
+
+        if DEBUG:
+            print("Creating a poison projectile")
+        projectile_manager.create_projectile(
+            self.x, self.y, target=target,projectile_type=projectile_type,
+        )
+        if DEBUG:
+            print(f"Poison projectile created at ({self.x}, {self.y}) targeting ({target.rect.x}, {target.rect.y})")
+
 
 class SplashTower(Tower):
     def __init__(self, x, y):

@@ -24,6 +24,12 @@ class Enemy(pygame.sprite.Sprite):
         self.score_value = ENEMY_SCORE_VALUE
         self.gold_value = ENEMY_GOLD_VALUE
         self.damage_to_player = ENEMY_DAMAGE_TO_PLAYER
+        self.original_speed = speed
+        self.slow_effect_active = False
+        self.slow_effect_duration = 0
+        self.poisoned = False
+        self.poison_damage = 0
+        self.poison_duration = 0
 
     def move(self):
 
@@ -70,11 +76,45 @@ class Enemy(pygame.sprite.Sprite):
     def update(self):
         if self.state == 'dead' or not self.active:
             return  # Skip updating if the enemy is dead or inactive
+        self.update_slow_effect()
+        self.update_poison_effect()
         self.move()
 
     def on_collision(self, other_entity):
         from src.entities.projectiles.projectile import Projectile
         if isinstance(other_entity, Projectile):
-            self.health -= other_entity.damage
+            self.take_damage(other_entity.damage)  # Apply damage
             if self.health <= 0:
                 self.die()
+            else:
+                # Check the effect type of the projectile and apply the slow effect if necessary
+                if other_entity.effect == 'slow':
+                    self.apply_slow_effect(percentage_reduction=0.5, duration=60)  # Example values
+                if other_entity.effect == 'poison':
+                    self.apply_poison_effect(other_entity.poison_damage,other_entity.poison_duration)
+
+    def apply_slow_effect(self, percentage_reduction, duration):
+        if not self.slow_effect_active or self.speed > self.original_speed * (1 - percentage_reduction):
+            self.speed = self.original_speed * (1 - percentage_reduction)
+            self.slow_effect_duration = duration
+            self.slow_effect_active = True
+
+    def update_slow_effect(self):
+        if self.slow_effect_active:
+            self.slow_effect_duration -= 1
+            if self.slow_effect_duration <= 0:
+                self.speed = self.original_speed
+                self.slow_effect_active = False
+
+    def apply_poison_effect(self, damage_per_tick, duration):
+        self.poisoned = True
+        self.poison_damage = damage_per_tick
+        self.poison_duration = duration
+
+    def update_poison_effect(self):
+        if self.poisoned:
+            self.poison_duration -= 1
+            self.take_damage(self.poison_damage)
+            if self.poison_duration <= 0:
+                self.poisoned = False
+                self.poison_damage = 0

@@ -180,11 +180,11 @@ PROJECTILE_TYPES = {
     },
     'Poison': {
         'image_path': 'assets/images/projectiles/poison_projectile.png',
-        'speed': 5,
-        'damage': 5,
+        'speed': 3,
+        'damage': 0,
         'effect': 'poison',
-        'poison_duration': 5,
-        'poison_damage': 1,
+        'poison_duration': 50,
+        'poison_damage': 0.7,
     },
     'Splash': {
         'image_path': 'assets/images/projectiles/splash_projectile.png',

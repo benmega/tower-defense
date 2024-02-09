@@ -3,12 +3,11 @@ from src.managers.entity_manager import EntityManager
 from src.entities.towers.tower_types import *
 
 
-
 class TowerManager(EntityManager):
     def __init__(self):
         super().__init__()
         self.towers = []
-        self.selected_tower_type = 'Basic'
+        self.selected_tower_type = 'Poison'
         self.tower_types = {
             'Basic': BasicTower,
             'Advanced': AdvancedTower,
@@ -27,7 +26,6 @@ class TowerManager(EntityManager):
             'Debuff': DebuffTower,
         }
 
-
     def add_tower(self, x, y):
         """ Adds a new tower at specified coordinates if it's a valid position. """
         if self.is_valid_position(x, y) and self.has_enough_resources_to_build():
@@ -43,7 +41,6 @@ class TowerManager(EntityManager):
                 print(f"Unknown tower type: {self.selected_tower_type}")
         else:
             print("Invalid position or insufficient resources")
-
 
     def upgrade_tower(self, tower_id, upgrade_type):
         """ Upgrades a tower based on an upgrade type. """
@@ -71,7 +68,7 @@ class TowerManager(EntityManager):
 
     def draw_towers(self, screen):
         """ Draws all towers onto the screen. """
-        if DEBUG == True:
+        if DEBUG:
             print(f'drawing {len(self.towers)} towers')
         for tower in self.towers:
             tower.draw(screen)
