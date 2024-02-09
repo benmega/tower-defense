@@ -1,12 +1,14 @@
 # tower.py
 from src.entities.entity import Entity
 from src.config.config import DEBUG, TOWER_TYPES, TILE_SIZE
+from src.utils.helpers import load_scaled_image
 
 
 class Tower(Entity):
     def __init__(self, x, y, tower_type="Basic", attack_range=100, damage=10, attack_speed=20, upgrade_cost=0,width=10,height=10):
         self.image_path = TOWER_TYPES[tower_type]['image_path']
         super().__init__(x, y, image_path=self.image_path)
+        self.image = load_scaled_image(self.image_path, TILE_SIZE).convert_alpha()
         self.x = x // TILE_SIZE[0] * TILE_SIZE[0]  # X-coordinate of the tower's position. Rounded to nearest grid multiple
         self.y = y // TILE_SIZE[1] * TILE_SIZE[1] # Y-coordinate of the tower's position
         self.width = width
@@ -59,7 +61,6 @@ class Tower(Entity):
         if DEBUG:
             print(f"Projectile created at ({self.x}, {self.y}) with target ({target_x}, {target_y})")
 
-    # Additional methods can be added as needed, like upgrading the tower
     def update(self, enemies, active_projectiles):
         """
         Update the tower's state, potentially launching attacks if enemies are in range.

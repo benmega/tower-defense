@@ -237,7 +237,7 @@ LEVELS_JSON_PATH = 'src/config/TestLevels.json'
 
 # UI elements
 UI_FONT = 'Arial'
-UI_FONT_SIZE = int(14 * SCALE)
+UI_FONT_SIZE = int(18 * SCALE)
 UI_FONT_COLOR = (255,255,255)
 UI_HEALTH_BAR_COLOR = (255, 0, 0)
 UI_LABEL_HEIGHT = 50 * SCALE

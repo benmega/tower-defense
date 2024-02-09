@@ -1,9 +1,12 @@
+from typing import Optional
+
 import pygame
+from pygame import Surface
 
 from src.entities.enemies.enemy import Enemy
 from src.entities.entity import Entity
-from src.config.config import PROJECTILE_IMAGE_PATH, DEBUG, SCREEN_HEIGHT, SCREEN_WIDTH
-
+from src.config.config import PROJECTILE_IMAGE_PATH, DEBUG, SCREEN_HEIGHT, SCREEN_WIDTH, TILE_SIZE
+from src.utils.helpers import load_scaled_image
 
 
 class Projectile(Entity):
@@ -25,8 +28,10 @@ class Projectile(Entity):
     GoldBoost Tower: Similarly, no projectile, but a visual could be a shimmering wave of golden sparkles that signifies the boost effect.
     Debuff Tower: A dark, shadowy orb that pulses with a negative aura, diminishing the strength of enemies.
     '''
-    def __init__(self, x, y, target, speed=0, damage=0, image_path=PROJECTILE_IMAGE_PATH):
+    def __init__(self, x, y, target, speed=0, damage=0,image_path=PROJECTILE_IMAGE_PATH):
         super().__init__(x, y, image_path)
+        self.size = tuple(element // 2 for element in TILE_SIZE)
+        self.image = load_scaled_image(image_path, self.size).convert_alpha()
         self.isPiercing = False
         self.rect.x = x
         self.rect.y = y

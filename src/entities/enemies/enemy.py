@@ -11,8 +11,8 @@ class Enemy(pygame.sprite.Sprite):
         super().__init__()
         if not path or len(path) == 0:
             raise ValueError("Invalid path provided to Enemy")
-
-        self.image = load_scaled_image(image_path, TILE_SIZE)
+        self.image = load_scaled_image(image_path, TILE_SIZE).convert_alpha()
+        #self.image = load_scaled_image(image_path, TILE_SIZE)
         self.rect = self.image.get_rect(topleft=path[0])
         self.health = health
         self.speed = speed

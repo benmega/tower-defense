@@ -1,16 +1,22 @@
+from typing import Optional
+
 import pygame
+from pygame import Surface
+
 from src.utils.helpers import load_scaled_image
 from src.config.config import TILE_SIZE
 
 class Entity(pygame.sprite.Sprite):
-    def __init__(self, x, y, image_path):
+    def __init__(self, x, y, image_path, size=TILE_SIZE):
         super().__init__()
-        self.image = load_scaled_image(image_path, TILE_SIZE).convert_alpha()
+        self.size = size
+        self.image = load_scaled_image(image_path, self.size).convert_alpha()
         self.rect = self.image.get_rect(topleft=(x, y))
         # self.x = x
         # self.y = y
         self.active = True
         self.width, self.height = self.image.get_size()
+
 
     def update(self):
         # Update logic for the entity, to be overridden by subclasses
