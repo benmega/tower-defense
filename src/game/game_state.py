@@ -6,3 +6,4 @@ class GameState(Enum):
     OPTIONS = auto()
     PLAYING = auto()
     GAME_OVER = auto()
+    CAMPAIGN_MAP = auto()

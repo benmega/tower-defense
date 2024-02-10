@@ -9,12 +9,6 @@ class ProjectileManager(EntityManager):
         self.projectiles = []
 
     def create_projectile(self, x, y, projectile_type, target,effect=None):
-        # self.x, self.y, self.damage, self.projectile_speed, target
-
-        # damage = PROJECTILE_TYPES[projectile_type]['damage']
-        # speed = PROJECTILE_TYPES[projectile_type]['speed']
-        #
-        # image_path = PROJECTILE_TYPES[projectile_type]['image_path']
 
         projectile = Projectile(x, y, target, **PROJECTILE_TYPES[projectile_type])
         self.projectiles.append(projectile)

@@ -4,7 +4,7 @@ DEBUG = False
 SCREEN_WIDTH: int
 SCREEN_HEIGHT: int
 
-SCREEN_WIDTH, SCREEN_HEIGHT = 1067, 800 # orginally 800, 600
+SCREEN_WIDTH, SCREEN_HEIGHT = 1067, 800  # original 800, 600
 SCALE = SCREEN_HEIGHT/600
 BACKGROUND_COLOR = (0, 0, 0)
 FPS = 60
@@ -16,7 +16,7 @@ GAME_BOARD_HEIGHT = DEFAULT_GRID_SIZE[1]
 
 # Player starting health
 PLAYER_HEALTH = 100
-PLAYER_GOLD = 10000
+PLAYER_GOLD = 1000
 PLAYER_SCORE = 0
 
 # Default enemy attributes
@@ -36,17 +36,9 @@ TANK_ENEMY_IMAGE_PATH = 'assets/images/enemies/tank_enemy.png'
 BASIC_ENEMY_IMAGE_PATH = 'assets/images/enemies/basic_enemy.png'
 
 
-# Spawn settings
-ENEMY_SPAWN_INTERVAL = 2000  # Milliseconds
-MAX_ENEMIES_PER_LEVEL = 20
-
 # Tower default attributes
-TOWER_RANGE = 100
-TOWER_DAMAGE = 10
-TOWER_ATTACK_SPEED = 1  # Attacks per second
 TOWER_TYPES = {
     'Advanced': {
-        'image_path': 'assets/images/towers/advanced_tower.png',
         'cost': 150,
         'image_path': 'assets/images/towers/advanced_tower.png',
     },
@@ -110,8 +102,7 @@ TOWER_TYPES = {
 
 
 # Projectile attributes
-PROJECTILE_SPEED = 5
-PROJECTILE_DAMAGE = 10
+
 PROJECTILE_IMAGE_PATH = 'assets/images/projectiles/basic_projectile.png'
 PROJECTILE_TYPES = {
     'Basic': {
@@ -166,7 +157,7 @@ PROJECTILE_TYPES = {
     },
     'Laser': {
         'image_path': 'assets/images/projectiles/laser_beam.png',
-        'speed': float('inf'),  # Instantaneous hit
+        'speed': 9,  # Instantaneous hit
         'damage': 18,
         'effect': 'continuous',
         'duration': 2,  # Seconds the beam stays active
@@ -210,10 +201,10 @@ PROJECTILE_TYPES = {
     },
     'GoldBoost': {
         'image_path': 'assets/images/projectiles/gold_boost.png',
-        'speed': 0,  # Not applicable
+        'speed': 3,  # Not applicable
         'damage': 0,  # Not applicable
         'effect': 'gold_boost',
-        'extra_gold': 1.2,  # Multiplier to gold earned from enemies hit
+        'gold_boost_factor': 1.2,  # Multiplier to gold earned from enemies hit
     },
     'Debuff': {
         'image_path': 'assets/images/projectiles/debuff_projectile.png',
@@ -238,9 +229,9 @@ LEVELS_JSON_PATH = 'src/config/TestLevels.json'
 # UI elements
 UI_FONT = 'Arial'
 UI_FONT_SIZE = int(18 * SCALE)
-UI_FONT_COLOR = (255,255,255)
+UI_FONT_COLOR = (255, 255, 255)
 UI_HEALTH_BAR_COLOR = (255, 0, 0)
-UI_LABEL_HEIGHT = 50 * SCALE
+UI_LABEL_WIDTH, UI_LABEL_HEIGHT = 100 * SCALE, 50 * SCALE
 UI_LABEL_PAD_X = 200 * SCALE
 UI_LABEL_PAD_Y = 10 * SCALE
 UI_SCORE_POSITION = (SCREEN_WIDTH-UI_LABEL_PAD_X, UI_LABEL_PAD_Y)
@@ -250,9 +241,9 @@ UI_ENEMY_COUNT_POSITION = (SCREEN_WIDTH-UI_LABEL_PAD_X, UI_LABEL_PAD_Y+UI_LABEL_
 UI_BUTTON_SIZE = (95*SCALE, 30*SCALE)
 
 # Main Menu Elements
-MAIN_MENU_BACKGROUND_PATH = 'assets/images/screens/main_menu_screen.png'
+MAIN_MENU_BACKGROUND_PATH = 'assets/images/scenes/main_menu_screen.png'
 MAIN_MENU_START_BUTTON_POSITION = (360*SCALE, 253*SCALE)
-MAIN_MENU_LOAD_BUTTON_POSITION = (360*SCALE, 300*SCALE)
+MAIN_MENU_CONTINUE_BUTTON_POSITION = (360*SCALE, 300*SCALE)
 MAIN_MENU_SETTINGS_BUTTON_POSITION = (360*SCALE, 350*SCALE)
 MAIN_MENU_EXIT_BUTTON_POSITION = (360*SCALE, 407*SCALE)
 

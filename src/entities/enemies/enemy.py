@@ -22,6 +22,7 @@ class Enemy(pygame.sprite.Sprite):
         self.state = 'moving'  # Possible states: 'moving', 'attacking', 'idle', 'finished'
         self.reached_goal = False
         self.score_value = ENEMY_SCORE_VALUE
+        self.base_gold_value = ENEMY_GOLD_VALUE
         self.gold_value = ENEMY_GOLD_VALUE
         self.damage_to_player = ENEMY_DAMAGE_TO_PLAYER
         self.original_speed = speed
@@ -118,3 +119,9 @@ class Enemy(pygame.sprite.Sprite):
             if self.poison_duration <= 0:
                 self.poisoned = False
                 self.poison_damage = 0
+
+
+    def apply_gold_boost(self, boost_factor):
+        # Apply gold boost. Only one boost allowed per enemy
+        self.gold_value = int(max(self.gold_value, self.base_gold_value * boost_factor))
+        pass

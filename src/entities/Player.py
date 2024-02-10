@@ -6,6 +6,7 @@ class Player:
         self.gold = PLAYER_GOLD
         self.health = PLAYER_HEALTH
         self.score = 0
+        self.player_progress = {'unlocked_levels':[]} # list of completed levels
 
     def add_gold(self, amount):
         self.gold += amount

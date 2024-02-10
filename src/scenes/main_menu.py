@@ -2,7 +2,8 @@ import pygame
 import pygame_gui
 
 from src.config.config import SCREEN_WIDTH, SCREEN_HEIGHT, MAIN_MENU_START_BUTTON_POSITION, \
-    MAIN_MENU_EXIT_BUTTON_POSITION, MAIN_MENU_SETTINGS_BUTTON_POSITION, DEBUG, UI_BUTTON_SIZE, MAIN_MENU_BACKGROUND_PATH
+    MAIN_MENU_EXIT_BUTTON_POSITION, MAIN_MENU_SETTINGS_BUTTON_POSITION, DEBUG, UI_BUTTON_SIZE, \
+    MAIN_MENU_BACKGROUND_PATH, MAIN_MENU_CONTINUE_BUTTON_POSITION
 from src.game.game_state import GameState
 from src.utils.helpers import load_scaled_image
 
@@ -14,6 +15,13 @@ class MainMenu:
         self.start_button = pygame_gui.elements.UIButton(
             relative_rect=pygame.Rect(MAIN_MENU_START_BUTTON_POSITION, UI_BUTTON_SIZE),
             text='Start Game',
+            manager=self.ui_manager,
+            object_id=pygame_gui.core.ObjectID(class_id="@button"),
+            visible=True
+        )
+        self.continue_button = pygame_gui.elements.UIButton(
+            relative_rect=pygame.Rect(MAIN_MENU_CONTINUE_BUTTON_POSITION, UI_BUTTON_SIZE),
+            text='Continue Game',
             manager=self.ui_manager,
             object_id=pygame_gui.core.ObjectID(class_id="@button"),
             visible=True
@@ -41,6 +49,10 @@ class MainMenu:
                     game.level_manager.load_levels()
                     game.level_manager.start_level(0)
                     self.close_menu()
+                elif event.ui_element == self.continue_button:
+                    game.current_state = GameState.CAMPAIGN_MAP
+                    game.campaign_map.open_scene()
+                    self.close_menu()
                 elif event.ui_element == self.settings_button:
                     if DEBUG:
                         print("Open options screen!")
@@ -62,8 +74,10 @@ class MainMenu:
         self.exit_button.visible = False
         self.start_button.visible = False
         self.settings_button.visible = False
+        self.continue_button.visible = False
 
     def open_menu(self):
         self.exit_button.visible = True
         self.start_button.visible = True
         self.settings_button.visible = True
+        self.continue_button.visible = True

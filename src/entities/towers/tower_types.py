@@ -10,26 +10,26 @@ class BasicTower(Tower):
 
 class AdvancedTower(Tower):
     def __init__(self, x, y):
-        super().__init__(x, y, tower_type='Advanced', attack_range=150, damage=15, attack_speed=15)
+        super().__init__(x, y, tower_type='Advanced')
         # AdvancedTower specific initialization
 
 class SniperTower(Tower):
     def __init__(self, x, y):
-        super().__init__(x, y, tower_type='Sniper',attack_range=300, damage=30, attack_speed=60)
+        super().__init__(x, y, tower_type='Sniper')
         # SniperTower specific initialization
 
 class CannonTower(Tower):
     def __init__(self, x, y):
-        super().__init__(x, y, tower_type='Cannon',attack_range=120, damage=20, attack_speed=30)
+        super().__init__(x, y, tower_type='Cannon')
         # CannonTower specific initialization
 
 class FlameTower(Tower):
     def __init__(self, x, y):
         # Initialize with specific parameters for the FlameTower
-        super().__init__(x, y, tower_type='Flame', attack_range=70, damage=8, attack_speed=10)
+        super().__init__(x, y, tower_type='Flame')
         self.aoe_radius = 50  # The radius within which enemies will be affected by the AOE damage
 
-    def update(self, enemies, active_projectiles):
+    def update(self, enemies, projectile_manager):
         """
         Override the update method to perform AOE damage.
         """
@@ -42,7 +42,7 @@ class FlameTower(Tower):
             for enemy in enemies:
                 if self.is_enemy_in_range(enemy):
                     if ifPrimaryTarget:
-                        self.attack(enemy, active_projectiles)
+                        self.attack(enemy, projectile_manager)
                         ifPrimaryTarget = False
                     else:
                         self.apply_aoe_damage(enemy, enemies)
@@ -71,7 +71,7 @@ class FlameTower(Tower):
 
 class FrostTower(Tower):
     def __init__(self, x, y):
-        super().__init__(x, y, tower_type='Frost', attack_range=120, damage=5, attack_speed=20)
+        super().__init__(x, y, tower_type='Frost')
         self.slow_percentage = 0.5  # 50% reduction in speed
         self.slow_duration = 60  # Duration of slow effect in frames or ticks
 
@@ -80,21 +80,21 @@ class FrostTower(Tower):
         Create a projectile and target the specified enemy.
         """
         target_x, target_y = target.rect.x, target.rect.y
-        projectile_manager.create_projectile(self.x, self.y, self.projectile_type, target, effect_type='slow')
+        projectile_manager.create_projectile(self.x, self.y, self.projectile_type, target, effect='slow')
 
 class ElectricTower(Tower):
     def __init__(self, x, y):
-        super().__init__(x, y, tower_type='Electric', attack_range=150, damage=15, attack_speed=25 )
+        super().__init__(x, y, tower_type='Electric')
         # ElectricTower specific initialization, could chain attack to nearby enemies
 
 class LaserTower(Tower):
     def __init__(self, x, y):
-        super().__init__(x, y, tower_type='Laser',attack_range=200, damage=25, attack_speed=30)
+        super().__init__(x, y, tower_type='Laser')
         # LaserTower specific initialization, high damage and precision
 
 class MissileTower(Tower):
     def __init__(self, x, y):
-        super().__init__(x, y,tower_type='Missile', attack_range=250, damage=30, attack_speed=50)
+        super().__init__(x, y,tower_type='Missile')
         # MissileTower specific initialization, long range and high damage
 
 class PoisonTower(Tower):
@@ -122,12 +122,12 @@ class PoisonTower(Tower):
 
 class SplashTower(Tower):
     def __init__(self, x, y):
-        super().__init__(x, y,tower_type='Splash', attack_range=100, damage=20, attack_speed=30)
+        super().__init__(x, y,tower_type='Splash')
         # SplashTower specific initialization, deals damage to multiple enemies
 
 class MultiTargetTower(Tower):
     def __init__(self, x, y):
-        super().__init__(x, y,tower_type='Multi', attack_range=150, damage=15, attack_speed=25)
+        super().__init__(x, y,tower_type='Multi')
         # MultiTargetTower specific initialization, can target multiple enemies simultaneously
 
 class SpeedBoostTower(Tower):
@@ -135,10 +135,17 @@ class SpeedBoostTower(Tower):
         super().__init__(x, y,tower_type='SpeedBoost')
         # SpeedBoostTower specific initialization, increases attack speed of nearby towers
 
+
 class GoldBoostTower(Tower):
     def __init__(self, x, y):
         super().__init__(x, y, tower_type='GoldBoost')
-        # GoldBoostTower specific initialization, increases gold earned from defeating enemies
+
+    def attack(self, target, projectile_manager):
+        projectile_manager.create_projectile(
+            self.x, self.y, self.projectile_type, target,
+            effect='gold_boost'
+        )
+
 
 class DebuffTower(Tower):
     def __init__(self, x, y):

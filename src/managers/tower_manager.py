@@ -7,7 +7,7 @@ class TowerManager(EntityManager):
     def __init__(self):
         super().__init__()
         self.towers = []
-        self.selected_tower_type = 'Poison'
+        self.selected_tower_type = 'Basic'
         self.tower_types = {
             'Basic': BasicTower,
             'Advanced': AdvancedTower,

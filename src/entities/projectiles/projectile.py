@@ -29,7 +29,7 @@ class Projectile(Entity):
     Debuff Tower: A dark, shadowy orb that pulses with a negative aura, diminishing the strength of enemies.
     '''
     def __init__(self, x, y, target, speed=0, damage=0,image_path=PROJECTILE_IMAGE_PATH,
-                 effect=None, poison_damage=0, poison_duration=0, **kwargs):
+                 effect=None, poison_damage=0, poison_duration=0, gold_boost_factor=1 ,**kwargs):
         super().__init__(x, y, image_path)
         self.size = tuple(element // 2 for element in TILE_SIZE)
         self.image = load_scaled_image(image_path, self.size).convert_alpha()
@@ -46,6 +46,7 @@ class Projectile(Entity):
         self.damage = damage
         self.poison_damage = poison_damage
         self.poison_duration = poison_duration
+        self.gold_boost_factor = gold_boost_factor
     def update(self):
         self.move()
 
@@ -94,5 +95,8 @@ class Projectile(Entity):
                 self.state = 'expired'
 
     def apply_effect(self):
-        if self.effect == 'poison' and self.target:
-            self.target.apply_poison_effect(self.poison_damage, self.poison_duration)
+        if self.target:
+            if self.effect == 'poison':
+                self.target.apply_poison_effect(self.poison_damage, self.poison_duration)
+            if self.effect == 'gold_boost':
+                self.target.apply_gold_boost(self.gold_boost_factor)

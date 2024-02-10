@@ -12,21 +12,22 @@ class OptionsScreen:
         self.ui_manager = ui_manager
         self.isActive = False
         self.back_button = pygame_gui.elements.UIButton(
-            relative_rect=pygame.Rect((350, 425), UI_BUTTON_SIZE),
+            relative_rect=pygame.Rect([350, 425], UI_BUTTON_SIZE),
             text='Back',
             manager=self.ui_manager,
-            visible = self.isActive
+            visible=self.isActive
         )
         # # Example options
         self.fullscreen_toggle = pygame_gui.elements.UIButton(
-            relative_rect=pygame.Rect((350, 275), UI_BUTTON_SIZE),
+            relative_rect=pygame.Rect([350, 275], UI_BUTTON_SIZE),
             text='Toggle Fullscreen',
             manager=self.ui_manager,
-            visible = self.isActive
+            visible=self.isActive
         )
-        self.background_image = load_scaled_image('assets/images/screens/options_screen.png',
+        self.background_image = load_scaled_image('assets/images/scenes/options_screen.png',
                                                   (SCREEN_WIDTH, SCREEN_HEIGHT))
-    def handle_events(self, event,game):
+
+    def handle_events(self, event, game):
         if event.type == pygame.USEREVENT:
             if event.user_type == pygame_gui.UI_BUTTON_PRESSED:
                 if event.ui_element == self.back_button:
@@ -47,6 +48,7 @@ class OptionsScreen:
         self.isActive = False
         self.fullscreen_toggle.visible = False
         self.back_button.visible = False
+
     def update(self, time_delta):
         self.ui_manager.update(time_delta)
 
