@@ -13,7 +13,7 @@ class Tower(Entity):
         self.y = y // TILE_SIZE[1] * TILE_SIZE[1]  # Y-coordinate of the tower's position
         self.width = width
         self.height = height
-        self.attack_range = attack_range  # Range within which the tower can attack
+        self.attack_range = attack_range  # Range within which the tower can attack #TODO remove reliance on default of 100
         self.damage = damage  # Damage dealt per attack
         self.attack_speed = attack_speed  # Time between attacks
         self.cooldown = 0  # Cooldown to track attack timing

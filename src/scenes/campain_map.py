@@ -1,6 +1,7 @@
 import pygame
 
 from src.config.config import SCREEN_WIDTH, SCREEN_HEIGHT
+from src.game.game_state import GameState
 from src.utils.helpers import load_scaled_image
 
 
@@ -46,13 +47,18 @@ class CampaignMap:
 
     def handle_events(self, event, game):
         if event.type == pygame.MOUSEBUTTONDOWN:
-            self.handle_clicks(event.pos)
+            self.handle_clicks(event, game)
             # print(event.pos) # for button placement
-    def handle_clicks(self, mouse_pos):
+    def handle_clicks(self, event, game):
+        mouse_pos = event.pos
         for index, (button_image, button_rect) in enumerate(self.level_buttons):
             if button_rect.collidepoint(mouse_pos):
                 # Logic to start the level, if it's unlocked
                 if self.is_level_unlocked(index):
+                    game.current_state = GameState.PLAYING
+                    game.initialize_game()  # Call initialize_game to set up the game
+                    game.level_manager.load_levels()
+                    game.level_manager.start_level(index+1)
                     print(f"Starting level {index}")
                     # Start the level here
     def update(self, time_delta):

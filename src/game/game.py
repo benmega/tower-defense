@@ -41,7 +41,7 @@ class Game:
         self.is_running = False
         self.checkCounter = 0
         self.player = Player()
-        self.enemy_manager = EnemyManager(self.enemy_defeated_callback, self.player_take_damage_callback)
+        self.enemy_manager = EnemyManager(self.level_manager, self.enemy_defeated_callback, self.player_take_damage_callback)
         self.current_state = GameState.MAIN_MENU
         self.main_menu = MainMenu(self.screen, self.UI_manager)
         self.options_screen = OptionsScreen(self.screen, self.UI_manager)

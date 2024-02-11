@@ -48,8 +48,8 @@ class EnemyWave:
         Factory method to create an EnemyWave instance from JSON data.
 
         :param wave_data: A dictionary containing wave information.
+        :param path: The path for the wave to follow
         """
-        # Assuming wave_data is a dictionary with keys like 'enemy_type', 'count', etc.
         enemy_type_str = wave_data['enemy_type']
         count = wave_data['count']
         spawn_interval = wave_data['spawn_interval']
@@ -69,12 +69,15 @@ class EnemyWave:
         """
         enemy_class_map = {
             'BasicEnemy': BasicEnemy,
-            'FastEnemy':FastEnemy,
-            'FlyingEnemy':FlyingEnemy,
-            'HealerEnemy':HealerEnemy,
-            'SiegeEnemy':SiegeEnemy,
-            'StealthEnemy':StealthEnemy,
-            'SwarmEnemy':SwarmEnemy,
-            'TankEnemy':TankEnemy
+            'FastEnemy': FastEnemy,
+            'FlyingEnemy': FlyingEnemy,
+            'HealerEnemy': HealerEnemy,
+            'SiegeEnemy': SiegeEnemy,
+            'StealthEnemy': StealthEnemy,
+            'SwarmEnemy': SwarmEnemy,
+            'TankEnemy': TankEnemy
         }
         return enemy_class_map.get(enemy_type_str, BasicEnemy)  # Default to BasicEnemy if not found'
+
+    def is_Finished(self):
+        return self.spawned_count == self.count

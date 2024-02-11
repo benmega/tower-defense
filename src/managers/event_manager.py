@@ -16,18 +16,18 @@ class EventManager:
             elif game.current_state == GameState.PLAYING:
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     # Check if the click is for building a tower
-                    #game.UI_manager.process_events(event)
-                    #self.handle_build_tower(event, game)
+                    # game.UI_manager.process_events(event)
+                    # self.handle_build_tower(event, game)
                     if game.tower_selection_panel.is_within_panel(event.pos):
                         game.tower_selection_panel.handle_mouse_click(event.pos)
                     elif game.is_build_mode:
                         self.handle_build_tower(event, game)
             elif game.current_state == GameState.MAIN_MENU:
                 # Here, handle main menu specific events
-                game.main_menu.handle_events(event,game)
+                game.main_menu.handle_events(event, game)
             elif game.current_state == GameState.OPTIONS:
                 # Here, handle options menu specific events
-                game.options_screen.handle_events(event,game)
+                game.options_screen.handle_events(event, game)
             elif game.current_state == GameState.CAMPAIGN_MAP:
                 game.campaign_map.handle_events(event, game)
             elif game.current_state == GameState.GAME_OVER:

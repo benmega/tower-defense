@@ -1,7 +1,10 @@
 import json
-from src.entities.enemies.enemy_wave import EnemyWave
-from src.config.config import LEVELS_JSON_PATH, SCALE
+
 import pygame
+
+from src.config.config import LEVELS_JSON_PATH
+from src.entities.enemies.enemy_wave import EnemyWave
+
 
 class Level:
     def __init__(self, enemy_wave_list, path, level_number):
@@ -9,7 +12,7 @@ class Level:
         self.enemy_wave_list = enemy_wave_list
         self.path = path
         self.level_number = level_number
-        self.current_wave_index = 0
+        self.current_wave_index = -1
         self.start_time = pygame.time.get_ticks()
 
     @classmethod
@@ -19,7 +22,7 @@ class Level:
         """
         path = cls.convert_path(level_data['path'])
         enemy_wave_list = [
-            EnemyWave.from_json(wave,path) for wave in level_data['enemy_waves']
+            EnemyWave.from_json(wave, path) for wave in level_data['enemy_waves']
         ]
 
         level_number = level_data['level_number']
@@ -39,10 +42,10 @@ class Level:
         """
         Returns the next wave in the level, or None if all waves are completed.
         """
-        if self.current_wave_index < len(self.enemy_wave_list):
-            wave = self.enemy_wave_list[self.current_wave_index]
+        if self.current_wave_index < len(self.enemy_wave_list)-1:
             self.current_wave_index += 1
-            return wave
+            self.current_wave = self.enemy_wave_list[self.current_wave_index]
+            return self.current_wave
         return None
 
     @staticmethod
@@ -61,4 +64,3 @@ class Level:
         if not self.enemy_wave_list:
             return True
         return False
-

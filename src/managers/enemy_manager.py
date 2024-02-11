@@ -4,24 +4,24 @@ from src.managers.entity_manager import EntityManager
 
 
 class EnemyManager(EntityManager):
-    def __init__(self, defeat_callback=None, reach_end_callback=None):
+    def __init__(self, level_manager, defeat_callback=None, reach_end_callback=None, ):
         super().__init__()
         self.entities = pygame.sprite.Group()
         self.current_wave = None
+        self.level_manager = level_manager
         self.defeat_callback = defeat_callback
         self.reach_end_callback = reach_end_callback
 
-
-    def set_current_wave(self, wave):
-        """ Set the current enemy wave for spawning. """
-        self.current_wave = wave
-
+    # def set_current_wave(self, wave):
+    #     """ Set the current enemy wave for spawning. """
+    #     self.current_wave = wave
 
     def update(self):
         """ Update the state of all enemies and spawn new ones from the current wave. """
         current_time = pygame.time.get_ticks()
-        if self.current_wave:
-            new_enemy = self.current_wave.update(current_time)
+        current_wave = self.level_manager.current_level.current_wave
+        if current_wave:
+            new_enemy = current_wave.update(current_time)
             if new_enemy:
                 self.add_enemy(new_enemy)
 
@@ -35,6 +35,7 @@ class EnemyManager(EntityManager):
                 if self.reach_end_callback:
                     self.reach_end_callback(enemy.damage_to_player)
                 self.entities.remove(enemy)
+
     def add_enemy(self, enemy):
         """ Add a new enemy to the manager. """
         self.entities.add(enemy)
