@@ -3,6 +3,8 @@ import os
 
 def load_scaled_image(path, size):
     # Calculate the absolute path relative to the current script
+    if not path or not size:
+        return None
     current_dir = os.path.dirname(__file__)  # Get the directory where the current script is located
     project_root = os.path.join(current_dir, '../..')  # Adjust this as needed
     absolute_path = os.path.join(project_root, path)  # Construct the absolute path

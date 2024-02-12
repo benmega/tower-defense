@@ -1,6 +1,7 @@
 import pygame_gui
 
 from src.board.game_board import GameBoard
+from src.board.wave_panel import WavePanel
 from src.entities.Player import Player
 import pygame
 
@@ -16,7 +17,7 @@ from src.screens.campain_map import CampaignMap
 from src.screens.level_completion import LevelCompletionScreen
 from src.screens.main_menu import MainMenu
 from src.screens.options_screen import OptionsScreen
-from src.screens.tower_selection_panel import TowerSelectionPanel
+from src.board.tower_selection_panel import TowerSelectionPanel
 import os
 
 
@@ -52,6 +53,7 @@ class Game:
         self.level_completion_screen = LevelCompletionScreen(self)
         self.is_build_mode = True
         self.tower_selection_panel = TowerSelectionPanel(self.screen, self.tower_manager)
+        self.wave_panel = WavePanel(self.UI_manager, self.level_manager, self.screen)
 
     def initialize_game(self):
         grid_width = configuration.DEFAULT_GRID_SIZE[0]
@@ -91,6 +93,7 @@ class Game:
             self.enemy_manager.draw(self.screen)
             self.projectile_manager.draw_projectiles(self.screen)
             self.tower_selection_panel.draw()
+            #self.wave_panel.draw()
         self.UI_manager.draw_ui(self.screen)  # Draw the game UI
         pygame.display.flip()  # Update the display
 
@@ -134,6 +137,7 @@ class Game:
             self.collision_manager.handle_group_collisions(
                 self.enemy_manager.entities, self.projectile_manager.projectiles
             )
+            self.wave_panel.update(time_delta)
             self.check_game_over()
 
     def check_game_over(self):

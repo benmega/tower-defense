@@ -8,10 +8,11 @@ from src.entities.enemies.enemy_wave import EnemyWave
 
 class Level:
     def __init__(self, enemy_wave_list, path, level_number):
-        self.current_wave = None
         self.enemy_wave_list = enemy_wave_list
         self.path = path
         self.level_number = level_number
+        self.active_waves = []
+        self.current_wave = None
         self.current_wave_index = -1
         self.start_time = pygame.time.get_ticks()
 
@@ -76,3 +77,22 @@ class Level:
         # Reinitialize the enemy waves
         for wave in self.enemy_wave_list:
             wave.reset()
+
+
+    def update_level(self, current_time):
+        # Check if any upcoming waves can be started (either automatically or by player action)
+        for wave in self.enemy_wave_list:
+            if not wave.is_active and (wave.start_time <= current_time or wave.manually_started):
+                wave.start()
+                self.active_waves.append(wave)
+
+        # Update active waves and handle spawning
+        new_enemies = []
+        for wave in self.active_waves:
+            enemies = wave.update(current_time)
+            if enemies:
+                new_enemies.extend(enemies)
+            if wave.is_finished():
+                self.active_waves.remove(wave)
+
+        return new_enemies

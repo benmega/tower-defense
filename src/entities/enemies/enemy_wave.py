@@ -27,6 +27,7 @@ class EnemyWave:
         self.spawned_count = 0
         self.last_spawn_time = 0
         self.path = path
+        self.manually_started = False
 
     def update(self, current_time):
         """
@@ -91,3 +92,7 @@ class EnemyWave:
         self.spawned_count = 0  # Reset the number of spawned enemies
         self.start_time = pygame.time.get_ticks()  # Reset the start time for the wave
         self.active = False  # Set the wave to inactive until it's triggered again
+
+    def start(self):
+        self.manually_started = True
+        # Set up the wave to start spawning enemies
