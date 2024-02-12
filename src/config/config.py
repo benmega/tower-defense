@@ -224,7 +224,7 @@ GRASS_IMAGE_PATH = 'assets/images/gameBoardTiles/grass.png'
 ENTRANCE_IMAGE_PATH = 'assets/images/gameBoardTiles/entrance.png'
 EXIT_IMAGE_PATH = 'assets/images/gameBoardTiles/exit.png'
 PATH_IMAGE_PATH = 'assets/images/gameBoardTiles/path.png'
-LEVELS_JSON_PATH = 'src/config/TestLevels.json'
+LEVELS_JSON_PATH = 'src/config/levels/LevelsAll.json'
 
 # UI elements
 UI_FONT = 'Arial'

@@ -55,11 +55,12 @@ class LevelManager:
     # Additional methods as necessary for level management
     def start_level(self, level_index):
 
+        print(f"Starting level {level_index + 1}")
         self.current_level_index = level_index
         self.current_level = self.levels[level_index]
         self.current_level.start_time = pygame.time.get_ticks()
         # self.current_level.get_next_wave()
-        print(f"Starting level {level_index + 1}")
+
 
     def update_levels(self):
         current_time = pygame.time.get_ticks()
