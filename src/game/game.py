@@ -19,6 +19,8 @@ from src.screens.options_screen import OptionsScreen
 from src.screens.tower_selection_panel import TowerSelectionPanel
 import os
 
+
+
 class Game:
     '''
     Core game class responsible for initializing the game, running the main loop, handling game state transitions (like starting, game over), and managing high-level game events.
@@ -100,7 +102,6 @@ class Game:
             time_delta = self.clock.tick(configuration.FPS) / 1000.0
             self.event_manager.process_events(self)
             self.update(time_delta)
-            self.UI_manager.update(time_delta)
             self.draw()
             pygame.display.update()
             pygame.display.flip()
@@ -111,6 +112,8 @@ class Game:
         if configuration.DEBUG:
             print("Updating game state")
 
+        self.UI_manager.update(time_delta)
+
         if self.current_state == GameState.MAIN_MENU:
             self.main_menu.update(time_delta)
         elif self.current_state == GameState.LEVEL_COMPLETE:
@@ -120,7 +123,6 @@ class Game:
             new_enemies = self.level_manager.update_levels()
             if not new_enemies and len(self.enemy_manager.entities) == 0:
                 if self.level_manager.check_level_complete():
-                    #self.go_to_next_level()
                     self.level_completion_screen.background = self.capture_screen()
                     self.current_state = GameState.LEVEL_COMPLETE
                     self.level_completion_screen.open_screen()
@@ -129,11 +131,10 @@ class Game:
             self.enemy_manager.update()
             self.tower_manager.update(self.enemy_manager.get_enemies(), self.projectile_manager)
             self.projectile_manager.update_entities()
-            self.UI_manager.update(configuration.FPS/1000)
-            self.check_game_over()
             self.collision_manager.handle_group_collisions(
                 self.enemy_manager.entities, self.projectile_manager.projectiles
             )
+            self.check_game_over()
 
     def check_game_over(self):
         # Check if the game should end (e.g., player health reaches 0)
@@ -152,7 +153,7 @@ class Game:
         self.score_label.set_text(f"Score: {self.player.score}")
         self.enemy_count_label.set_text(f"Enemies: {len(self.enemy_manager.entities)}")
 
-    def player_take_damage_callback(self,amount):
+    def player_take_damage_callback(self, amount):
         self.player.health -= amount
         self.health_label.set_text(f'health: {self.player.health}')
         if self.player.health <= 0:
@@ -178,3 +179,9 @@ class Game:
     def capture_screen(self):
         # Capture the current display surface
         return pygame.display.get_surface().copy()
+
+    def set_gameboard_UI_visibility(self, visible):
+        self.score_label.visible = visible
+        self.enemy_count_label.visible = visible
+        self.gold_label.visible = visible
+        self.health_label.visible = visible

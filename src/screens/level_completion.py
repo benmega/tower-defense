@@ -82,4 +82,5 @@ class LevelCompletionScreen:
                 elif event.ui_element == self.main_menu_button:
                     game.current_state = GameState.MAIN_MENU
                     game.main_menu.open_menu()
+                    game.set_gameboard_UI_visibility(False)
                     self.close_screen()
