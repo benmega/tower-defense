@@ -260,7 +260,7 @@
     },
     {
       "level_number": 18,
-      "path": [{"x": 0, "y": 0}, {"x": 0, "y": 850}, {"x": 1100, "y": 850}, {"x": 1100, "y": 750}, {"x": 550, "y": 750}],
+      "path": [{"x": 0, "y": 0}, {"x": 0, "y": 850}, {"x": 1000, "y": 850}, {"x": 1000, "y": 750}, {"x": 550, "y": 750}],
       "enemy_waves": [
         {"enemy_type": "BasicEnemy", "count": 28, "spawn_interval": 780},
         {"enemy_type": "FastEnemy", "count": 24, "spawn_interval": 510},
@@ -294,11 +294,11 @@
       "level_number": 20,
       "path": [
         {"x": 0, "y": 0},
-        {"x": 100, "y": 100},
-        {"x": 200, "y": 0},
+        {"x": 100, "y": 0},
+        {"x": 300, "y": 0},
         {"x": 300, "y": 100},
-        {"x": 400, "y": 0},
-        {"x": 500, "y": 100}
+        {"x": 300, "y": 0},
+        {"x": 300, "y": 500}
       ],
       "enemy_waves": [
         {"enemy_type": "BasicEnemy", "count": 30, "spawn_interval": 800},

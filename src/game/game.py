@@ -55,10 +55,10 @@ class Game:
         grid_width = configuration.DEFAULT_GRID_SIZE[0]
         grid_height = configuration.DEFAULT_GRID_SIZE[1]
 
-        self.tower_manager.add_tower(grid_width*3, grid_height*7)  # Example of creating and adding a tower
-        self.tower_manager.add_tower(grid_width*8, grid_height*7)  # Example of creating and adding a tower
-        self.tower_manager.add_tower(grid_width * 3, grid_height * 4)  # Example of creating and adding a tower
-        self.tower_manager.add_tower(grid_width * 8, grid_height * 4)  # Example of creating and adding a tower
+        # self.tower_manager.add_tower(grid_width*3, grid_height*7)  # Example of creating and adding a tower
+        # self.tower_manager.add_tower(grid_width*8, grid_height*7)  # Example of creating and adding a tower
+        # self.tower_manager.add_tower(grid_width * 3, grid_height * 4)  # Example of creating and adding a tower
+        # self.tower_manager.add_tower(grid_width * 8, grid_height * 4)  # Example of creating and adding a tower
 
         # Initialize UI elements
         self.gold_label = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(configuration.UI_RESOURCES_POSITION, [configuration.UI_LABEL_WIDTH, configuration.UI_LABEL_HEIGHT]),
@@ -169,6 +169,7 @@ class Game:
 
     def go_to_next_level(self):
         if self.level_manager.next_level():
+            self.tower_manager.towers = []
             self.level_manager.start_next_level()
         else:  # no new enemies, no enemies to manage, and no next level
             print("Congrats! You win!")
