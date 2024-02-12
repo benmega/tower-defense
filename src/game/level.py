@@ -64,3 +64,15 @@ class Level:
         if not self.enemy_wave_list:
             return True
         return False
+
+    def reset(self):
+        """
+        Resets the level to its initial state, ready to be started over.
+        """
+        self.current_wave_index = -1  # Reset the wave index
+        self.current_wave = None  # Clear the current wave
+        self.start_time = pygame.time.get_ticks()  # Reset the start time
+
+        # Reinitialize the enemy waves
+        for wave in self.enemy_wave_list:
+            wave.reset()

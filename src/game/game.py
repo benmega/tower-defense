@@ -12,10 +12,11 @@ from src.managers.level_manager import LevelManager
 from src.managers.projectile_manager import ProjectileManager
 from src.managers.tower_manager import TowerManager
 import src.config.config as configuration
-from src.scenes.campain_map import CampaignMap
-from src.scenes.main_menu import MainMenu
-from src.scenes.options_screen import OptionsScreen
-from src.scenes.tower_selection_panel import TowerSelectionPanel
+from src.screens.campain_map import CampaignMap
+from src.screens.level_completion import LevelCompletionScreen
+from src.screens.main_menu import MainMenu
+from src.screens.options_screen import OptionsScreen
+from src.screens.tower_selection_panel import TowerSelectionPanel
 import os
 
 class Game:
@@ -46,6 +47,7 @@ class Game:
         self.main_menu = MainMenu(self.screen, self.UI_manager)
         self.options_screen = OptionsScreen(self.screen, self.UI_manager)
         self.campaign_map = CampaignMap(self.screen, self.UI_manager)
+        self.level_completion_screen = LevelCompletionScreen(self)
         self.is_build_mode = True
         self.tower_selection_panel = TowerSelectionPanel(self.screen, self.tower_manager)
 
@@ -79,6 +81,8 @@ class Game:
             self.options_screen.draw()
         elif self.current_state == GameState.CAMPAIGN_MAP:
             self.campaign_map.draw()
+        elif self.current_state == GameState.LEVEL_COMPLETE:
+            self.level_completion_screen.draw()
         elif self.current_state == GameState.PLAYING:
             self.board.draw_board(self.screen, self.level_manager.get_current_level().path) # Draw the game board
             self.tower_manager.draw_towers(self.screen)
@@ -109,16 +113,17 @@ class Game:
 
         if self.current_state == GameState.MAIN_MENU:
             self.main_menu.update(time_delta)
+        elif self.current_state == GameState.LEVEL_COMPLETE:
+            self.level_completion_screen.update(time_delta)
         elif self.current_state == GameState.PLAYING:
             # Main game update logic for each frame
             new_enemies = self.level_manager.update_levels()
             if not new_enemies and len(self.enemy_manager.entities) == 0:
                 if self.level_manager.check_level_complete():
-                    if self.level_manager.next_level():
-                        self.level_manager.start_next_level()
-                    else: # no new enemies, no enemies to manage, and no next level
-                        print("Congrats! You win!")
-                        self.is_running = False
+                    #self.go_to_next_level()
+                    self.level_completion_screen.background = self.capture_screen()
+                    self.current_state = GameState.LEVEL_COMPLETE
+                    self.level_completion_screen.open_screen()
             for enemy in new_enemies:
                 self.enemy_manager.add_enemy(enemy)
             self.enemy_manager.update()
@@ -161,3 +166,14 @@ class Game:
     def display_game_over_screen(self):
         # Code to display your game over screen...
         print("GAME OVER!!!!")
+
+    def go_to_next_level(self):
+        if self.level_manager.next_level():
+            self.level_manager.start_next_level()
+        else:  # no new enemies, no enemies to manage, and no next level
+            print("Congrats! You win!")
+            self.is_running = False
+
+    def capture_screen(self):
+        # Capture the current display surface
+        return pygame.display.get_surface().copy()

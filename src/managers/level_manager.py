@@ -96,6 +96,7 @@ class LevelManager:
         if next_level:
             self.current_level_index += 1
             self.current_level = next_level
+            self.current_level.start_time = pygame.time.get_ticks()
             print(f"Starting next level: {self.current_level_index + 1}")
         else:
             print("All levels completed!")

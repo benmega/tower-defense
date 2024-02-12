@@ -21,14 +21,14 @@ class CampaignMap:
         self.player_progress = {}  # A dictionary or list that tracks player progress
         self.level_buttons = []
 
-        self.map_image = load_scaled_image('assets/images/scenes/campaignMap/campaign_map.png', (SCREEN_WIDTH, SCREEN_HEIGHT))
+        self.map_image = load_scaled_image('assets/images/screens/campaignMap/campaign_map.png', (SCREEN_WIDTH, SCREEN_HEIGHT))
 
         for index, position in enumerate(self.level_positions):
             # Assuming you have an `is_level_unlocked` method to check if a level is unlocked
             if self.is_level_unlocked(index):
-                button_image = load_scaled_image('assets/images/scenes/campaignMap/locked_level.png', (20,20))
+                button_image = load_scaled_image('assets/images/screens/campaignMap/locked_level.png', (20,20))
             else:
-                button_image = load_scaled_image('assets/images/scenes/campaignMap/unlocked_level.png', (20,20))
+                button_image = load_scaled_image('assets/images/screens/campaignMap/unlocked_level.png', (20,20))
 
             button_rect = button_image.get_rect(topleft=position)
             self.level_buttons.append((button_image, button_rect))

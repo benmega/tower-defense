@@ -30,6 +30,8 @@ class EventManager:
                 game.options_screen.handle_events(event, game)
             elif game.current_state == GameState.CAMPAIGN_MAP:
                 game.campaign_map.handle_events(event, game)
+            elif game.current_state == GameState.LEVEL_COMPLETE:
+                game.level_completion_screen.handle_events(event, game)
             elif game.current_state == GameState.GAME_OVER:
                 # Here, handle game over specific events
                 pass
@@ -77,6 +79,4 @@ class EventManager:
         """ Handle the 'pause_game' event. """
         # Implementation to handle pausing the game
         # Example: game.pause()
-
-    # Additional methods for handling specific event types
 

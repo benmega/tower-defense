@@ -1,3 +1,5 @@
+import pygame
+
 from src.config.config import FPS, DEBUG
 from src.entities.enemies.basic_enemy import BasicEnemy
 from src.entities.enemies.fast_enemy import FastEnemy
@@ -81,3 +83,11 @@ class EnemyWave:
 
     def is_Finished(self):
         return self.spawned_count == self.count
+
+    def reset(self):
+        """
+        Resets the enemy wave to its initial state.
+        """
+        self.spawned_count = 0  # Reset the number of spawned enemies
+        self.start_time = pygame.time.get_ticks()  # Reset the start time for the wave
+        self.active = False  # Set the wave to inactive until it's triggered again

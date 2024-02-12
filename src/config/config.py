@@ -219,11 +219,11 @@ PROJECTILE_TYPES = {
 
 # Level configuration
 LEVEL_COUNT = 10
-LEVEL_BACKGROUND_PATH = 'assets/images/backgrounds/grass.png'
-GRASS_IMAGE_PATH = 'assets/images/backgrounds/grass.png'
-ENTRANCE_IMAGE_PATH = 'assets/images/backgrounds/entrance.png'
-EXIT_IMAGE_PATH = 'assets/images/backgrounds/exit.png'
-PATH_IMAGE_PATH = 'assets/images/backgrounds/path.png'
+LEVEL_BACKGROUND_PATH = 'assets/images/gameBoardTiles/grass.png'
+GRASS_IMAGE_PATH = 'assets/images/gameBoardTiles/grass.png'
+ENTRANCE_IMAGE_PATH = 'assets/images/gameBoardTiles/entrance.png'
+EXIT_IMAGE_PATH = 'assets/images/gameBoardTiles/exit.png'
+PATH_IMAGE_PATH = 'assets/images/gameBoardTiles/path.png'
 LEVELS_JSON_PATH = 'src/config/TestLevels.json'
 
 # UI elements
@@ -241,12 +241,16 @@ UI_ENEMY_COUNT_POSITION = (SCREEN_WIDTH-UI_LABEL_PAD_X, UI_LABEL_PAD_Y+UI_LABEL_
 UI_BUTTON_SIZE = (95*SCALE, 30*SCALE)
 
 # Main Menu Elements
-MAIN_MENU_BACKGROUND_PATH = 'assets/images/scenes/main_menu_screen.png'
+MAIN_MENU_BACKGROUND_PATH = 'assets/images/screens/main_menu_screen.png'
 MAIN_MENU_START_BUTTON_POSITION = (360*SCALE, 253*SCALE)
 MAIN_MENU_CONTINUE_BUTTON_POSITION = (360*SCALE, 300*SCALE)
 MAIN_MENU_SETTINGS_BUTTON_POSITION = (360*SCALE, 350*SCALE)
 MAIN_MENU_EXIT_BUTTON_POSITION = (360*SCALE, 407*SCALE)
 
+# Level Completition Elements
+LEVEL_COMPLETION_NEXT_LEVEL_BUTTON_POSITION = (360 * SCALE, 253 * SCALE)
+LEVEL_COMPLETION_REPLAY_BUTTON_POSITION = (360 * SCALE, 300 * SCALE)
+LEVEL_COMPLETION_MAIN_MENU_BUTTON_POSITION = (360 * SCALE, 350 * SCALE)
 
 # Sound effects and music
 SOUND_EFFECTS_VOLUME = 0.7

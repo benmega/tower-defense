@@ -24,7 +24,7 @@ class OptionsScreen:
             manager=self.ui_manager,
             visible=self.isActive
         )
-        self.background_image = load_scaled_image('assets/images/scenes/options_screen.png',
+        self.background_image = load_scaled_image('assets/images/screens/options_screen.png',
                                                   (SCREEN_WIDTH, SCREEN_HEIGHT))
 
     def handle_events(self, event, game):
