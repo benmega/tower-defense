@@ -1,4 +1,5 @@
 import pygame
+import pygame_gui
 
 from src.config.config import TOWER_TYPES
 from src.game.game_state import GameState
@@ -11,9 +12,12 @@ class EventManager:
     def process_events(self, game):
         """ Process and handle all events in the queue. """
         for event in pygame.event.get():
+            game.UI_manager.process_events(event)  # UI Manager should process events for all states to handle button clicks etc.
             if event.type == pygame.QUIT:
                 game.is_running = False
             elif game.current_state == GameState.PLAYING:
+                if event.type == pygame.USEREVENT:
+                    game.wave_panel.handle_events(event, game)
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     # Check if the click is for building a tower
                     # game.UI_manager.process_events(event)
@@ -22,6 +26,7 @@ class EventManager:
                         game.tower_selection_panel.handle_mouse_click(event.pos)
                     elif game.is_build_mode:
                         self.handle_build_tower(event, game)
+
             elif game.current_state == GameState.MAIN_MENU:
                 # Here, handle main menu specific events
                 game.main_menu.handle_events(event, game)
@@ -37,7 +42,7 @@ class EventManager:
                 pass
 
             # UI Manager should process events for all states to handle button clicks etc.
-            game.UI_manager.process_events(event)
+           # game.UI_manager.process_events(event)
 
         # Handle any custom events that are not pygame events
         for event in self.events:

@@ -53,7 +53,7 @@ class Game:
         self.level_completion_screen = LevelCompletionScreen(self)
         self.is_build_mode = True
         self.tower_selection_panel = TowerSelectionPanel(self.screen, self.tower_manager)
-        self.wave_panel = WavePanel(self.UI_manager, self.level_manager, self.screen)
+        self.wave_panel = WavePanel(self.screen, self.UI_manager, self.level_manager)
 
     def initialize_game(self):
         grid_width = configuration.DEFAULT_GRID_SIZE[0]
@@ -176,6 +176,7 @@ class Game:
         if self.level_manager.next_level():
             self.tower_manager.towers = []
             self.level_manager.start_next_level()
+            self.wave_panel.recreate_wave_buttons()
         else:  # no new enemies, no enemies to manage, and no next level
             print("Congrats! You win!")
             self.is_running = False

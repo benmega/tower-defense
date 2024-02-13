@@ -15,17 +15,16 @@ class Level:
         self.active_waves = []
         self.current_wave_index = -1
         #self.level_start_time = level_start_time  # Time when the level started
+        self.wave_initial_delay = 5000
+        self.wave_subsequent_delay = 10000  # 10 seconds in milliseconds for subsequent waves
         self.initialize_wave_start_times()
 
     def initialize_wave_start_times(self):
-        initial_delay = 5000  # 5 seconds in milliseconds for the first wave
-        subsequent_delay = 10000  # 10 seconds in milliseconds for subsequent waves
-
         for i, wave in enumerate(self.enemy_wave_list):
             if i == 0:
-                wave.start_time = self.start_time + initial_delay
+                wave.start_time = self.start_time + self.wave_initial_delay
             else:
-                wave.start_time = self.enemy_wave_list[i - 1].start_time + subsequent_delay
+                wave.start_time = self.enemy_wave_list[i - 1].start_time + self.wave_subsequent_delay
     @classmethod
     def from_json(cls, level_data):
         """
@@ -55,7 +54,8 @@ class Level:
         """
         if self.current_wave_index < len(self.enemy_wave_list)-1:
             self.current_wave_index += 1
-            self.active_waves = self.enemy_wave_list[self.current_wave_index]
+            next_wave = self.enemy_wave_list[self.current_wave_index]
+            self.active_waves.append(next_wave)  # Use append instead of extend for a single element
             return self.active_waves
         return None
 

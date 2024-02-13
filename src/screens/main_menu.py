@@ -47,7 +47,7 @@ class MainMenu:
                     game.current_state = GameState.PLAYING
                     game.initialize_game()  # Call initialize_game to set up the game
                     game.level_manager.load_levels()
-                    game.level_manager.start_level(0)
+                    game.go_to_next_level()
                     self.close_menu()
                 elif event.ui_element == self.continue_button:
                     game.current_state = GameState.CAMPAIGN_MAP
