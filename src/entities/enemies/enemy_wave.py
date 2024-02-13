@@ -28,13 +28,15 @@ class EnemyWave:
         self.last_spawn_time = 0
         self.path = path
         self.manually_started = False
+        self.is_active = False
+        self.start_time = pygame.time.get_ticks() + 10
 
     def update(self, current_time):
         """
         Update the wave, spawning enemies at the defined interval.
 
         :param current_time: Current time in the game.
-        :return: An enemy instance if it's time to spawn, else None.
+        :return: A list containing an enemy instance if it's time to spawn, else an empty list.
         """
 
         if self.spawned_count < self.count and current_time - self.last_spawn_time >= self.spawn_interval:
@@ -42,8 +44,9 @@ class EnemyWave:
             self.last_spawn_time = current_time
             if DEBUG:
                 print(f"Spawning enemy {self.spawned_count}/{self.count}")
-            return self.enemy_type(self.path)  # Assumes enemy_type creates an enemy instance
-        return None
+            # Wrap the enemy instance in a list before returning
+            return [self.enemy_type(self.path)]  # Assumes enemy_type creates an enemy instance
+        return []  # Return an empty list if no enemy is spawned
 
     @classmethod
     def from_json(cls, wave_data, path):
@@ -82,7 +85,7 @@ class EnemyWave:
         }
         return enemy_class_map.get(enemy_type_str, BasicEnemy)  # Default to BasicEnemy if not found'
 
-    def is_Finished(self):
+    def is_finished(self):
         return self.spawned_count == self.count
 
     def reset(self):
@@ -91,7 +94,7 @@ class EnemyWave:
         """
         self.spawned_count = 0  # Reset the number of spawned enemies
         self.start_time = pygame.time.get_ticks()  # Reset the start time for the wave
-        self.active = False  # Set the wave to inactive until it's triggered again
+        self.is_active = False  # Set the wave to inactive until it's triggered again
 
     def start(self):
         self.manually_started = True

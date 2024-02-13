@@ -124,7 +124,7 @@ class Game:
         elif self.current_state == GameState.PLAYING:
             # Main game update logic for each frame
             new_enemies = self.level_manager.update_levels()
-            if not new_enemies and len(self.enemy_manager.entities) == 0:
+            if all(not item for item in new_enemies) and len(self.enemy_manager.entities) == 0:
                 if self.level_manager.check_level_complete():
                     self.level_completion_screen.background = self.capture_screen()
                     self.current_state = GameState.LEVEL_COMPLETE

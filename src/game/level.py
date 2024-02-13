@@ -8,14 +8,24 @@ from src.entities.enemies.enemy_wave import EnemyWave
 
 class Level:
     def __init__(self, enemy_wave_list, path, level_number):
+        self.start_time = pygame.time.get_ticks()
         self.enemy_wave_list = enemy_wave_list
         self.path = path
         self.level_number = level_number
         self.active_waves = []
-        self.current_wave = None
         self.current_wave_index = -1
-        self.start_time = pygame.time.get_ticks()
+        #self.level_start_time = level_start_time  # Time when the level started
+        self.initialize_wave_start_times()
 
+    def initialize_wave_start_times(self):
+        initial_delay = 5000  # 5 seconds in milliseconds for the first wave
+        subsequent_delay = 10000  # 10 seconds in milliseconds for subsequent waves
+
+        for i, wave in enumerate(self.enemy_wave_list):
+            if i == 0:
+                wave.start_time = self.start_time + initial_delay
+            else:
+                wave.start_time = self.enemy_wave_list[i - 1].start_time + subsequent_delay
     @classmethod
     def from_json(cls, level_data):
         """
@@ -45,8 +55,8 @@ class Level:
         """
         if self.current_wave_index < len(self.enemy_wave_list)-1:
             self.current_wave_index += 1
-            self.current_wave = self.enemy_wave_list[self.current_wave_index]
-            return self.current_wave
+            self.active_waves = self.enemy_wave_list[self.current_wave_index]
+            return self.active_waves
         return None
 
     @staticmethod
@@ -71,7 +81,7 @@ class Level:
         Resets the level to its initial state, ready to be started over.
         """
         self.current_wave_index = -1  # Reset the wave index
-        self.current_wave = None  # Clear the current wave
+        self.active_waves = None  # Clear the current wave
         self.start_time = pygame.time.get_ticks()  # Reset the start time
 
         # Reinitialize the enemy waves

@@ -18,7 +18,7 @@ def parse_levels(levels_data):
 
 class LevelManager:
     def __init__(self):
-        # self.current_wave = None
+        # self.active_waves = None
         # self.enemy_manager = enemy_manager
         self.levels = []
         self.current_level = None
@@ -59,7 +59,7 @@ class LevelManager:
         self.current_level_index = level_index
         self.current_level = self.levels[level_index]
         self.current_level.start_time = pygame.time.get_ticks()
-        # self.current_level.get_next_wave()
+        self.current_level.initialize_wave_start_times()
 
 
     def update_levels(self):
@@ -68,16 +68,7 @@ class LevelManager:
 
         current_level = self.get_current_level()
         if current_level:
-            # for wave in current_level.enemy_wave_list:
-            wave = current_level.current_wave
-            if wave:
-                enemy = wave.update(current_time)
-                if enemy:
-                    new_enemies.append(enemy)
-                elif wave.is_Finished():
-                    current_level.get_next_wave()
-            else:
-                current_level.get_next_wave()
+            new_enemies.append(current_level.update_level(current_time))
             if current_level.is_completed():
                 self.start_next_level() # TODO check if this is this ever hit
 
@@ -98,6 +89,7 @@ class LevelManager:
             self.current_level_index += 1
             self.current_level = next_level
             self.current_level.start_time = pygame.time.get_ticks()
+            self.current_level.initialize_wave_start_times()
             print(f"Starting next level: {self.current_level_index + 1}")
         else:
             print("All levels completed!")
