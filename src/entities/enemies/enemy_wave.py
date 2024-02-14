@@ -12,7 +12,7 @@ from src.entities.enemies.tank_enemy import TankEnemy
 
 
 class EnemyWave:
-    def __init__(self, enemy_type, count, spawn_interval, path):
+    def __init__(self, enemy_type, count, spawn_interval, path, index):
         """
         Initialize an enemy wave.
 
@@ -30,6 +30,7 @@ class EnemyWave:
         self.manually_started = False
         self.is_active = False
         self.start_time = pygame.time.get_ticks() + 10
+        self.index = index
 
     def update(self, current_time):
         """
@@ -49,7 +50,7 @@ class EnemyWave:
         return []  # Return an empty list if no enemy is spawned
 
     @classmethod
-    def from_json(cls, wave_data, path):
+    def from_json(cls, wave_data, path, index):
         """
         Factory method to create an EnemyWave instance from JSON data.
 
@@ -63,7 +64,7 @@ class EnemyWave:
         # Convert enemy_type string to actual class. This requires a mapping from strings to enemy classes.
         enemy_type = cls.get_enemy_class_from_string(enemy_type_str)
 
-        return cls(enemy_type, count, spawn_interval, path)
+        return cls(enemy_type, count, spawn_interval, path, index)
 
     @staticmethod
     def get_enemy_class_from_string(enemy_type_str):

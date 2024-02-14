@@ -53,13 +53,7 @@ class LevelManager:
         return None
 
     # Additional methods as necessary for level management
-    def start_level(self, level_index):
 
-        print(f"Starting level {level_index + 1}")
-        self.current_level_index = level_index
-        self.current_level = self.levels[level_index]
-        self.current_level.start_time = pygame.time.get_ticks()
-        self.current_level.initialize_wave_start_times()
 
 
     def update_levels(self):
@@ -83,14 +77,42 @@ class LevelManager:
                 return False
         return True
 
-    def start_next_level(self):
-        next_level = self.next_level()
-        if next_level:
-            self.current_level_index += 1
-            self.current_level = next_level
-            self.current_level.start_time = pygame.time.get_ticks()
-            self.current_level.initialize_wave_start_times()
-            print(f"Starting next level: {self.current_level_index + 1}")
+    def start_level(self, level_index=None):
+        if level_index is not None:
+            # Start the specified level
+            print(f"Starting level {level_index + 1}")
+            self.current_level_index = level_index
         else:
-            print("All levels completed!")
-            # Handle the game completion scenario here (e.g., go to a victory screen)
+            # Start the next level
+            next_level_index = self.current_level_index + 1
+            if next_level_index < len(self.levels):
+                self.current_level_index = next_level_index
+                print(f"Starting next level: {self.current_level_index + 1}")
+            else:
+                print("All levels completed!")
+                # Handle the game completion scenario here (e.g., go to a victory screen)
+                return  # Exit the method if there are no more levels to start
+
+        # Common code for starting a level
+        self.current_level = self.levels[self.current_level_index]
+        self.current_level.start_time = pygame.time.get_ticks()
+        self.current_level.initialize_wave_start_times()
+
+    # def start_level(self, level_index):
+    #
+    #     print(f"Starting level {level_index + 1}")
+    #     self.current_level_index = level_index
+    #     self.current_level = self.levels[level_index]
+    #     self.current_level.start_time = pygame.time.get_ticks()
+    #     self.current_level.initialize_wave_start_times()
+    # def start_next_level(self):
+    #     next_level = self.next_level()
+    #     if next_level:
+    #         self.current_level_index += 1
+    #         self.current_level = next_level
+    #         self.current_level.start_time = pygame.time.get_ticks()
+    #         self.current_level.initialize_wave_start_times()
+    #         print(f"Starting next level: {self.current_level_index + 1}")
+    #     else:
+    #         print("All levels completed!")
+    #         # Handle the game completion scenario here (e.g., go to a victory screen)

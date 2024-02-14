@@ -26,9 +26,9 @@ class TowerManager(EntityManager):
             'Debuff': DebuffTower,
         }
 
-    def add_tower(self, x, y):
+    def add_tower(self, x, y, game):
         """ Adds a new tower at specified coordinates if it's a valid position. """
-        if self.is_valid_position(x, y) and self.has_enough_resources_to_build():
+        if self.is_valid_position(x, y, game) and self.has_enough_resources_to_build():
             # Get the tower class from the selected tower type
             tower_class = self.tower_types.get(self.selected_tower_type, None)
             if tower_class:
@@ -77,10 +77,10 @@ class TowerManager(EntityManager):
         """ Selects the type of tower to build. """
         self.selected_tower_type = tower_type
 
-    def is_valid_position(self, x, y):
+    def is_valid_position(self, x, y, game):
         """ Checks if the position is valid for placing a tower. """
-        # TODO Implement logic to determine if the position is valid (e.g., not on a path)
-        return True
+        mouse_pos = (x,y)
+        return game.board.is_within_panel(mouse_pos)
 
     def has_enough_resources_to_build(self):
         """ Checks if the player has enough resources to build the selected tower. """

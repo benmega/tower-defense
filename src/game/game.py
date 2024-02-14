@@ -34,17 +34,19 @@ class Game:
         self.screen = pygame.display.set_mode([configuration.SCREEN_WIDTH, configuration.SCREEN_HEIGHT], pygame.DOUBLEBUF)
         pygame.display.set_caption("Tower Defense Game")
         self.clock = pygame.time.Clock()
-        self.board = GameBoard(configuration.GAME_BOARD_WIDTH, configuration.GAME_BOARD_HEIGHT)
         self.level_manager = LevelManager()
         self.tower_manager = TowerManager()
         self.projectile_manager = ProjectileManager()
         self.collision_manager = CollisionManager()
+        self.event_manager = EventManager()
         theme_path = os.path.join(os.path.dirname(__file__), '..', 'config', 'theme.json')
         self.UI_manager = pygame_gui.UIManager((configuration.SCREEN_WIDTH, configuration.SCREEN_HEIGHT), theme_path)
-        self.event_manager = EventManager()
+        self.wave_panel = WavePanel(self.screen, self.UI_manager, self.level_manager)
+        self.tower_selection_panel = TowerSelectionPanel(self.screen, self.tower_manager)
+        self.board = GameBoard(configuration.GAME_BOARD_WIDTH, configuration.GAME_BOARD_HEIGHT)
         self.is_running = False
         self.checkCounter = 0
-        self.player = Player()
+        self.player = Player(update_ui_callback=self.update_ui)
         self.enemy_manager = EnemyManager(self.level_manager, self.enemy_defeated_callback, self.player_take_damage_callback)
         self.current_state = GameState.MAIN_MENU
         self.main_menu = MainMenu(self.screen, self.UI_manager)
@@ -52,13 +54,14 @@ class Game:
         self.campaign_map = CampaignMap(self.screen, self.UI_manager)
         self.level_completion_screen = LevelCompletionScreen(self)
         self.is_build_mode = True
-        self.tower_selection_panel = TowerSelectionPanel(self.screen, self.tower_manager)
-        self.wave_panel = WavePanel(self.screen, self.UI_manager, self.level_manager)
+
+
 
     def initialize_game(self):
         grid_width = configuration.DEFAULT_GRID_SIZE[0]
         grid_height = configuration.DEFAULT_GRID_SIZE[1]
-
+        self.current_state = GameState.PLAYING
+        self.level_manager.load_levels()
         # self.tower_manager.add_tower(grid_width*3, grid_height*7)  # Example of creating and adding a tower
         # self.tower_manager.add_tower(grid_width*8, grid_height*7)  # Example of creating and adding a tower
         # self.tower_manager.add_tower(grid_width * 3, grid_height * 4)  # Example of creating and adding a tower
@@ -172,10 +175,13 @@ class Game:
         # Code to display your game over screen...
         print("GAME OVER!!!!")
 
-    def go_to_next_level(self):
+    def start_level(self, index=None):
         if self.level_manager.next_level():
             self.tower_manager.towers = []
-            self.level_manager.start_next_level()
+            if index:
+                self.level_manager.start_level(index)
+            else:
+                self.level_manager.start_level()
             self.wave_panel.recreate_wave_buttons()
         else:  # no new enemies, no enemies to manage, and no next level
             print("Congrats! You win!")
@@ -190,3 +196,10 @@ class Game:
         self.enemy_count_label.visible = visible
         self.gold_label.visible = visible
         self.health_label.visible = visible
+
+    def update_ui(self):
+        # Update UI elements here
+        # For example, updating gold, health, and score labels
+        self.gold_label.set_text(f"Gold: {self.player.gold}")
+        self.health_label.set_text(f"Health: {self.player.health}")
+        self.score_label.set_text(f"Score: {self.player.score}")

@@ -1,7 +1,7 @@
 import pygame
 import pygame_gui
 
-from src.config.config import UI_BUTTON_SIZE, SCREEN_WIDTH
+from src.config.config import UI_BUTTON_SIZE, SCREEN_WIDTH, PLAYER_EARLY_WAVE_BONUS_MULTIPLIER
 from src.screens.screen import Screen
 
 
@@ -18,6 +18,7 @@ class WavePanel(Screen):
         self.start_x = SCREEN_WIDTH - 100  # Starting X position for the rightmost button
         self.create_wave_buttons()
         self.pixels_per_second = 20
+        self.panel_y = 600
 
 
     def create_wave_buttons(self):
@@ -29,7 +30,7 @@ class WavePanel(Screen):
                 position_x = max(0, (time_until_start * self.pixels_per_second))
                 button_width = self.level_manager.current_level.wave_subsequent_delay/1000 * self.pixels_per_second
                 button = pygame_gui.elements.UIButton(
-                    relative_rect=pygame.Rect(position_x, 600, button_width, UI_BUTTON_SIZE[1]),
+                    relative_rect=pygame.Rect(position_x, self.panel_y, button_width, UI_BUTTON_SIZE[1]),
                     text=f'Wave {i + 1}',
                     manager=self.ui_manager,
                     object_id = pygame_gui.core.ObjectID(class_id="@button")
@@ -47,9 +48,8 @@ class WavePanel(Screen):
                         print(f"Button {i + 1} pressed - Wave {i + 1}")
                         # Start the corresponding wave manually
                         #wave.start()
-                        self.start_wave_manually(i)
-                        self.level_manager.current_level.get_next_wave()
-                        self.level_manager.current_level.enemy_wave_list[i].start()
+                        if self.start_wave_manually(i):
+                            game.player.add_gold(button.relative_rect[0] * PLAYER_EARLY_WAVE_BONUS_MULTIPLIER) # gold equal to position times player bonus
                         break
 
     # def draw(self):
@@ -76,10 +76,10 @@ class WavePanel(Screen):
             # Update the button's position
             button.set_relative_position(pygame.Rect(position_x, button.relative_rect.y,
                                                      button.relative_rect.width, button.relative_rect.height))
-            if wave.manually_started:
-                button.set_text(f"Wave {i+1} - Started")
-            else:
-                button.set_text(f"Wave {i+1}")
+            # if wave.manually_started:
+            #     button.set_text(f"Wave {i+1} - Started")
+            # else:
+            #     button.set_text(f"Wave {i+1}")
 
     def recreate_wave_buttons(self):
         # Clear existing buttons if any
@@ -91,6 +91,9 @@ class WavePanel(Screen):
             self.create_wave_buttons()
 
     def start_wave_manually(self, wave_index):
+        # Only allow next wave to be called
+        if wave_index != self.level_manager.current_level.current_wave_index + 1:
+            return None
         current_time = pygame.time.get_ticks()
         manually_started_wave = self.level_manager.current_level.enemy_wave_list[wave_index]
 
@@ -104,4 +107,6 @@ class WavePanel(Screen):
         # Start the wave manually
         manually_started_wave.start_time = current_time
         manually_started_wave.manually_started = True
+        self.level_manager.current_level.get_next_wave()
+        self.level_manager.current_level.enemy_wave_list[wave_index].start()
         #self.update()  # Update the UI to reflect the change

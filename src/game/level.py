@@ -8,11 +8,17 @@ from src.entities.enemies.enemy_wave import EnemyWave
 
 class Level:
     def __init__(self, enemy_wave_list, path, level_number):
+        '''
+
+        :param enemy_wave_list: list of wave objects
+        :param path:
+        :param level_number:
+        '''
         self.start_time = pygame.time.get_ticks()
         self.enemy_wave_list = enemy_wave_list
         self.path = path
         self.level_number = level_number
-        self.active_waves = []
+        self.active_waves = [] # list of wave objects
         self.current_wave_index = -1
         #self.level_start_time = level_start_time  # Time when the level started
         self.wave_initial_delay = 5000
@@ -31,9 +37,7 @@ class Level:
         Factory method to create a Level instance from JSON data.
         """
         path = cls.convert_path(level_data['path'])
-        enemy_wave_list = [
-            EnemyWave.from_json(wave, path) for wave in level_data['enemy_waves']
-        ]
+        enemy_wave_list = [EnemyWave.from_json(wave, path,i) for i, wave in enumerate(level_data['enemy_waves'])]
 
         level_number = level_data['level_number']
         return cls(enemy_wave_list, path, level_number)
@@ -104,5 +108,9 @@ class Level:
                 new_enemies.extend(enemies)
             if wave.is_finished():
                 self.active_waves.remove(wave)
+        if self.active_waves:
+            self.current_wave_index = max([wave.index for wave in self.active_waves])
+        else:
+            self.current_wave_index = -1
 
         return new_enemies

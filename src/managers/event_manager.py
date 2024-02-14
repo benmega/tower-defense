@@ -69,7 +69,7 @@ class EventManager:
         build_type = game.tower_manager.selected_tower_type
         build_cost = TOWER_TYPES[build_type]['cost']
         if game.player.gold >= build_cost:
-            game.tower_manager.add_tower(event.pos[0],event.pos[1])
+            game.tower_manager.add_tower(event.pos[0],event.pos[1], game)
             game.player.gold -= build_cost
             game.UI_manager.resources = game.player.gold
         # Implementation to handle building a tower

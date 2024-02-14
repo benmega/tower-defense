@@ -14,6 +14,11 @@ class GameBoard:
     Potential TODOs: Implementing efficient game state management, optimizing the main game loop for performance, and handling transitions between different parts of the game smoothly.
     '''
     def __init__(self, width, height):
+        '''
+
+        :param width: Width in tiles of the game board
+        :param height: Height in tiles of the game board
+        '''
         self.width = width
         self.height = height
         self.grass_image = load_scaled_image(GRASS_IMAGE_PATH, TILE_SIZE)
@@ -22,10 +27,10 @@ class GameBoard:
         self.exit_image = load_scaled_image(EXIT_IMAGE_PATH, TILE_SIZE)
         self.grid = [[None for _ in range(width)] for _ in range(height)]
 
-    def is_valid_position(self, x, y):
-        return 0 <= x < self.width and 0 <= y < self.height
+
 
     def get_tower_at(self, x, y):
+        '''x and way are tile grid numbers not pixels'''
         return self.grid[y][x] if self.is_valid_position(x, y) else None
 
     def get_tile_image(self, x, y, path):
@@ -57,7 +62,7 @@ class GameBoard:
     def create_path_layout(self, path):
 
         # Convert path points to grid coordinates TODO set path to be grid based
-        path = [(x // TILE_SIZE[0], y // TILE_SIZE[1]) for x, y in path]
+        path = [(min(x // TILE_SIZE[0],self.width-1), min(y // TILE_SIZE[1],self.height-1)) for x, y in path]
 
         # Initialize layout with grass
         layout = [['G' for _ in range(self.width)] for _ in range(self.height)]
@@ -86,3 +91,13 @@ class GameBoard:
         layout[path[-1][1]][path[-1][0]] = 'X'  # Exit
 
         return layout
+
+    def is_valid_position(self, x, y):
+        '''x and way are tile grid numbers not pixels'''
+        return 0 <= x < self.width and 0 <= y < self.height
+
+    def is_within_panel(self, mouse_pos):
+        # assumes board is at (0,0)
+        x, y = mouse_pos
+        '''x and way are pixel based not tile based'''
+        return x < self.width * TILE_SIZE[0] and y < self.height * TILE_SIZE[1]

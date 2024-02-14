@@ -55,10 +55,8 @@ class CampaignMap:
             if button_rect.collidepoint(mouse_pos):
                 # Logic to start the level, if it's unlocked
                 if self.is_level_unlocked(index):
-                    game.current_state = GameState.PLAYING
                     game.initialize_game()  # Call initialize_game to set up the game
-                    game.level_manager.load_levels()
-                    game.level_manager.start_level(index+1)
+                    game.start_level(index+1)
                     print(f"Starting level {index}")
                     # Start the level here
     def update(self, time_delta):
