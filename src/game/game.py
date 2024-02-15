@@ -1,5 +1,5 @@
 import os
-
+import json
 import pygame
 import pygame_gui
 
@@ -16,6 +16,7 @@ from src.managers.projectile_manager import ProjectileManager
 from src.managers.tower_manager import TowerManager
 from src.screens.campain_map import CampaignMap
 from src.screens.level_completion import LevelCompletionScreen
+from src.screens.load_game_screen import LoadGameScreen
 from src.screens.main_menu import MainMenu
 from src.screens.options_screen import OptionsScreen
 
@@ -59,7 +60,9 @@ class Game:
         self.current_state = GameState.MAIN_MENU
         self.main_menu = MainMenu(self.screen, self.UI_manager)
         self.options_screen = OptionsScreen(self.UI_manager)
-        self.campaign_map = CampaignMap(self.screen, self.UI_manager)
+        self.load_game_screen = LoadGameScreen(self.UI_manager)
+        player_progress = {'unlocked_levels': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]} # sample progress
+        self.campaign_map = CampaignMap(self.screen, self.UI_manager, player_progress)
         self.level_completion_screen = LevelCompletionScreen(self)
         self.is_build_mode = True
 
@@ -95,6 +98,8 @@ class Game:
             self.main_menu.draw()
         elif self.current_state == GameState.OPTIONS:
             self.options_screen.draw(self.screen)
+        elif self.current_state == GameState.LOAD_GAME:
+            self.load_game_screen.draw(self.screen)
         elif self.current_state == GameState.CAMPAIGN_MAP:
             self.campaign_map.draw()
         elif self.current_state == GameState.LEVEL_COMPLETE:
@@ -206,3 +211,4 @@ class Game:
         self.health_label.set_text(f"Health: {self.player.health}")
         self.score_label.set_text(f"Score: {self.player.score}")
         self.UI_manager.update(self.clock.tick(configuration.FPS) / 1000.0)
+

@@ -33,6 +33,9 @@ class EventManager:
             elif game.current_state == GameState.OPTIONS:
                 # Here, handle options menu specific events
                 game.options_screen.handle_events(event, game)
+            elif game.current_state == GameState.LOAD_GAME:
+                # Here, handle options menu specific events
+                game.load_game_screen.handle_events(event, game)
             elif game.current_state == GameState.CAMPAIGN_MAP:
                 game.campaign_map.handle_events(event, game)
             elif game.current_state == GameState.LEVEL_COMPLETE:

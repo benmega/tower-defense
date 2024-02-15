@@ -6,7 +6,7 @@ from src.utils.helpers import load_scaled_image
 
 
 class CampaignMap:
-    def __init__(self, screen, ui_manager):  # , level_positions, player_progress):
+    def __init__(self, screen, ui_manager, player_progress):
         self.isActive = None
         self.screen = screen
         self.ui_manager = ui_manager
@@ -18,8 +18,9 @@ class CampaignMap:
             (336, 430), (296, 395), (360, 351), (356, 328), (364, 276),
             (410, 306), (465, 282), (490, 268), (481, 247), (468, 197)
         ]
-        self.player_progress = {
-            'unlocked_levels': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]}  # A dictionary or list that tracks player progress
+        self.player_progress = player_progress
+        #self.player_progress = {
+        #    'unlocked_levels': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]}  # A dictionary or list that tracks player progress
         self.level_buttons = []
 
         self.map_image = load_scaled_image('assets/images/screens/campaignMap/campaign_map.png',
@@ -58,7 +59,7 @@ class CampaignMap:
                 # Logic to start the level, if it's unlocked
                 if self.is_level_unlocked(index):
                     game.initialize_game()  # Call initialize_game to set up the game
-                    game.level_manager.start_level(index + 1)
+                    game.level_manager.start_level(index)
                     print(f"Starting level {index}")
                     # Start the level here
 

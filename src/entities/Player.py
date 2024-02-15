@@ -1,12 +1,18 @@
 from src.config.config import PLAYER_GOLD, PLAYER_HEALTH
+import os
+import json
+
+
+
 
 
 class Player:
-    def __init__(self,update_ui_callback):
+    def __init__(self, update_ui_callback):
         self.gold = PLAYER_GOLD
         self.health = PLAYER_HEALTH
         self.score = 0
-        self.player_progress = {'unlocked_levels':[]} # list of completed levels
+        self.player_progress = {'unlocked_levels': []}  # list of completed levels
+        self.player_data = {}
         self.update_ui_callback = update_ui_callback  # Function to call when UI needs to be updated
 
     def add_gold(self, amount):
@@ -39,3 +45,11 @@ class Player:
     #     print("Player has died.")
     #     if self.on_death_callback:
     #         self.on_death_callback()
+
+    def save_game(self, filename="src/save_data/savegame.json"):
+        os.makedirs(os.path.dirname(filename), exist_ok=True)
+        with open(filename, 'w') as f:
+            json.dump(self.player_data, f, indent=4)
+
+    def load_data(self, player_data):
+        self.player_data = player_data
