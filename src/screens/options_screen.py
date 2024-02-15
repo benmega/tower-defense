@@ -7,8 +7,8 @@ from src.screens.screen import Screen
 
 
 class OptionsScreen(Screen):
-    def __init__(self, screen, ui_manager):
-        super().__init__(screen, ui_manager, 'assets/images/screens/options_screen.png')
+    def __init__(self, ui_manager):
+        super().__init__(ui_manager, 'assets/images/screens/options_screen.png')
         self.back_button = pygame_gui.elements.UIButton(
             relative_rect=pygame.Rect([350, 425], UI_BUTTON_SIZE),
             text='Back',

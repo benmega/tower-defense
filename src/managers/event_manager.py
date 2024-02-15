@@ -17,7 +17,7 @@ class EventManager:
                 game.is_running = False
             elif game.current_state == GameState.PLAYING:
                 if event.type == pygame.USEREVENT:
-                    game.wave_panel.handle_events(event, game)
+                    game.level_manager.wave_panel.handle_events(event, game)
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     # Check if the click is for building a tower
                     # game.UI_manager.process_events(event)

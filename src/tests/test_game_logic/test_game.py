@@ -33,11 +33,12 @@ class TestGame(unittest.TestCase):
 
     def test_level_progression(self):
         # Test starting and completing a level
-        self.game.start_level(0)
+        self.game.level_manager.start_level(0)
         # TODO: Add assertions for level start
         # TODO: Add logic and assertions for level completion
 
     def test_game_over_condition(self):
+        pass
         # Test game over condition
         # TODO: Setup a game over scenario and test if the game handles it correctly
 

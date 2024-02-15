@@ -89,13 +89,15 @@ class EnemyWave:
     def is_finished(self):
         return self.spawned_count == self.count
 
-    def reset(self):
+    def reset(self, wave_num, first_wave_start_time, subsequent_delay):
         """
         Resets the enemy wave to its initial state.
         """
+
         self.spawned_count = 0  # Reset the number of spawned enemies
-        self.start_time = pygame.time.get_ticks()  # Reset the start time for the wave
+        self.start_time = first_wave_start_time + wave_num * subsequent_delay
         self.is_active = False  # Set the wave to inactive until it's triggered again
+        self.manually_started = False
 
     def start(self):
         self.manually_started = True

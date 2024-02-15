@@ -2,6 +2,7 @@ import json
 
 import pygame
 
+from src.board.wave_panel import WavePanel
 from src.config.config import LEVELS_JSON_PATH
 from src.game.level import Level
 
@@ -17,13 +18,18 @@ def parse_levels(levels_data):
 
 
 class LevelManager:
-    def __init__(self):
+    def __init__(self,tower_manager, UI_manager):
         # self.active_waves = None
         # self.enemy_manager = enemy_manager
+        self.tower_manager = tower_manager
+        self.UI_manager = UI_manager
+        self.wave_panel = WavePanel(self.UI_manager)
+        #self.wave_panel = wave_panel
         self.levels = []
         self.current_level = None
         self.current_level_index = -1
         self.load_levels()
+
 
     def load_levels(self):
         # Load levels from the JSON file
@@ -42,10 +48,7 @@ class LevelManager:
         else:
             return None  # No more levels
 
-    def reset_level(self):
-        if self.current_level_index != -1:
-            # Reset the current level to its initial state
-            self.levels[self.current_level_index].reset()
+
 
     def get_current_level(self):
         if self.current_level_index != -1 and self.current_level_index < len(self.levels):
@@ -77,6 +80,12 @@ class LevelManager:
                 return False
         return True
 
+    def reset_level(self):
+        if self.current_level_index != -1:
+            # Reset the current level to its initial state
+            self.levels[self.current_level_index].reset()
+            self.start_level(level_index=self.current_level_index)
+
     def start_level(self, level_index=None):
         if level_index is not None:
             # Start the specified level
@@ -97,22 +106,5 @@ class LevelManager:
         self.current_level = self.levels[self.current_level_index]
         self.current_level.start_time = pygame.time.get_ticks()
         self.current_level.initialize_wave_start_times()
-
-    # def start_level(self, level_index):
-    #
-    #     print(f"Starting level {level_index + 1}")
-    #     self.current_level_index = level_index
-    #     self.current_level = self.levels[level_index]
-    #     self.current_level.start_time = pygame.time.get_ticks()
-    #     self.current_level.initialize_wave_start_times()
-    # def start_next_level(self):
-    #     next_level = self.next_level()
-    #     if next_level:
-    #         self.current_level_index += 1
-    #         self.current_level = next_level
-    #         self.current_level.start_time = pygame.time.get_ticks()
-    #         self.current_level.initialize_wave_start_times()
-    #         print(f"Starting next level: {self.current_level_index + 1}")
-    #     else:
-    #         print("All levels completed!")
-    #         # Handle the game completion scenario here (e.g., go to a victory screen)
+        self.wave_panel.recreate_wave_buttons(current_level=self.current_level)
+        self.tower_manager.towers = []

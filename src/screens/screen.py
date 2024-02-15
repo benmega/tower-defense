@@ -3,8 +3,7 @@ from src.utils.helpers import load_scaled_image
 
 
 class Screen:
-    def __init__(self, screen, ui_manager, background_image_path):
-        self.screen = screen
+    def __init__(self, ui_manager, background_image_path):
         self.ui_manager = ui_manager
         self.isActive = False
         self.ui_elements = []  # List to hold UI elements like buttons
@@ -30,7 +29,7 @@ class Screen:
         if self.isActive:
             self.ui_manager.update(time_delta)
 
-    def draw(self):
+    def draw(self, screen):
         if self.isActive:
-            self.screen.blit(self.background_image, (0, 0))
-            self.ui_manager.draw_ui(self.screen)
+            screen.blit(self.background_image, (0, 0))
+            self.ui_manager.draw_ui(screen)

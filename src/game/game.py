@@ -1,10 +1,12 @@
+import os
+
+import pygame
 import pygame_gui
 
+import src.config.config as configuration
 from src.board.game_board import GameBoard
-from src.board.wave_panel import WavePanel
+from src.board.tower_selection_panel import TowerSelectionPanel
 from src.entities.Player import Player
-import pygame
-
 from src.game.game_state import GameState
 from src.managers.collision_manager import CollisionManager
 from src.managers.enemy_manager import EnemyManager
@@ -12,94 +14,100 @@ from src.managers.event_manager import EventManager
 from src.managers.level_manager import LevelManager
 from src.managers.projectile_manager import ProjectileManager
 from src.managers.tower_manager import TowerManager
-import src.config.config as configuration
 from src.screens.campain_map import CampaignMap
 from src.screens.level_completion import LevelCompletionScreen
 from src.screens.main_menu import MainMenu
 from src.screens.options_screen import OptionsScreen
-from src.board.tower_selection_panel import TowerSelectionPanel
-import os
 
+
+def capture_screen():
+    # Capture the current display surface
+    return pygame.display.get_surface().copy()
 
 
 class Game:
-    '''
-    Core game class responsible for initializing the game, running the main loop, handling game state transitions (like starting, game over), and managing high-level game events.
-    Potential TODOs: Implementing efficient game state management, optimizing the main game loop for performance, and handling transitions between different parts of the game smoothly.
-    '''
+    """
+    Core game class responsible for initializing the game, running the main loop, handling game state transitions (
+    like starting, game over), and managing high-level game events. Potential TODOs: Implementing efficient game
+    state management, optimizing the main game loop for performance, and handling transitions between different parts
+    of the game smoothly.
+    """
+
     def __init__(self):
         self.score_label = None
         self.is_build_mode = False
         pygame.init()
-        self.screen = pygame.display.set_mode([configuration.SCREEN_WIDTH, configuration.SCREEN_HEIGHT], pygame.DOUBLEBUF)
+        self.screen = pygame.display.set_mode([configuration.SCREEN_WIDTH, configuration.SCREEN_HEIGHT],
+                                              pygame.DOUBLEBUF)
         pygame.display.set_caption("Tower Defense Game")
         self.clock = pygame.time.Clock()
-        self.level_manager = LevelManager()
-        self.tower_manager = TowerManager()
-        self.projectile_manager = ProjectileManager()
-        self.collision_manager = CollisionManager()
         self.event_manager = EventManager()
         theme_path = os.path.join(os.path.dirname(__file__), '..', 'config', 'theme.json')
         self.UI_manager = pygame_gui.UIManager((configuration.SCREEN_WIDTH, configuration.SCREEN_HEIGHT), theme_path)
-        self.wave_panel = WavePanel(self.screen, self.UI_manager, self.level_manager)
+        self.tower_manager = TowerManager()
+        self.level_manager = LevelManager(self.tower_manager, self.UI_manager)
+        self.projectile_manager = ProjectileManager()
+        self.collision_manager = CollisionManager()
+
         self.tower_selection_panel = TowerSelectionPanel(self.screen, self.tower_manager)
         self.board = GameBoard(configuration.GAME_BOARD_WIDTH, configuration.GAME_BOARD_HEIGHT)
         self.is_running = False
         self.checkCounter = 0
         self.player = Player(update_ui_callback=self.update_ui)
-        self.enemy_manager = EnemyManager(self.level_manager, self.enemy_defeated_callback, self.player_take_damage_callback)
+        self.enemy_manager = EnemyManager(self.level_manager, self.enemy_defeated_callback,
+                                          self.player_take_damage_callback)
         self.current_state = GameState.MAIN_MENU
         self.main_menu = MainMenu(self.screen, self.UI_manager)
-        self.options_screen = OptionsScreen(self.screen, self.UI_manager)
+        self.options_screen = OptionsScreen(self.UI_manager)
         self.campaign_map = CampaignMap(self.screen, self.UI_manager)
         self.level_completion_screen = LevelCompletionScreen(self)
         self.is_build_mode = True
 
-
-
     def initialize_game(self):
-        grid_width = configuration.DEFAULT_GRID_SIZE[0]
-        grid_height = configuration.DEFAULT_GRID_SIZE[1]
         self.current_state = GameState.PLAYING
         self.level_manager.load_levels()
-        # self.tower_manager.add_tower(grid_width*3, grid_height*7)  # Example of creating and adding a tower
-        # self.tower_manager.add_tower(grid_width*8, grid_height*7)  # Example of creating and adding a tower
-        # self.tower_manager.add_tower(grid_width * 3, grid_height * 4)  # Example of creating and adding a tower
-        # self.tower_manager.add_tower(grid_width * 8, grid_height * 4)  # Example of creating and adding a tower
 
         # Initialize UI elements
-        self.gold_label = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(configuration.UI_RESOURCES_POSITION, [configuration.UI_LABEL_WIDTH, configuration.UI_LABEL_HEIGHT]),
+        self.gold_label = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(configuration.UI_RESOURCES_POSITION,
+                                                                                [configuration.UI_LABEL_WIDTH,
+                                                                                 configuration.UI_LABEL_HEIGHT]),
                                                       text=f"Gold: {self.player.gold}",
                                                       manager=self.UI_manager)
-        self.health_label = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(configuration.UI_HEALTH_POSITION, [configuration.UI_LABEL_WIDTH, configuration.UI_LABEL_HEIGHT]),
+        self.health_label = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(configuration.UI_HEALTH_POSITION,
+                                                                                  [configuration.UI_LABEL_WIDTH,
+                                                                                   configuration.UI_LABEL_HEIGHT]),
                                                         text=f"Health: {self.player.health}",
                                                         manager=self.UI_manager)
-        self.score_label = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(configuration.UI_SCORE_POSITION, [configuration.UI_LABEL_WIDTH, configuration.UI_LABEL_HEIGHT]),
+        self.score_label = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(configuration.UI_SCORE_POSITION,
+                                                                                 [configuration.UI_LABEL_WIDTH,
+                                                                                  configuration.UI_LABEL_HEIGHT]),
                                                        text=f"Score: {self.player.score}",
                                                        manager=self.UI_manager)
-        self.enemy_count_label = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(configuration.UI_ENEMY_COUNT_POSITION, [configuration.UI_LABEL_WIDTH, configuration.UI_LABEL_HEIGHT]),
-                                                             text=f"Enemies: {len(self.enemy_manager.entities)}",
-                                                             manager=self.UI_manager)
+        self.enemy_count_label = pygame_gui.elements.UILabel(
+            relative_rect=pygame.Rect(configuration.UI_ENEMY_COUNT_POSITION,
+                                      [configuration.UI_LABEL_WIDTH, configuration.UI_LABEL_HEIGHT]),
+            text=f"Enemies: {len(self.enemy_manager.entities)}",
+            manager=self.UI_manager)
+
     def draw(self):
         self.screen.fill(configuration.BACKGROUND_COLOR)  # Clear the screen with the background color
         if self.current_state == GameState.MAIN_MENU:
             self.main_menu.draw()
         elif self.current_state == GameState.OPTIONS:
-            self.options_screen.draw()
+            self.options_screen.draw(self.screen)
         elif self.current_state == GameState.CAMPAIGN_MAP:
             self.campaign_map.draw()
         elif self.current_state == GameState.LEVEL_COMPLETE:
             self.level_completion_screen.draw()
         elif self.current_state == GameState.PLAYING:
-            self.board.draw_board(self.screen, self.level_manager.get_current_level().path) # Draw the game board
+            self.board.draw_board(self.screen, self.level_manager.get_current_level().path)  # Draw the game board
             self.tower_manager.draw_towers(self.screen)
             self.enemy_manager.draw(self.screen)
             self.projectile_manager.draw_projectiles(self.screen)
             self.tower_selection_panel.draw()
-            #self.wave_panel.draw()
+            # self.wave_panel.draw()
         self.UI_manager.draw_ui(self.screen)  # Draw the game UI
         pygame.display.flip()  # Update the display
-
 
     def run(self):
         self.is_running = True
@@ -129,7 +137,7 @@ class Game:
             new_enemies = self.level_manager.update_levels()
             if all(not item for item in new_enemies) and len(self.enemy_manager.entities) == 0:
                 if self.level_manager.check_level_complete():
-                    self.level_completion_screen.background = self.capture_screen()
+                    self.level_completion_screen.background = capture_screen()
                     self.current_state = GameState.LEVEL_COMPLETE
                     self.level_completion_screen.open_screen()
             for enemy in new_enemies:
@@ -140,7 +148,7 @@ class Game:
             self.collision_manager.handle_group_collisions(
                 self.enemy_manager.entities, self.projectile_manager.projectiles
             )
-            self.wave_panel.update(time_delta)
+            self.level_manager.wave_panel.update(time_delta, self.level_manager.current_level.enemy_wave_list)
             self.check_game_over()
 
     def check_game_over(self):
@@ -175,23 +183,17 @@ class Game:
         # Code to display your game over screen...
         print("GAME OVER!!!!")
 
-    def start_level(self, index=None):
-        if self.level_manager.next_level():
-            self.tower_manager.towers = []
-            if index:
-                self.level_manager.start_level(index)
-            else:
-                self.level_manager.start_level()
-            self.wave_panel.recreate_wave_buttons()
-        else:  # no new enemies, no enemies to manage, and no next level
-            print("Congrats! You win!")
-            self.is_running = False
+    # def start_level(self, index=None):
+    #     self.level_manager.start_level(index)
+    # if self.level_manager.next_level():
+    #     self.tower_manager.towers = []
+    #     if index:
+    #         self.level_manager.start_level(index)
+    #     else:
+    #         self.level_manager.start_level()
+    #     self.wave_panel.recreate_wave_buttons()
 
-    def capture_screen(self):
-        # Capture the current display surface
-        return pygame.display.get_surface().copy()
-
-    def set_gameboard_UI_visibility(self, visible):
+    def set_gameboard_ui_visibility(self, visible):
         self.score_label.visible = visible
         self.enemy_count_label.visible = visible
         self.gold_label.visible = visible
@@ -203,3 +205,4 @@ class Game:
         self.gold_label.set_text(f"Gold: {self.player.gold}")
         self.health_label.set_text(f"Health: {self.player.health}")
         self.score_label.set_text(f"Score: {self.player.score}")
+        self.UI_manager.update(self.clock.tick(configuration.FPS) / 1000.0)
