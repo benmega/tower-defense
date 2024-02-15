@@ -1,0 +1,53 @@
+{
+  "player": {
+    "gold": 1500,
+    "health": 80,
+    "score": {
+      "level1": 1200,
+      "level2": 1400,
+      "level3": 1600,
+      "level4": 1800,
+      "level5": 2000,
+      "level6": 2200,
+      "level7": 2400,
+      "level8": 2600,
+      "level9": 2800,
+      "level10": 3000,
+      "level11": 3200,
+      "level12": 3400,
+      "level13": 3600,
+      "level14": 3800,
+      "level15": 4000,
+      "level16": 4200,
+      "level17": 4400,
+      "level18": 4600,
+      "level19": 4800,
+      "level20": 5000,
+      "level21": 5200,
+      "level22": 5400,
+      "level23": 5600,
+      "level24": 5800,
+      "level25": 6000,
+      "level26": 6200,
+      "level27": 6400,
+      "level28": 6600,
+      "level29": 6800,
+      "level30": 7000,
+      "level31": 7200,
+      "level32": 7400,
+      "level33": 7600,
+      "level34": 7800,
+      "level35": 8000,
+      "level36": 8200,
+      "level37": 8400,
+      "level38": 8600,
+      "level39": 8800,
+      "level40": 9000
+    },
+    "unlocked_levels": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39],
+    "skills": {
+      "fast_reload": true,
+      "increased_damage": true
+    }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "player": {
+    "gold": 2000,
+    "health": 100,
+    "score": {
+      "level1": 2500,
+      "level2": 3000,
+      "level3": 3500,
+      "level4": 4000
+    },
+    "unlocked_levels": [0, 1, 2, 3, 4],
+    "skills": {
+      "fast_reload": true,
+      "increased_damage": true
+    }
+  }
+}

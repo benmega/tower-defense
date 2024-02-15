@@ -25,7 +25,9 @@ class CampaignMap:
 
         self.map_image = load_scaled_image('assets/images/screens/campaignMap/campaign_map.png',
                                            (SCREEN_WIDTH, SCREEN_HEIGHT))
+        self.initilizeButtons()
 
+    def initilizeButtons(self):
         for index, position in enumerate(self.level_positions):
             # Assuming you have an `is_level_unlocked` method to check if a level is unlocked
             if self.is_level_unlocked(index):
@@ -35,7 +37,6 @@ class CampaignMap:
 
             button_rect = button_image.get_rect(topleft=position)
             self.level_buttons.append((button_image, button_rect))
-
     def is_level_unlocked(self, level_index):
         # Implement your logic to check if a level is unlocked
         return level_index in self.player_progress['unlocked_levels']
@@ -71,3 +72,8 @@ class CampaignMap:
 
     def close_scene(self):
         self.isActive = False
+
+    def update_player_progress(self, new_progress):
+        self.player_progress = new_progress
+        self.initilizeButtons()
+        # Additional code to refresh the map visuals based on new progress

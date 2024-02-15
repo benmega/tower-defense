@@ -42,17 +42,17 @@ class MainMenu:
         if event.type == pygame.USEREVENT:
             if event.user_type == pygame_gui.UI_BUTTON_PRESSED:
                 if event.ui_element == self.start_button:
-                    game.current_state = GameState.CAMPAIGN_MAP
+                    game.change_state(GameState.CAMPAIGN_MAP)
                     game.campaign_map.open_scene()
                     # game.initialize_game()  # Call initialize_game to set up the game
                     # game.level_manager.start_level()
                     self.close_menu()
                 elif event.ui_element == self.continue_button:
-                    game.current_state = GameState.LOAD_GAME
+                    game.change_state(GameState.LOAD_GAME)
                     game.load_game_screen.open_screen()
                     self.close_menu()
                 elif event.ui_element == self.settings_button:
-                    game.current_state = GameState.OPTIONS
+                    game.change_state(GameState.OPTIONS)
                     game.options_screen.open_screen()
                     self.close_menu()
                 elif event.ui_element == self.exit_button:

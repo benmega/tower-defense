@@ -58,11 +58,12 @@ class Game:
         self.enemy_manager = EnemyManager(self.level_manager, self.enemy_defeated_callback,
                                           self.player_take_damage_callback)
         self.current_state = GameState.MAIN_MENU
+        self.previous_state = None  # Initialize previous state
         self.main_menu = MainMenu(self.screen, self.UI_manager)
         self.options_screen = OptionsScreen(self.UI_manager)
         self.load_game_screen = LoadGameScreen(self.UI_manager)
-        player_progress = {'unlocked_levels': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]} # sample progress
-        self.campaign_map = CampaignMap(self.screen, self.UI_manager, player_progress)
+        #player_progress = {'unlocked_levels': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]} # sample progress
+        self.campaign_map = CampaignMap(self.screen, self.UI_manager, self.player.player_progress)
         self.level_completion_screen = LevelCompletionScreen(self)
         self.is_build_mode = True
 
@@ -212,3 +213,8 @@ class Game:
         self.score_label.set_text(f"Score: {self.player.score}")
         self.UI_manager.update(self.clock.tick(configuration.FPS) / 1000.0)
 
+    def change_state(self, new_state):
+        self.previous_state = self.current_state  # Store current state as previous
+        self.current_state = new_state  # Update current state to the new state
+        if new_state == GameState.MAIN_MENU:
+            self.main_menu.open_menu()
