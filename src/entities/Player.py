@@ -15,6 +15,7 @@ class Player:
         self.player_data = {}
         self.update_ui_callback = update_ui_callback  # Function to call when UI needs to be updated
         self.scores = {}  # Scores for each level
+        self.completed_levels = []
         self.unlocked_levels = [0]  # Start with the first level unlocked
         self.skills = {}  # Skills or buffs
 
@@ -60,3 +61,28 @@ class Player:
         self.scores = player_data['player']['score']
         self.unlocked_levels = player_data['player']['unlocked_levels']
         self.skills = player_data['player']['skills']
+
+    def to_dict(self):
+        return {
+            "gold": self.gold,
+            "health": self.health,
+            "score": self.score,
+            "unlocked_levels": self.unlocked_levels,
+            "skills": self.skills,
+        }
+
+    def from_dict(self, data):
+        self.gold = data["gold"]
+        self.health = data["health"]
+        self.score = data["score"]
+        self.unlocked_levels = data["unlocked_levels"]
+        self.skills = data["skills"]
+
+    def complete_level(self, level_index):
+        if level_index not in self.completed_levels:
+            self.completed_levels.append(level_index)
+            # Unlock the next level if applicable
+            next_level = level_index + 1
+            if next_level not in self.unlocked_levels:
+                self.unlocked_levels.append(next_level)
+                self.player_progress['unlocked_levels'].append(next_level)
