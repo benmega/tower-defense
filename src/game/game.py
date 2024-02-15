@@ -8,6 +8,7 @@ from src.board.game_board import GameBoard
 from src.board.tower_selection_panel import TowerSelectionPanel
 from src.entities.Player import Player
 from src.game.game_state import GameState
+from src.game.player_info_panel import PlayerInfoPanel
 from src.managers.collision_manager import CollisionManager
 from src.managers.enemy_manager import EnemyManager
 from src.managers.event_manager import EventManager
@@ -62,32 +63,34 @@ class Game:
         self.campaign_map = CampaignMap(self.screen, self.UI_manager)
         self.level_completion_screen = LevelCompletionScreen(self)
         self.is_build_mode = True
+        self.player_info_panel = PlayerInfoPanel(self.UI_manager, self.player, self.screen)
 
     def initialize_game(self):
         self.current_state = GameState.PLAYING
         self.level_manager.load_levels()
+        self.player_info_panel.set_visibility(True)
 
         # Initialize UI elements
-        self.gold_label = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(configuration.UI_RESOURCES_POSITION,
-                                                                                [configuration.UI_LABEL_WIDTH,
-                                                                                 configuration.UI_LABEL_HEIGHT]),
-                                                      text=f"Gold: {self.player.gold}",
-                                                      manager=self.UI_manager)
-        self.health_label = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(configuration.UI_HEALTH_POSITION,
-                                                                                  [configuration.UI_LABEL_WIDTH,
-                                                                                   configuration.UI_LABEL_HEIGHT]),
-                                                        text=f"Health: {self.player.health}",
-                                                        manager=self.UI_manager)
-        self.score_label = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(configuration.UI_SCORE_POSITION,
-                                                                                 [configuration.UI_LABEL_WIDTH,
-                                                                                  configuration.UI_LABEL_HEIGHT]),
-                                                       text=f"Score: {self.player.score}",
-                                                       manager=self.UI_manager)
-        self.enemy_count_label = pygame_gui.elements.UILabel(
-            relative_rect=pygame.Rect(configuration.UI_ENEMY_COUNT_POSITION,
-                                      [configuration.UI_LABEL_WIDTH, configuration.UI_LABEL_HEIGHT]),
-            text=f"Enemies: {len(self.enemy_manager.entities)}",
-            manager=self.UI_manager)
+        # self.gold_label = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(configuration.UI_RESOURCES_POSITION,
+        #                                                                         [configuration.UI_LABEL_WIDTH,
+        #                                                                          configuration.UI_LABEL_HEIGHT]),
+        #                                               text=f"Gold: {self.player.gold}",
+        #                                               manager=self.UI_manager)
+        # self.health_label = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(configuration.UI_HEALTH_POSITION,
+        #                                                                           [configuration.UI_LABEL_WIDTH,
+        #                                                                            configuration.UI_LABEL_HEIGHT]),
+        #                                                 text=f"Health: {self.player.health}",
+        #                                                 manager=self.UI_manager)
+        # self.score_label = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(configuration.UI_SCORE_POSITION,
+        #                                                                          [configuration.UI_LABEL_WIDTH,
+        #                                                                           configuration.UI_LABEL_HEIGHT]),
+        #                                                text=f"Score: {self.player.score}",
+        #                                                manager=self.UI_manager)
+        # self.enemy_count_label = pygame_gui.elements.UILabel(
+        #     relative_rect=pygame.Rect(configuration.UI_ENEMY_COUNT_POSITION,
+        #                               [configuration.UI_LABEL_WIDTH, configuration.UI_LABEL_HEIGHT]),
+        #     text=f"Enemies: {len(self.enemy_manager.entities)}",
+        #     manager=self.UI_manager)
 
     def draw(self):
         self.screen.fill(configuration.BACKGROUND_COLOR)  # Clear the screen with the background color
@@ -149,6 +152,7 @@ class Game:
                 self.enemy_manager.entities, self.projectile_manager.projectiles
             )
             self.level_manager.wave_panel.update(time_delta, self.level_manager.current_level.enemy_wave_list)
+            self.player_info_panel.update(self.enemy_manager)
             self.check_game_over()
 
     def check_game_over(self):
@@ -164,13 +168,13 @@ class Game:
     def enemy_defeated_callback(self, enemy):
         self.player.score += enemy.score_value
         self.player.gold += enemy.gold_value
-        self.gold_label.set_text(f"Gold: {self.player.gold}")
-        self.score_label.set_text(f"Score: {self.player.score}")
-        self.enemy_count_label.set_text(f"Enemies: {len(self.enemy_manager.entities)}")
+        self.player_info_panel.gold_label.set_text(f"Gold: {self.player.gold}")
+        self.player_info_panel.score_label.set_text(f"Score: {self.player.score}")
+        self.player_info_panel.enemy_count_label.set_text(f"Enemies: {len(self.enemy_manager.entities)}")
 
     def player_take_damage_callback(self, amount):
         self.player.health -= amount
-        self.health_label.set_text(f'health: {self.player.health}')
+        self.player_info_panel.health_label.set_text(f'health: {self.player.health}')
         if self.player.health <= 0:
             self.player.health = 0
             self.game_over()
@@ -194,15 +198,12 @@ class Game:
     #     self.wave_panel.recreate_wave_buttons()
 
     def set_gameboard_ui_visibility(self, visible):
-        self.score_label.visible = visible
-        self.enemy_count_label.visible = visible
-        self.gold_label.visible = visible
-        self.health_label.visible = visible
+        self.player_info_panel.set_visibility(visible)
 
     def update_ui(self):
         # Update UI elements here
         # For example, updating gold, health, and score labels
-        self.gold_label.set_text(f"Gold: {self.player.gold}")
-        self.health_label.set_text(f"Health: {self.player.health}")
-        self.score_label.set_text(f"Score: {self.player.score}")
+        self.player_info_panel.gold_label.set_text(f"Gold: {self.player.gold}")
+        self.player_info_panel.health_label.set_text(f"Health: {self.player.health}")
+        self.player_info_panel.score_label.set_text(f"Score: {self.player.score}")
         self.UI_manager.update(self.clock.tick(configuration.FPS) / 1000.0)
