@@ -16,7 +16,7 @@ from src.managers.projectile_manager import ProjectileManager
 from src.managers.tower_manager import TowerManager
 from src.screens.campain_map import CampaignMap
 from src.screens.level_completion import LevelCompletionScreen
-from src.screens.load_game_screen import GameDataScreen
+from src.screens.game_data_screen import GameDataScreen
 from src.screens.main_menu import MainMenu
 from src.screens.options_screen import OptionsScreen
 
@@ -63,7 +63,7 @@ class Game:
         self.options_screen = OptionsScreen(self.UI_manager)
         self.load_game_screen = GameDataScreen(self.UI_manager)
         #player_progress = {'unlocked_levels': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]} # sample progress
-        self.campaign_map = CampaignMap(self.screen, self.UI_manager, self.player.player_progress)
+        self.campaign_map = CampaignMap(self.UI_manager, self.player.player_progress)
         self.level_completion_screen = LevelCompletionScreen(self)
         self.is_build_mode = True
 
@@ -102,7 +102,7 @@ class Game:
         elif self.current_state == GameState.LOAD_GAME:
             self.load_game_screen.draw(self.screen)
         elif self.current_state == GameState.CAMPAIGN_MAP:
-            self.campaign_map.draw()
+            self.campaign_map.draw(screen=self.screen)
         elif self.current_state == GameState.LEVEL_COMPLETE:
             self.level_completion_screen.draw()
         elif self.current_state == GameState.PLAYING:

@@ -10,6 +10,7 @@ from src.utils.helpers import load_scaled_image
 
 class MainMenu:
     def __init__(self, screen, ui_manager):
+
         self.screen = screen
         self.ui_manager = ui_manager
         self.start_button = pygame_gui.elements.UIButton(
@@ -43,7 +44,7 @@ class MainMenu:
             if event.user_type == pygame_gui.UI_BUTTON_PRESSED:
                 if event.ui_element == self.start_button:
                     game.change_state(GameState.CAMPAIGN_MAP)
-                    game.campaign_map.open_scene()
+                    game.campaign_map.open_screen()
                     # game.initialize_game()  # Call initialize_game to set up the game
                     # game.level_manager.start_level()
                     self.close_menu()

@@ -44,6 +44,7 @@ class GameDataScreen(Screen):
             self.save_buttons.append(save_button)
 
     def handle_events(self, event, game):
+        super().handle_events(event, game)
         if event.type == pygame.USEREVENT:
             if event.user_type == pygame_gui.UI_BUTTON_PRESSED:
                 # Check Load buttons
