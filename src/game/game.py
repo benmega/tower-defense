@@ -1,5 +1,5 @@
 import os
-
+import json
 import pygame
 import pygame_gui
 
@@ -17,6 +17,7 @@ from src.managers.projectile_manager import ProjectileManager
 from src.managers.tower_manager import TowerManager
 from src.screens.campain_map import CampaignMap
 from src.screens.level_completion import LevelCompletionScreen
+from src.screens.game_data_screen import GameDataScreen
 from src.screens.main_menu import MainMenu
 from src.screens.options_screen import OptionsScreen
 
@@ -58,9 +59,12 @@ class Game:
         self.enemy_manager = EnemyManager(self.level_manager, self.enemy_defeated_callback,
                                           self.player_take_damage_callback)
         self.current_state = GameState.MAIN_MENU
+        self.previous_state = None  # Initialize previous state
         self.main_menu = MainMenu(self.screen, self.UI_manager)
         self.options_screen = OptionsScreen(self.UI_manager)
-        self.campaign_map = CampaignMap(self.screen, self.UI_manager)
+        self.load_game_screen = GameDataScreen(self.UI_manager)
+        #player_progress = {'unlocked_levels': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]} # sample progress
+        self.campaign_map = CampaignMap(self.UI_manager, self.player.player_progress)
         self.level_completion_screen = LevelCompletionScreen(self)
         self.is_build_mode = True
         self.player_info_panel = PlayerInfoPanel(self.UI_manager, self.player, self.screen)
@@ -98,8 +102,10 @@ class Game:
             self.main_menu.draw()
         elif self.current_state == GameState.OPTIONS:
             self.options_screen.draw(self.screen)
+        elif self.current_state == GameState.LOAD_GAME:
+            self.load_game_screen.draw(self.screen)
         elif self.current_state == GameState.CAMPAIGN_MAP:
-            self.campaign_map.draw()
+            self.campaign_map.draw(screen=self.screen)
         elif self.current_state == GameState.LEVEL_COMPLETE:
             self.level_completion_screen.draw()
         elif self.current_state == GameState.PLAYING:
@@ -142,6 +148,8 @@ class Game:
                 if self.level_manager.check_level_complete():
                     self.level_completion_screen.background = capture_screen()
                     self.current_state = GameState.LEVEL_COMPLETE
+                    self.player.complete_level(self.level_manager.current_level_index)
+                    self.campaign_map.update_player_progress(self.player.player_progress)
                     self.level_completion_screen.open_screen()
             for enemy in new_enemies:
                 self.enemy_manager.add_enemy(enemy)
@@ -207,3 +215,41 @@ class Game:
         self.player_info_panel.health_label.set_text(f"Health: {self.player.health}")
         self.player_info_panel.score_label.set_text(f"Score: {self.player.score}")
         self.UI_manager.update(self.clock.tick(configuration.FPS) / 1000.0)
+
+    def change_state(self, new_state):
+        self.previous_state = self.current_state  # Store current state as previous
+        self.current_state = new_state  # Update current state to the new state
+        if new_state == GameState.MAIN_MENU:
+            self.main_menu.open_menu()
+
+    def save_game(self, save_slot_or_filename):
+        # Determine the filename based on the input parameter
+        filename = f"src/save_data/{save_slot_or_filename}.json" if isinstance(save_slot_or_filename, int) else save_slot_or_filename
+
+        # Prepare the player data to save
+        player_data = {
+            "player": self.player.to_dict()  # Assuming you have a method in Player class to convert player data to a dictionary
+        }
+
+        try:
+            with open(filename, 'w') as f:
+                json.dump(player_data, f, indent=4)
+                print(f"Game saved to {filename}")
+        except Exception as e:
+            print(f"Failed to save game: {e}")
+
+    def load_game(self, save_slot_or_filename):
+        # Determine the filename based on the input parameter
+        # This is just an example; adjust based on your save system
+        filename = f"src/save_data/{save_slot_or_filename}.json" if isinstance(save_slot_or_filename,
+                                                                               int) else save_slot_or_filename
+
+        try:
+            with open(filename, 'r') as f:
+                player_data = json.load(f)
+                self.player.from_dict(player_data["player"])
+                # Assuming you have a method in campaign_map to update based on player data
+                self.campaign_map.update_player_progress(player_data["player"])
+                print(f"Game loaded from {filename}")
+        except FileNotFoundError:
+            print(f"Save file not found: {filename}")

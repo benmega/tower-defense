@@ -1,0 +1,11 @@
+{
+    "player": {
+        "gold": 10000,
+        "health": 100,
+        "score": 0,
+        "unlocked_levels": [
+            0
+        ],
+        "skills": {}
+    }
+}

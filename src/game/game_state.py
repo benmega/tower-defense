@@ -8,3 +8,4 @@ class GameState(Enum):
     GAME_OVER = auto()
     CAMPAIGN_MAP = auto()
     LEVEL_COMPLETE = auto()
+    LOAD_GAME = auto()

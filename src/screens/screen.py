@@ -1,6 +1,9 @@
-from src.config.config import SCREEN_WIDTH, SCREEN_HEIGHT
-from src.utils.helpers import load_scaled_image
+import pygame
+import pygame_gui
 
+from src.config.config import SCREEN_WIDTH, SCREEN_HEIGHT, UI_BUTTON_SIZE
+from src.utils.helpers import load_scaled_image
+import warnings  # Import at the top of your file
 
 class Screen:
     def __init__(self, ui_manager, background_image_path):
@@ -8,28 +11,58 @@ class Screen:
         self.isActive = False
         self.ui_elements = []  # List to hold UI elements like buttons
         self.background_image = load_scaled_image(background_image_path, (SCREEN_WIDTH, SCREEN_HEIGHT))
+        self.return_button = self.create_return_button()  # Create the return button
+
+
+
+    def create_return_button(self):
+        # Create a button in the top right corner
+        button = pygame_gui.elements.UIButton(
+            relative_rect=pygame.Rect((SCREEN_WIDTH - UI_BUTTON_SIZE[0] - 10, 10), UI_BUTTON_SIZE),
+            text="Return",
+            manager=self.ui_manager,
+            visible=False
+        )
+        self.add_ui_element(button)
+        return button
+
 
     def add_ui_element(self, ui_element):
         self.ui_elements.append(ui_element)
 
+
     def open_screen(self):
         self.isActive = True
         for element in self.ui_elements:
-            element.visible = True
+            try:
+                element.visible = True
+            except AttributeError as e:
+                warnings.warn(f"Attempted to set visibility on an object that doesn't support it: {e}")
 
     def close_screen(self):
         self.isActive = False
         for element in self.ui_elements:
-            element.visible = False
+            try:
+                element.visible = False
+            except AttributeError as e:
+                warnings.warn(f"Attempted to set visibility on an object that doesn't support it: {e}")
 
     def handle_events(self, event, game):
-        raise NotImplementedError("handle_events must be implemented by subclasses.")
+        if event.type == pygame.USEREVENT:
+            if event.user_type == pygame_gui.UI_BUTTON_PRESSED:
+                if event.ui_element == self.return_button:
+                    self.close_screen()
+                    game.change_state(game.previous_state)  # Assuming game object has a method to handle state change
+
 
     def update(self, time_delta):
         if self.isActive:
             self.ui_manager.update(time_delta)
 
+
     def draw(self, screen):
-        if self.isActive:
+        if not self.isActive:
+            return  # Skip drawing if the screen is not active
+        if self.background_image:
             screen.blit(self.background_image, (0, 0))
-            self.ui_manager.draw_ui(screen)
+        self.ui_manager.draw_ui(screen)
