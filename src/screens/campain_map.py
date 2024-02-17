@@ -27,15 +27,23 @@ class CampaignMap(Screen):
 
         self.map_image = load_scaled_image('assets/images/screens/campaignMap/campaign_map.png',
                                            (SCREEN_WIDTH, SCREEN_HEIGHT))
-        self.level_visibility = {}  # New d
+        self.level_visibility = {}
         self.initilize_buttons()
-
-        self.back_button = pygame_gui.elements.UIButton(
-            relative_rect=pygame.Rect([350, 425], UI_BUTTON_SIZE),
-            text='Back',
+        self.skills_button = pygame_gui.elements.UIButton(
+            relative_rect=pygame.Rect((SCREEN_WIDTH - 300, 10), UI_BUTTON_SIZE),  # Adjust position as needed
+            text='Skills',
             manager=self.ui_manager,
+            object_id=pygame_gui.core.ObjectID(class_id="@button"),
             visible=False
         )
+        self.ui_elements.append(self.skills_button) # List to hold UI elements like buttons
+        # self.back_button = pygame_gui.elements.UIButton(
+        #     relative_rect=pygame.Rect([350, 425], UI_BUTTON_SIZE),
+        #     text='Back',
+        #     manager=self.ui_manager,
+        #     visible=False
+        # )
+        # self.ui_elements.append(self.back_button)
 
     def initilize_buttons(self):
         self.level_buttons.clear()
@@ -58,7 +66,10 @@ class CampaignMap(Screen):
         super().handle_events(event,game)
         if event.type == pygame.MOUSEBUTTONDOWN:
             self.handle_clicks(event, game)
-
+        if event.type == pygame.USEREVENT and event.user_type == pygame_gui.UI_BUTTON_PRESSED:
+            if event.ui_element == self.skills_button:
+                game.change_state(GameState.SKILLS)  # Assuming GameState.SKILLS is defined
+                game.skills_screen.open_screen()  # Assuming you have a skills_screen attribute in your Game class
     def handle_clicks(self, event, game):
         mouse_pos = event.pos
         for index, (_, button_rect, unlocked) in enumerate(self.level_buttons):

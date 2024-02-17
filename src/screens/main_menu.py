@@ -45,8 +45,6 @@ class MainMenu:
                 if event.ui_element == self.start_button:
                     game.change_state(GameState.CAMPAIGN_MAP)
                     game.campaign_map.open_screen()
-                    # game.initialize_game()  # Call initialize_game to set up the game
-                    # game.level_manager.start_level()
                     self.close_menu()
                 elif event.ui_element == self.continue_button:
                     game.change_state(GameState.LOAD_GAME)

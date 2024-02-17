@@ -2,8 +2,7 @@ from src.config.config import PLAYER_GOLD, PLAYER_HEALTH
 import os
 import json
 
-
-
+from src.screens.skills_screen import all_skills
 
 
 class Player:
@@ -18,6 +17,7 @@ class Player:
         self.completed_levels = []
         self.unlocked_levels = [0]  # Start with the first level unlocked
         self.skills = {}  # Skills or buffs
+        self.points = 10  # Starting with an arbitrary number of points for upgrading skills
 
     def add_gold(self, amount):
         self.gold += amount
@@ -86,3 +86,49 @@ class Player:
             if next_level not in self.unlocked_levels:
                 self.unlocked_levels.append(next_level)
                 self.player_progress['unlocked_levels'].append(next_level)
+
+
+    def can_upgrade_skill(self, skill_key):
+        skill_info = all_skills.get(skill_key)
+        if not skill_info:
+            return False  # Skill does not exist
+
+        current_level = self.skills.get(skill_key, 0)
+        if current_level >= skill_info["max_level"]:
+            return False  # Skill is already at max level
+
+        # Check if player has enough points to upgrade the skill
+        cost_for_next_level = skill_info["cost_per_level"][current_level]
+        if self.points < cost_for_next_level:
+            return False  # Not enough points
+
+        # Check for prerequisites
+        prerequisites = skill_info.get("prerequisites", [])
+        for prereq in prerequisites:
+            if self.skills.get(prereq, 0) == 0:
+                return False  # Prerequisite skill not met
+
+        return True
+
+    def upgrade_skill(self, skill_key):
+        if not self.can_upgrade_skill(skill_key):
+            print("Cannot upgrade skill.")
+            return
+
+        skill_info = all_skills[skill_key]
+        current_level = self.skills.get(skill_key, 0)
+        cost_for_next_level = skill_info["cost_per_level"][current_level]
+
+        # Deduct points and increase skill level
+        self.points -= cost_for_next_level
+        new_level = current_level + 1
+        self.skills[skill_key] = new_level
+
+        print(f"Upgraded {skill_key} to level {new_level}. Points remaining: {self.points}.")
+        self._update_ui()
+
+    # Remember to implement the _update_ui method if not already done
+    def _update_ui(self):
+        # Update UI with new points and skill levels
+        if self.update_ui_callback:
+            self.update_ui_callback()

@@ -20,6 +20,7 @@ from src.screens.level_completion import LevelCompletionScreen
 from src.screens.game_data_screen import GameDataScreen
 from src.screens.main_menu import MainMenu
 from src.screens.options_screen import OptionsScreen
+from src.screens.skills_screen import SkillsScreen
 
 
 def capture_screen():
@@ -63,38 +64,17 @@ class Game:
         self.main_menu = MainMenu(self.screen, self.UI_manager)
         self.options_screen = OptionsScreen(self.UI_manager)
         self.load_game_screen = GameDataScreen(self.UI_manager)
-        #player_progress = {'unlocked_levels': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]} # sample progress
         self.campaign_map = CampaignMap(self.UI_manager, self.player.player_progress)
         self.level_completion_screen = LevelCompletionScreen(self)
         self.is_build_mode = True
         self.player_info_panel = PlayerInfoPanel(self.UI_manager, self.player, self.screen)
+        self.skills_screen = SkillsScreen(self.UI_manager, self.player.skills)
 
     def initialize_game(self):
         self.current_state = GameState.PLAYING
         self.level_manager.load_levels()
         self.player_info_panel.set_visibility(True)
 
-        # Initialize UI elements
-        # self.gold_label = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(configuration.UI_RESOURCES_POSITION,
-        #                                                                         [configuration.UI_LABEL_WIDTH,
-        #                                                                          configuration.UI_LABEL_HEIGHT]),
-        #                                               text=f"Gold: {self.player.gold}",
-        #                                               manager=self.UI_manager)
-        # self.health_label = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(configuration.UI_HEALTH_POSITION,
-        #                                                                           [configuration.UI_LABEL_WIDTH,
-        #                                                                            configuration.UI_LABEL_HEIGHT]),
-        #                                                 text=f"Health: {self.player.health}",
-        #                                                 manager=self.UI_manager)
-        # self.score_label = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(configuration.UI_SCORE_POSITION,
-        #                                                                          [configuration.UI_LABEL_WIDTH,
-        #                                                                           configuration.UI_LABEL_HEIGHT]),
-        #                                                text=f"Score: {self.player.score}",
-        #                                                manager=self.UI_manager)
-        # self.enemy_count_label = pygame_gui.elements.UILabel(
-        #     relative_rect=pygame.Rect(configuration.UI_ENEMY_COUNT_POSITION,
-        #                               [configuration.UI_LABEL_WIDTH, configuration.UI_LABEL_HEIGHT]),
-        #     text=f"Enemies: {len(self.enemy_manager.entities)}",
-        #     manager=self.UI_manager)
 
     def draw(self):
         self.screen.fill(configuration.BACKGROUND_COLOR)  # Clear the screen with the background color
@@ -108,6 +88,8 @@ class Game:
             self.campaign_map.draw(screen=self.screen)
         elif self.current_state == GameState.LEVEL_COMPLETE:
             self.level_completion_screen.draw()
+        elif self.current_state == GameState.SKILLS:
+            self.skills_screen.draw(self.screen)
         elif self.current_state == GameState.PLAYING:
             self.board.draw_board(self.screen, self.level_manager.get_current_level().path)  # Draw the game board
             self.tower_manager.draw_towers(self.screen)
@@ -194,16 +176,6 @@ class Game:
     def display_game_over_screen(self):
         # Code to display your game over screen...
         print("GAME OVER!!!!")
-
-    # def start_level(self, index=None):
-    #     self.level_manager.start_level(index)
-    # if self.level_manager.next_level():
-    #     self.tower_manager.towers = []
-    #     if index:
-    #         self.level_manager.start_level(index)
-    #     else:
-    #         self.level_manager.start_level()
-    #     self.wave_panel.recreate_wave_buttons()
 
     def set_gameboard_ui_visibility(self, visible):
         self.player_info_panel.set_visibility(visible)

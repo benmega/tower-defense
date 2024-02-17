@@ -18,7 +18,7 @@ class Screen:
     def create_return_button(self):
         # Create a button in the top right corner
         button = pygame_gui.elements.UIButton(
-            relative_rect=pygame.Rect((SCREEN_WIDTH - UI_BUTTON_SIZE[0] - 10, 10), UI_BUTTON_SIZE),
+            relative_rect=pygame.Rect([SCREEN_WIDTH - UI_BUTTON_SIZE[0] - 10, 10], UI_BUTTON_SIZE),
             text="Return",
             manager=self.ui_manager,
             visible=False
