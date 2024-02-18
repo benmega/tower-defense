@@ -47,7 +47,8 @@ class Game:
         self.event_manager = EventManager()
         theme_path = os.path.join(os.path.dirname(__file__), '..', 'config', 'theme.json')
         self.UI_manager = pygame_gui.UIManager((configuration.SCREEN_WIDTH, configuration.SCREEN_HEIGHT), theme_path)
-        self.tower_manager = TowerManager()
+        self.player = Player(update_ui_callback=self.update_ui)
+        self.tower_manager = TowerManager(self.player)
         self.level_manager = LevelManager(self.tower_manager, self.UI_manager)
         self.projectile_manager = ProjectileManager()
         self.collision_manager = CollisionManager()
@@ -56,25 +57,24 @@ class Game:
         self.board = GameBoard(configuration.GAME_BOARD_WIDTH, configuration.GAME_BOARD_HEIGHT)
         self.is_running = False
         self.checkCounter = 0
-        self.player = Player(update_ui_callback=self.update_ui)
+
         self.enemy_manager = EnemyManager(self.level_manager, self.enemy_defeated_callback,
                                           self.player_take_damage_callback)
         self.current_state = GameState.MAIN_MENU
         self.previous_state = None  # Initialize previous state
         self.main_menu = MainMenu(self.screen, self.UI_manager)
         self.options_screen = OptionsScreen(self.UI_manager)
-        self.load_game_screen = GameDataScreen(self.UI_manager)
+        self.game_data_screen = GameDataScreen(self.UI_manager)
         self.campaign_map = CampaignMap(self.UI_manager, self.player.player_progress)
         self.level_completion_screen = LevelCompletionScreen(self)
         self.is_build_mode = True
         self.player_info_panel = PlayerInfoPanel(self.UI_manager, self.player, self.screen)
-        self.skills_screen = SkillsScreen(self.UI_manager, self.player.skills)
+        self.skills_screen = SkillsScreen(self.UI_manager, self.player)
 
     def initialize_game(self):
         self.current_state = GameState.PLAYING
         self.level_manager.load_levels()
         self.player_info_panel.set_visibility(True)
-
 
     def draw(self):
         self.screen.fill(configuration.BACKGROUND_COLOR)  # Clear the screen with the background color
@@ -83,7 +83,7 @@ class Game:
         elif self.current_state == GameState.OPTIONS:
             self.options_screen.draw(self.screen)
         elif self.current_state == GameState.LOAD_GAME:
-            self.load_game_screen.draw(self.screen)
+            self.game_data_screen.draw(self.screen)
         elif self.current_state == GameState.CAMPAIGN_MAP:
             self.campaign_map.draw(screen=self.screen)
         elif self.current_state == GameState.LEVEL_COMPLETE:
@@ -96,7 +96,6 @@ class Game:
             self.enemy_manager.draw(self.screen)
             self.projectile_manager.draw_projectiles(self.screen)
             self.tower_selection_panel.draw()
-            # self.wave_panel.draw()
         self.UI_manager.draw_ui(self.screen)  # Draw the game UI
         pygame.display.flip()  # Update the display
 
@@ -156,10 +155,10 @@ class Game:
         return False
 
     def enemy_defeated_callback(self, enemy):
-        self.player.score += enemy.score_value
-        self.player.gold += enemy.gold_value
+        self.player.levelScore += enemy.score_value
+        self.player.add_gold(enemy.gold_value)
         self.player_info_panel.gold_label.set_text(f"Gold: {self.player.gold}")
-        self.player_info_panel.score_label.set_text(f"Score: {self.player.score}")
+        self.player_info_panel.score_label.set_text(f"Score: {self.player.levelScore}")
         self.player_info_panel.enemy_count_label.set_text(f"Enemies: {len(self.enemy_manager.entities)}")
 
     def player_take_damage_callback(self, amount):
@@ -179,13 +178,16 @@ class Game:
 
     def set_gameboard_ui_visibility(self, visible):
         self.player_info_panel.set_visibility(visible)
+        self.level_manager.wave_panel.isActive = visible
+        # TODO Link to all panels in playing scene
+        #self.tower_selection_panel.set_visibilty(visible)
+        #self.board.set_visibility(visible)
 
     def update_ui(self):
-        # Update UI elements here
-        # For example, updating gold, health, and score labels
-        self.player_info_panel.gold_label.set_text(f"Gold: {self.player.gold}")
-        self.player_info_panel.health_label.set_text(f"Health: {self.player.health}")
-        self.player_info_panel.score_label.set_text(f"Score: {self.player.score}")
+        '''
+        Used to allow the player to update the UI without direct access to the UI_manager
+        :return:
+        '''
         self.UI_manager.update(self.clock.tick(configuration.FPS) / 1000.0)
 
     def change_state(self, new_state):
@@ -193,6 +195,14 @@ class Game:
         self.current_state = new_state  # Update current state to the new state
         if new_state == GameState.MAIN_MENU:
             self.main_menu.open_menu()
+        elif new_state == GameState.OPTIONS:
+            self.options_screen.open_screen()
+        elif new_state == GameState.LOAD_GAME:
+            self.game_data_screen.open_screen()
+        elif new_state == GameState.CAMPAIGN_MAP:
+            self.campaign_map.open_screen()
+        elif new_state == GameState.SKILLS:
+            self.skills_screen.open_screen()
 
     def save_game(self, save_slot_or_filename):
         # Determine the filename based on the input parameter

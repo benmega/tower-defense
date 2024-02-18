@@ -7,7 +7,7 @@ from src.screens.screen import Screen
 
 class GameDataScreen(Screen):
     def __init__(self, ui_manager):
-        super().__init__(ui_manager, "assets/images/screens/load_game_screen.png")
+        super().__init__(ui_manager, "assets/images/screens/game_data_screen.png")
         self.load_buttons = []
         self.save_buttons = []
         self.save_slot_files = [

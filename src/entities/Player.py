@@ -9,7 +9,8 @@ class Player:
     def __init__(self, update_ui_callback):
         self.gold = PLAYER_GOLD
         self.health = PLAYER_HEALTH
-        self.score = 0
+        self.totalScore = 0
+        self.levelScore = 0
         self.player_progress = {'unlocked_levels': [0]}  # list of completed levels
         self.player_data = {}
         self.update_ui_callback = update_ui_callback  # Function to call when UI needs to be updated
@@ -17,7 +18,7 @@ class Player:
         self.completed_levels = []
         self.unlocked_levels = [0]  # Start with the first level unlocked
         self.skills = {}  # Skills or buffs
-        self.points = 10  # Starting with an arbitrary number of points for upgrading skills
+        self.points = 10000  # Starting with an arbitrary number of points for upgrading skills
 
     def add_gold(self, amount):
         self.gold += amount
@@ -66,7 +67,7 @@ class Player:
         return {
             "gold": self.gold,
             "health": self.health,
-            "score": self.score,
+            "score": self.totalScore,
             "unlocked_levels": self.unlocked_levels,
             "skills": self.skills,
         }
@@ -74,7 +75,7 @@ class Player:
     def from_dict(self, data):
         self.gold = data["gold"]
         self.health = data["health"]
-        self.score = data["score"]
+        self.totalScore = data["score"]
         self.unlocked_levels = data["unlocked_levels"]
         self.skills = data["skills"]
 
@@ -132,3 +133,9 @@ class Player:
         # Update UI with new points and skill levels
         if self.update_ui_callback:
             self.update_ui_callback()
+
+    def start_level(self):
+        # TODO Make skills modify
+        self.gold = PLAYER_GOLD + self.skills.get('additional_gold', 0) * 100
+        self.health = PLAYER_HEALTH + + self.skills.get('additional_health', 0) * 100
+        self.levelScore = 0

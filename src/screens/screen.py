@@ -5,6 +5,7 @@ from src.config.config import SCREEN_WIDTH, SCREEN_HEIGHT, UI_BUTTON_SIZE
 from src.utils.helpers import load_scaled_image
 import warnings  # Import at the top of your file
 
+
 class Screen:
     def __init__(self, ui_manager, background_image_path):
         self.ui_manager = ui_manager
@@ -12,8 +13,6 @@ class Screen:
         self.ui_elements = []  # List to hold UI elements like buttons
         self.background_image = load_scaled_image(background_image_path, (SCREEN_WIDTH, SCREEN_HEIGHT))
         self.return_button = self.create_return_button()  # Create the return button
-
-
 
     def create_return_button(self):
         # Create a button in the top right corner
@@ -26,10 +25,8 @@ class Screen:
         self.add_ui_element(button)
         return button
 
-
     def add_ui_element(self, ui_element):
         self.ui_elements.append(ui_element)
-
 
     def open_screen(self):
         self.isActive = True
@@ -54,11 +51,9 @@ class Screen:
                     self.close_screen()
                     game.change_state(game.previous_state)  # Assuming game object has a method to handle state change
 
-
     def update(self, time_delta):
         if self.isActive:
             self.ui_manager.update(time_delta)
-
 
     def draw(self, screen):
         if not self.isActive:

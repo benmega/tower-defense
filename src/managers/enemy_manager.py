@@ -12,10 +12,6 @@ class EnemyManager(EntityManager):
         self.defeat_callback = defeat_callback
         self.reach_end_callback = reach_end_callback
 
-    # def set_current_wave(self, wave):
-    #     """ Set the current enemy wave for spawning. """
-    #     self.active_waves = wave
-
     def update(self):
         """ Update the state of all enemies and spawn new ones from the current waves. """
         current_time = pygame.time.get_ticks()

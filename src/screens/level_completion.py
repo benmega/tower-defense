@@ -75,9 +75,10 @@ class LevelCompletionScreen:
         if event.type == pygame.USEREVENT:
             if event.user_type == pygame_gui.UI_BUTTON_PRESSED:
                 if event.ui_element == self.next_level_button:
-                    game.change_state(GameState.PLAYING)
-                    game.level_manager.start_level()
+                    game.change_state(GameState.CAMPAIGN_MAP)
+                    #game.level_manager.start_level()
                     self.close_screen()
+                    game.player_info_panel.set_visibility(False)
                 elif event.ui_element == self.replay_button:
                     game.change_state(GameState.PLAYING)
                     game.level_manager.reset_level()

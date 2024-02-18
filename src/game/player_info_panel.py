@@ -38,7 +38,7 @@ class PlayerInfoPanel:
         # Score Label
         self.score_label = pygame_gui.elements.UILabel(
             relative_rect=pygame.Rect((start_x, start_y + 2 * (label_height + spacing)), (panel_width, label_height)),
-            text=f"Score: {self.player.score}",
+            text=f"Score: {self.player.levelScore}",
             manager=self.ui_manager)
         self.ui_elements.append(self.score_label)
 
@@ -53,7 +53,7 @@ class PlayerInfoPanel:
         # Update the labels based on current player stats
         self.gold_label.set_text(f"Gold: {self.player.gold}")
         self.health_label.set_text(f"Health: {self.player.health}")
-        self.score_label.set_text(f"Score: {self.player.score}")
+        self.score_label.set_text(f"Score: {self.player.levelScore}")
         self.enemy_count_label.set_text(f"Enemies: {len(enemy_manager.entities)}")
 
     def set_visibility(self, visible):

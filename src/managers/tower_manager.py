@@ -4,8 +4,9 @@ from src.entities.towers.tower_types import *
 
 
 class TowerManager(EntityManager):
-    def __init__(self):
+    def __init__(self, player):
         super().__init__()
+        self.player = player  # Reference to the player object to access skills
         self.towers = []
         self.selected_tower_type = 'Basic'
         self.tower_types = {
@@ -26,21 +27,15 @@ class TowerManager(EntityManager):
             'Debuff': DebuffTower,
         }
 
-    def add_tower(self, x, y, game):
-        """ Adds a new tower at specified coordinates if it's a valid position. """
-        if self.is_valid_position(x, y, game) and self.has_enough_resources_to_build():
-            # Get the tower class from the selected tower type
-            tower_class = self.tower_types.get(self.selected_tower_type, None)
-            if tower_class:
-                tower = tower_class(x, y)  # Create an instance of the tower
-                if self.deduct_resources(tower.build_cost):
-                    self.towers.append(tower)
-                else:
-                    print("Insufficient resources to build the tower.")
-            else:
-                print(f"Unknown tower type: {self.selected_tower_type}")
+    def add_tower(self, x, y):
+        """Adds a new tower at specified coordinates."""
+        tower_class = self.tower_types.get(self.selected_tower_type, None)
+        if tower_class:
+            tower = tower_class(x, y)  # Create an instance of the tower
+            self.apply_initial_skill_effects(tower)  # Apply any skill effects
+            self.towers.append(tower)
         else:
-            print("Invalid position or insufficient resources")
+            print(f"Unknown tower type: {self.selected_tower_type}")
 
     def upgrade_tower(self, tower_id, upgrade_type):
         """ Upgrades a tower based on an upgrade type. """
@@ -92,9 +87,36 @@ class TowerManager(EntityManager):
         # TODO Implement logic to deduct resources
         return True
 
+    def apply_initial_skill_effects(self, tower):
+        """Applies initial skill effects to a tower upon creation."""
+        # Example: Increase initial damage based on a skill
+        damage_boost_level = self.player.skills.get('damage_boost', 0)
+        tower.damage *= (1 + damage_boost_level * 0.05)  # Assuming each level increases damage by 5%
+
     def update(self, enemies, projectile_manager):
-        """ Updates each tower and handles their attacks. """
+        """Updated to consider skills affecting towers during the game."""
         for tower in self.towers:
+            # Example: Increase attack speed based on a skill
+            attack_speed_increase = self.player.skills.get('attack_speed', 0)
+            tower.attack_speed += attack_speed_increase
             tower.update(enemies, projectile_manager)
 
     # Additional methods as needed, such as collision detection, selecting towers, etc.
+
+    def add_tower_if_possible(self, x, y, player, game):
+        """Attempts to add a tower at the specified location if the player has enough resources."""
+        build_type = self.selected_tower_type
+        build_cost = TOWER_TYPES[build_type]['cost']
+        build_cost_reduction = player.skills.get('tower_build_discount', 0) * 10  # Adjust formula as needed
+        adjusted_cost = max(0, build_cost - build_cost_reduction)
+
+        if player.gold >= adjusted_cost:
+            if self.is_valid_position(x, y, game):
+                self.add_tower(x, y)
+                player.spend_gold(adjusted_cost)
+                return True
+            else:
+                print("Invalid position for tower.")
+        else:
+            print("Not enough gold to build tower.")
+        return False

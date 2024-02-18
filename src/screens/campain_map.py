@@ -21,8 +21,6 @@ class CampaignMap(Screen):
             (410, 306), (465, 282), (490, 268), (481, 247), (468, 197)
         ]
         self.player_progress = player_progress
-        # self.player_progress = {
-        #    'unlocked_levels': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]}  # A dictionary or list that tracks player progress
         self.level_buttons = []
 
         self.map_image = load_scaled_image('assets/images/screens/campaignMap/campaign_map.png',
@@ -30,7 +28,7 @@ class CampaignMap(Screen):
         self.level_visibility = {}
         self.initilize_buttons()
         self.skills_button = pygame_gui.elements.UIButton(
-            relative_rect=pygame.Rect((SCREEN_WIDTH - 300, 10), UI_BUTTON_SIZE),  # Adjust position as needed
+            relative_rect=pygame.Rect([SCREEN_WIDTH - 300, 10], UI_BUTTON_SIZE),  # Adjust position as needed
             text='Skills',
             manager=self.ui_manager,
             object_id=pygame_gui.core.ObjectID(class_id="@button"),
@@ -69,13 +67,15 @@ class CampaignMap(Screen):
         if event.type == pygame.USEREVENT and event.user_type == pygame_gui.UI_BUTTON_PRESSED:
             if event.ui_element == self.skills_button:
                 game.change_state(GameState.SKILLS)  # Assuming GameState.SKILLS is defined
-                game.skills_screen.open_screen()  # Assuming you have a skills_screen attribute in your Game class
+                self.close_screen()
+
     def handle_clicks(self, event, game):
         mouse_pos = event.pos
         for index, (_, button_rect, unlocked) in enumerate(self.level_buttons):
             if button_rect.collidepoint(mouse_pos) and unlocked:
                 game.initialize_game()  # Set up the game for the selected level
                 game.level_manager.start_level(index)
+                game.player.start_level()
                 print(f"Starting level {index}")
                 break  # Exit loop after handling the click
 
