@@ -1,5 +1,6 @@
 import pygame
 import pygame_gui
+from pygame_gui.elements.ui_tool_tip import UITooltip
 
 from src.config.config import SCREEN_WIDTH, SCREEN_HEIGHT, UI_BUTTON_SIZE
 from src.screens.screen import Screen
@@ -85,13 +86,12 @@ class SkillsScreen(Screen):
     def __init__(self, ui_manager, player):
         super().__init__(ui_manager, "assets/images/screens/skills_background.png")
         self.player = player
-        #self.player_skills = player.skills  # This could be a reference to the player's skills data structure
         self.skill_buttons = []  # To hold buttons for each skill
         self.skill_points_label = None  # To display the player's skill points
         self.grid_columns = 2  # Number of columns in the grid
-        self.grid_cell_size = (380, 50)  # Width and height of each grid cell
-        self.grid_margin = 100  # Margin from the top and left of the screen
-        self.grid_spacing = 0  # Spacing between buttons
+        self.grid_cell_size = [380, 50]  # Width and height of each grid cell
+        self.grid_margin = 200  # Margin from the top and left of the screen
+        self.grid_spacing = 10  # Spacing between buttons
         self.initialize_skill_buttons()
         self.initialize_skill_points_label()
 
@@ -105,15 +105,16 @@ class SkillsScreen(Screen):
             skill_level = self.player.skills.get(skill_key, {}).get("level", 0)
             skill_points_needed = skill_info["cost_per_level"][skill_level] if skill_level < skill_info[
                 "max_level"] else "Max"
-            button_text = f"{skill_key}: Level {skill_level} (Next: {skill_points_needed} points)"
+            button_text = f"{skill_info['description']}: Level {skill_level} (Next: {skill_points_needed} points)"
 
             x = self.grid_margin + column * (self.grid_cell_size[0] + self.grid_spacing)
             y = self.grid_margin + row * (self.grid_cell_size[1] + self.grid_spacing)
 
             button = pygame_gui.elements.UIButton(
-                relative_rect=pygame.Rect((x, y), self.grid_cell_size),
+                relative_rect=pygame.Rect([x, y], self.grid_cell_size),
                 text=button_text,
                 manager=self.ui_manager,
+                tool_tip_text=skill_info['description'],  # Add tooltip text here
                 visible=False  # Initially invisible; made visible when the screen is opened
             )
             self.add_ui_element(button)
@@ -122,7 +123,7 @@ class SkillsScreen(Screen):
     def initialize_skill_points_label(self):
         # Create and add the skill points label to the UI elements
         self.skill_points_label = pygame_gui.elements.UILabel(
-            relative_rect=pygame.Rect((50, 50), (200, 50)),  # Adjust size and position as needed
+            relative_rect=pygame.Rect([50, 50], [200, 50]),  # Adjust size and position as needed
             text=f"Skill Points: {self.player.points}",
             manager=self.ui_manager,
             visible=False
@@ -149,7 +150,7 @@ class SkillsScreen(Screen):
             game.player.upgrade_skill(skill_key)  # Pass the skill key to upgrade
             # Update the button text to reflect the new skill level
             new_level = game.player.skills[skill_key]  # Assuming player.skills stores levels of each skill
-            self.skill_buttons[skill_index].set_text(f"{skill['description']}: Level {new_level}")
+            self.skill_buttons[skill_index].set_text(f"{skill_key}: Level {new_level}")
             self.skill_points_label.set_text(f"Skill Points: {self.player.points}")
 
     def open_screen(self):
