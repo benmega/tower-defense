@@ -75,7 +75,8 @@ class TowerManager(EntityManager):
     def is_valid_position(self, x, y, game):
         """ Checks if the position is valid for placing a tower. """
         mouse_pos = (x,y)
-        return game.board.is_within_panel(mouse_pos)
+        #return game.board.is_within_panel(mouse_pos)
+        return game.board.can_build_at(mouse_pos)
 
     def has_enough_resources_to_build(self):
         """ Checks if the player has enough resources to build the selected tower. """

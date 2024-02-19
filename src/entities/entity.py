@@ -12,8 +12,8 @@ class Entity(pygame.sprite.Sprite):
         self.size = size
         self.image = load_scaled_image(image_path, self.size).convert_alpha()
         self.rect = self.image.get_rect(topleft=(x, y))
-        # self.x = x
-        # self.y = y
+        # self.gridX = gridX
+        # self.gridY = gridY
         self.active = True
         self.width, self.height = self.image.get_size()
 

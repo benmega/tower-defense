@@ -26,16 +26,28 @@ class GameBoard:
         self.entrance_image = load_scaled_image(ENTRANCE_IMAGE_PATH, TILE_SIZE)
         self.exit_image = load_scaled_image(EXIT_IMAGE_PATH, TILE_SIZE)
         self.grid = [[None for _ in range(width)] for _ in range(height)]
+        self.path = [(0,0),(0,500),(500,500)]
+        self.path_layout = self.create_path_layout(self.path)
 
 
 
-    def get_tower_at(self, x, y):
-        '''x and way are tile grid numbers not pixels'''
-        return self.grid[y][x] if self.is_valid_position(x, y) else None
+    def get_tower_at(self, gridX, gridY):
+        '''gridX and way are tile grid numbers not pixels'''
+        # TODO Have grid update
+        return self.grid[gridY][gridX] if self.is_valid_position(gridX, gridY) else None
 
-    def get_tile_image(self, x, y, path):
-        path_layout = self.create_path_layout(path)
-        tile_type = path_layout[y][x]
+    def get_tile_image(self, x, y, path=None):
+        '''
+
+        :param x: in pixels not grids
+        :param y: in pixels not grids
+        :param path: in pixels not grids
+        :return:
+        '''
+        if path:
+            self.path = path
+        self.path_layout = self.create_path_layout(self.path)
+        tile_type = self.path_layout[y][x]
         if tile_type == 'G':
             return self.grass_image
         elif tile_type == 'P':
@@ -60,7 +72,11 @@ class GameBoard:
                 screen.blit(image, (x * TILE_SIZE[0], y * TILE_SIZE[1]))
 
     def create_path_layout(self, path):
+        '''
 
+        :param path: list of (x,y) tuples where turns occur. x and y are in pixels not grids
+        :return: layout, in
+        '''
         # Convert path points to grid coordinates TODO set path to be grid based
         path = [(min(x // TILE_SIZE[0],self.width-1), min(y // TILE_SIZE[1],self.height-1)) for x, y in path]
 
@@ -92,12 +108,20 @@ class GameBoard:
 
         return layout
 
-    def is_valid_position(self, x, y):
-        '''x and way are tile grid numbers not pixels'''
-        return 0 <= x < self.width and 0 <= y < self.height
+    def is_valid_position(self, grid_x, grid_y):
+        '''gridX and way are tile grid numbers not pixels'''
+        return 0 <= grid_x < self.width and 0 <= grid_y < self.height
 
     def is_within_panel(self, mouse_pos):
         # assumes board is at (0,0)
         x, y = mouse_pos
-        '''x and way are pixel based not tile based'''
+        '''gridX and way are pixel based not tile based'''
         return x < self.width * TILE_SIZE[0] and y < self.height * TILE_SIZE[1]
+
+    def can_build_at(self, mouse_pos):
+        if not self.is_within_panel(mouse_pos):
+            return False
+        gridX, gridY = mouse_pos[0] // TILE_SIZE[0], mouse_pos[1] // TILE_SIZE[1]
+        if self.path_layout[gridY][gridX] != 'G': # Building on grass only is allowed
+            return False
+        return True

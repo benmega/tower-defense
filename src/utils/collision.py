@@ -2,7 +2,7 @@
 
 def check_collision(object1, object2):
     """
-    Check if two objects collide. This function assumes each object has x, y coordinates
+    Check if two objects collide. This function assumes each object has gridX, gridY coordinates
     and a 'size' or 'radius' attribute for simplicity.
     """
     dx = object1.x - object2.x

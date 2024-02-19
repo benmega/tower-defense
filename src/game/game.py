@@ -42,7 +42,7 @@ class Game:
         pygame.init()
         self.screen = pygame.display.set_mode([configuration.SCREEN_WIDTH, configuration.SCREEN_HEIGHT],
                                               pygame.DOUBLEBUF)
-        pygame.display.set_caption("Tower Defense Game")
+        pygame.display.set_caption("Mr. Mega\'s Awesome Tower Defense Game")
         self.clock = pygame.time.Clock()
         self.event_manager = EventManager()
         theme_path = os.path.join(os.path.dirname(__file__), '..', 'config', 'theme.json')
@@ -120,6 +120,8 @@ class Game:
 
         if self.current_state == GameState.MAIN_MENU:
             self.main_menu.update(time_delta)
+        elif self.current_state == GameState.CAMPAIGN_MAP:
+            self.campaign_map.update(time_delta)
         elif self.current_state == GameState.LEVEL_COMPLETE:
             self.level_completion_screen.update(time_delta)
         elif self.current_state == GameState.PLAYING:

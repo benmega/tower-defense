@@ -13,7 +13,7 @@ class Bullet:
         Move the bullet towards its target. This method would be called each game tick.
         """
         # Implement movement logic here
-        # Typically, this involves calculating the direction to the target and updating x and y accordingly
+        # Typically, this involves calculating the direction to the target and updating gridX and gridY accordingly
         pass
 
     def hit_target(self):
