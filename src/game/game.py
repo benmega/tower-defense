@@ -64,7 +64,6 @@ class Game:
         self.current_state = None
         self.previous_state = None  # Initialize previous state
         self.main_menu = MainMenu(self.screen, self.UI_manager)
-        self.options_screen = OptionsScreen(self.UI_manager)
         self.game_data_screen = GameDataScreen(self.UI_manager)
         self.campaign_map = CampaignMap(self.UI_manager, self.player.player_progress)
         self.level_completion_screen = LevelCompletionScreen(self)
@@ -72,7 +71,8 @@ class Game:
         self.player_info_panel = PlayerInfoPanel(self.UI_manager, self.player, self.screen)
         self.skills_screen = SkillsScreen(self.UI_manager, self.player)
         self.audio_manager = AudioManager()
-        self.audio_manager.set_volume(music_volume=0.4, sfx_volume=0.7) # sample
+        self.audio_manager.set_volume(music_volume=0.4, sfx_volume=0.7) # TODO set through Options
+        self.options_screen = OptionsScreen(self.UI_manager, self.audio_manager)
 
     def initialize_game(self):
         self.change_state(GameState.PLAYING)
