@@ -9,6 +9,7 @@ from src.board.tower_selection_panel import TowerSelectionPanel
 from src.entities.Player import Player
 from src.game.game_state import GameState
 from src.game.player_info_panel import PlayerInfoPanel
+from src.managers.audio_manager import AudioManager
 from src.managers.collision_manager import CollisionManager
 from src.managers.enemy_manager import EnemyManager
 from src.managers.event_manager import EventManager
@@ -60,7 +61,7 @@ class Game:
 
         self.enemy_manager = EnemyManager(self.level_manager, self.enemy_defeated_callback,
                                           self.player_take_damage_callback)
-        self.current_state = GameState.MAIN_MENU
+        self.current_state = None
         self.previous_state = None  # Initialize previous state
         self.main_menu = MainMenu(self.screen, self.UI_manager)
         self.options_screen = OptionsScreen(self.UI_manager)
@@ -70,9 +71,11 @@ class Game:
         self.is_build_mode = True
         self.player_info_panel = PlayerInfoPanel(self.UI_manager, self.player, self.screen)
         self.skills_screen = SkillsScreen(self.UI_manager, self.player)
+        self.audio_manager = AudioManager()
+        self.audio_manager.set_volume(music_volume=0.4, sfx_volume=0.7) # sample
 
     def initialize_game(self):
-        self.current_state = GameState.PLAYING
+        self.change_state(GameState.PLAYING)
         self.level_manager.load_levels()
         self.player_info_panel.set_visibility(True)
 
@@ -99,9 +102,10 @@ class Game:
         self.UI_manager.draw_ui(self.screen)  # Draw the game UI
         pygame.display.flip()  # Update the display
 
+
     def run(self):
         self.is_running = True
-
+        self.change_state(GameState.MAIN_MENU)
         while self.is_running:
             time_delta = self.clock.tick(configuration.FPS) / 1000.0
             self.event_manager.process_events(self)
@@ -197,14 +201,18 @@ class Game:
         self.current_state = new_state  # Update current state to the new state
         if new_state == GameState.MAIN_MENU:
             self.main_menu.open_menu()
+            self.audio_manager.play_music('assets/sounds/main_menu_background.mp3')
         elif new_state == GameState.OPTIONS:
             self.options_screen.open_screen()
         elif new_state == GameState.LOAD_GAME:
             self.game_data_screen.open_screen()
         elif new_state == GameState.CAMPAIGN_MAP:
+            self.audio_manager.play_music('assets/sounds/campain_map_background.mp3')
             self.campaign_map.open_screen()
         elif new_state == GameState.SKILLS:
             self.skills_screen.open_screen()
+        elif new_state == GameState.PLAYING:
+            self.audio_manager.play_music('assets/sounds/playing_background.mp3')
 
     def save_game(self, save_slot_or_filename):
         # Determine the filename based on the input parameter
