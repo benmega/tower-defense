@@ -14,6 +14,7 @@ class Screen:
         self.background_image = load_scaled_image(background_image_path, (SCREEN_WIDTH, SCREEN_HEIGHT))
         self.return_button = self.create_return_button()  # Create the return button
 
+
     def create_return_button(self):
         # Create a button in the top right corner
         button = pygame_gui.elements.UIButton(
@@ -48,8 +49,8 @@ class Screen:
         if event.type == pygame.USEREVENT:
             if event.user_type == pygame_gui.UI_BUTTON_PRESSED:
                 if event.ui_element == self.return_button:
-                    self.close_screen()
-                    game.change_state(game.previous_state)  # Assuming game object has a method to handle state change
+                    #self.close_screen()
+                    game.change_state(game.previous_state, self)  # Assuming game object has a method to handle state change
 
     def update(self, time_delta):
         if self.isActive:

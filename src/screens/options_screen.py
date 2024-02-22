@@ -32,8 +32,8 @@ class OptionsScreen(Screen):
             if event.user_type == pygame_gui.UI_BUTTON_PRESSED:
                 if event.ui_element == self.back_button:
                     # Handle back button press
-                    game.change_state(GameState.MAIN_MENU)
-                    self.close_screen()
+                    game.change_state(GameState.MAIN_MENU, self)
+                    #self.close_screen()
                 elif event.ui_element == self.fullscreen_toggle:
                     # Handle fullscreen toggle
                     print("Toggle fullscreen mode")

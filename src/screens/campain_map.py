@@ -87,13 +87,16 @@ class CampaignMap(Screen):
         return level_index in self.player_progress['unlocked_levels']
 
     def handle_events(self, event, game):
-        super().handle_events(event,game)
+        if event.type == pygame.USEREVENT:
+            if event.user_type == pygame_gui.UI_BUTTON_PRESSED:
+                if event.ui_element == self.return_button:
+                    game.change_state(GameState.MAIN_MENU, self)  # Assuming game object has a method to handle state change
         if event.type == pygame.MOUSEBUTTONDOWN:
             self.handle_clicks(event, game)
         if event.type == pygame.USEREVENT and event.user_type == pygame_gui.UI_BUTTON_PRESSED:
             if event.ui_element == self.skills_button:
-                game.change_state(GameState.SKILLS)  # Assuming GameState.SKILLS is defined
-                self.close_screen()
+                game.change_state(GameState.SKILLS, self)  # Assuming GameState.SKILLS is defined
+                #self.close_screen()
 
     def handle_clicks(self, event, game):
         # Adjust mouse_pos to account for camera position
@@ -104,7 +107,8 @@ class CampaignMap(Screen):
                 game.initialize_game()  # Set up the game for the selected level
                 game.level_manager.start_level(index)
                 game.player.start_level()
-                print(f"Starting level {index}")
+                self.close_screen()
+                #print(f"Starting level {index}")
                 break  # Exit loop after handling the click
 
     def update_player_progress(self, new_progress):
@@ -129,3 +133,14 @@ class CampaignMap(Screen):
             self.camera.move(0, -move_speed)
         elif mouse_y > SCREEN_HEIGHT - move_threshold:  # Mouse is near the bottom edge
             self.camera.move(0, move_speed)
+
+    def create_return_button(self):
+        # Create a button in the top right corner
+        button = pygame_gui.elements.UIButton(
+            relative_rect=pygame.Rect([SCREEN_WIDTH - UI_BUTTON_SIZE[0] - 10, 10], UI_BUTTON_SIZE),
+            text="Main Menu",
+            manager=self.ui_manager,
+            visible=False
+        )
+        self.add_ui_element(button)
+        return button

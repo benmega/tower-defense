@@ -75,16 +75,16 @@ class LevelCompletionScreen:
         if event.type == pygame.USEREVENT:
             if event.user_type == pygame_gui.UI_BUTTON_PRESSED:
                 if event.ui_element == self.next_level_button:
-                    game.change_state(GameState.CAMPAIGN_MAP)
+                    game.change_state(GameState.CAMPAIGN_MAP, self)
                     #game.level_manager.start_level()
-                    self.close_screen()
+                    #self.close_screen()
                     game.player_info_panel.set_visibility(False)
                 elif event.ui_element == self.replay_button:
-                    game.change_state(GameState.PLAYING)
+                    game.change_state(GameState.PLAYING, self)
                     game.level_manager.reset_level()
-                    self.close_screen()
+                    #self.close_screen()
                 elif event.ui_element == self.main_menu_button:
-                    game.change_state(GameState.MAIN_MENU)
-                    game.main_menu.open_menu()
+                    game.change_state(GameState.MAIN_MENU, self)
+                    #game.main_menu.open_menu()
                     game.set_gameboard_ui_visibility(False)
-                    self.close_screen()
+                    #self.close_screen()

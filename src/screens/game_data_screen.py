@@ -51,15 +51,15 @@ class GameDataScreen(Screen):
                 for i, button in enumerate(self.load_buttons):
                     if event.ui_element == button:
                         game.load_game(self.save_slot_files[i])
-                        self.close_screen()
-                        game.change_state(game.previous_state)
+                        #self.close_screen()
+                        game.change_state(game.previous_state, self)
                         break  # Exit loop after finding the matching button
 
                 # Check Save buttons
                 for i, button in enumerate(self.save_buttons):
                     if event.ui_element == button:
                         game.save_game(self.save_slot_files[i])
-                        self.close_screen()
-                        game.change_state(game.previous_state)
+                        #self.close_screen()
+                        game.change_state(game.previous_state, self)
                         # No need to change state after saving
                         break  # Exit loop after finding the matching button

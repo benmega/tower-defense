@@ -31,5 +31,5 @@ class GameOverScreen(Screen):
                     self.close_screen()
                 elif event.ui_element == self.main_menu_button:
                     print("Returning to main menu...")
-                    game.change_state(GameState.MAIN_MENU)
-                    self.close_screen()
+                    game.change_state(GameState.MAIN_MENU, self)
+                    #self.close_screen()

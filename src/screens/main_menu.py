@@ -43,14 +43,14 @@ class MainMenu:
         if event.type == pygame.USEREVENT:
             if event.user_type == pygame_gui.UI_BUTTON_PRESSED:
                 if event.ui_element == self.start_button:
-                    game.change_state(GameState.CAMPAIGN_MAP)
-                    self.close_menu()
+                    game.change_state(GameState.CAMPAIGN_MAP, self)
+                    #self.close_menu()
                 elif event.ui_element == self.continue_button:
-                    game.change_state(GameState.LOAD_GAME)
-                    self.close_menu()
+                    game.change_state(GameState.LOAD_GAME, self)
+                    #self.close_menu()
                 elif event.ui_element == self.settings_button:
-                    game.change_state(GameState.OPTIONS)
-                    self.close_menu()
+                    game.change_state(GameState.OPTIONS, self)
+                    #self.close_menu()
                 elif event.ui_element == self.exit_button:
                     pygame.quit()
                     exit()
@@ -62,7 +62,7 @@ class MainMenu:
         self.screen.blit(self.background_image, (0, 0))
         self.ui_manager.draw_ui(self.screen)
 
-    def close_menu(self):
+    def close_screen(self):
         self.exit_button.visible = False
         self.start_button.visible = False
         self.settings_button.visible = False

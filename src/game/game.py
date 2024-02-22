@@ -72,7 +72,7 @@ class Game:
         self.skills_screen = SkillsScreen(self.UI_manager, self.player)
 
     def initialize_game(self):
-        self.current_state = GameState.PLAYING
+        self.change_state(GameState.PLAYING)
         self.level_manager.load_levels()
         self.player_info_panel.set_visibility(True)
 
@@ -192,9 +192,10 @@ class Game:
         '''
         self.UI_manager.update(self.clock.tick(configuration.FPS) / 1000.0)
 
-    def change_state(self, new_state):
+    def change_state(self, new_state, screen=None ):
         self.previous_state = self.current_state  # Store current state as previous
         self.current_state = new_state  # Update current state to the new state
+
         if new_state == GameState.MAIN_MENU:
             self.main_menu.open_menu()
         elif new_state == GameState.OPTIONS:
@@ -206,6 +207,8 @@ class Game:
         elif new_state == GameState.SKILLS:
             self.skills_screen.open_screen()
 
+        if screen:
+            screen.close_screen()
     def save_game(self, save_slot_or_filename):
         # Determine the filename based on the input parameter
         filename = f"src/save_data/{save_slot_or_filename}.json" if isinstance(save_slot_or_filename, int) else save_slot_or_filename
