@@ -2,7 +2,8 @@
   "player": {
     "gold": 2000,
     "health": 100,
-    "score": {
+    "totalScore": 0,
+    "levelScores": {
       "level1": 2500,
       "level2": 3000,
       "level3": 3500,
