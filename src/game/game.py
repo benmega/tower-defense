@@ -73,7 +73,14 @@ class Game:
         self.audio_manager = AudioManager()
         self.audio_manager.set_volume(music_volume=0.4, sfx_volume=0.7) # TODO set through Options
         self.options_screen = OptionsScreen(self.UI_manager, self.audio_manager)
-
+        self.state_handlers = {
+            GameState.MAIN_MENU: self.open_main_menu,
+            GameState.OPTIONS: self.open_options_screen,
+            GameState.LOAD_GAME: self.open_game_data_screen,
+            GameState.CAMPAIGN_MAP: self.open_campaign_map,
+            GameState.SKILLS: self.open_skills_screen,
+            GameState.PLAYING: self.open_playing_scene
+        }
     def initialize_game(self):
         self.change_state(GameState.PLAYING)
         self.level_manager.load_levels()
@@ -200,20 +207,12 @@ class Game:
         self.previous_state = self.current_state  # Store current state as previous
         self.current_state = new_state  # Update current state to the new state
 
-        if new_state == GameState.MAIN_MENU:
-            self.main_menu.open_menu()
-            self.audio_manager.play_music('assets/sounds/main_menu_background.mp3')
-        elif new_state == GameState.OPTIONS:
-            self.options_screen.open_screen()
-        elif new_state == GameState.LOAD_GAME:
-            self.game_data_screen.open_screen()
-        elif new_state == GameState.CAMPAIGN_MAP:
-            self.audio_manager.play_music('assets/sounds/campain_map_background.mp3')
-            self.campaign_map.open_screen()
-        elif new_state == GameState.SKILLS:
-            self.skills_screen.open_screen()
-        elif new_state == GameState.PLAYING:
-            self.audio_manager.play_music('assets/sounds/playing_background.mp3')
+        # Call the handler for the new state, if it exists
+        state_handler = self.state_handlers.get(new_state)
+        if state_handler:
+            state_handler()
+        else:
+            print(f"No handler defined for {new_state}")
 
         if screen:
             screen.close_screen()
@@ -248,3 +247,28 @@ class Game:
                 print(f"Game loaded from {filename}")
         except FileNotFoundError:
             print(f"Save file not found: {filename}")
+
+    def open_main_menu(self):
+        # Logic to open the main menu
+        self.main_menu.open_menu()
+        self.audio_manager.play_music('assets/sounds/main_menu_background.mp3')
+
+    def open_options_screen(self):
+        # Logic to open the options screen
+        self.options_screen.open_screen()
+
+    def open_game_data_screen(self):
+        # Logic to open the game data/load game screen
+        self.game_data_screen.open_screen()
+
+    def open_campaign_map(self):
+        # Logic to open the campaign map
+        self.campaign_map.open_screen()
+        self.audio_manager.play_music('assets/sounds/campain_map_background.mp3')
+
+    def open_skills_screen(self):
+        # Logic to open the skills screen
+        self.skills_screen.open_screen()
+
+    def open_playing_scene(self):
+        self.audio_manager.play_music('assets/sounds/playing_background.mp3')
