@@ -19,23 +19,15 @@ class EventManager:
                 if event.type == pygame.USEREVENT:
                     game.level_manager.wave_panel.handle_events(event, game)
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    # Check if the click is for building a tower
-                    # game.UI_manager.process_events(event)
-                    # self.handle_build_tower(event, game)
                     if game.tower_selection_panel.is_within_panel(event.pos):
                         game.tower_selection_panel.handle_mouse_click(event.pos)
                     elif game.is_build_mode:
                         game.tower_manager.add_tower_if_possible(event.pos[0], event.pos[1], player=game.player, game=game)
-                        # self.handle_build_tower(event, game)
-
             elif game.current_state == GameState.MAIN_MENU:
-                # Here, handle main menu specific events
                 game.main_menu.handle_events(event, game)
             elif game.current_state == GameState.OPTIONS:
-                # Here, handle options menu specific events
                 game.options_screen.handle_events(event, game)
             elif game.current_state == GameState.LOAD_GAME:
-                # Here, handle options menu specific events
                 game.game_data_screen.handle_events(event, game)
             elif game.current_state == GameState.CAMPAIGN_MAP:
                 game.campaign_map.handle_events(event, game)
@@ -63,24 +55,4 @@ class EventManager:
     def add_event(self, event):
         """ Add an event to the queue. """
         self.events.append(event)
-
-    # # @staticmethod
-    # # def handle_build_tower(event, game):
-    # #     """ Handle the 'build_tower' event. """
-    # #     build_type = game.tower_manager.selected_tower_type
-    # #     build_cost = TOWER_TYPES[build_type]['cost']
-    # #     if game.player.gold >= build_cost:
-    # #         game.tower_manager.add_tower(event.pos[0],event.pos[1], game)
-    # #         game.player.gold -= build_cost
-    # #         game.UI_manager.resources = game.player.gold
-    #
-    # def handle_start_level(self, event, game):
-    #     """ Handle the 'start_level' event. """
-    #     # Implementation to handle starting a new level
-    #     # Example: game.start_level(event.level_number)
-    #
-    # def handle_pause_game(self, event, game):
-    #     """ Handle the 'pause_game' event. """
-    #     # Implementation to handle pausing the game
-    #     # Example: game.pause()
 

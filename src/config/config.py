@@ -255,7 +255,7 @@ MAIN_MENU_EXIT_BUTTON_POSITION = (360*SCALE, 407*SCALE)
 
 # Sound effects and music
 SOUND_EFFECTS_VOLUME = 0.7
-BACKGROUND_MUSIC_PATH = 'assets/audio/background_music.mp3'
+BACKGROUND_MUSIC_PATH = 'assets/audio/main_menu_background.mp3'
 BACKGROUND_MUSIC_VOLUME = 0.5
 
 # Other settings

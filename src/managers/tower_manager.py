@@ -1,3 +1,5 @@
+import pygame
+
 from src.config.config import DEBUG
 from src.managers.entity_manager import EntityManager
 from src.entities.towers.tower_types import *
@@ -26,6 +28,7 @@ class TowerManager(EntityManager):
             'GoldBoost': GoldBoostTower,
             'Debuff': DebuffTower,
         }
+        self.build_sound = pygame.mixer.Sound('assets/sounds/tower_build_effect_2.mp3')  # Preload sound
 
     def add_tower(self, x, y):
         """Adds a new tower at specified coordinates."""
@@ -34,8 +37,12 @@ class TowerManager(EntityManager):
             tower = tower_class(x, y)  # Create an instance of the tower
             self.apply_initial_skill_effects(tower)  # Apply any skill effects
             self.towers.append(tower)
+            self.play_build_sound()
         else:
             print(f"Unknown tower type: {self.selected_tower_type}")
+
+    def play_build_sound(self):
+        self.build_sound.play()
 
     def upgrade_tower(self, tower_id, upgrade_type):
         """ Upgrades a tower based on an upgrade type. """
@@ -78,15 +85,15 @@ class TowerManager(EntityManager):
         #return game.board.is_within_panel(mouse_pos)
         return game.board.can_build_at(mouse_pos)
 
-    def has_enough_resources_to_build(self):
-        """ Checks if the player has enough resources to build the selected tower. """
-        # TODO Implement logic to check player resources against tower cost
-        return True
-
-    def deduct_resources(self, tower):
-        """ Deducts resources from the player based on the tower cost. """
-        # TODO Implement logic to deduct resources
-        return True
+    # def has_enough_resources_to_build(self):
+    #     """ Checks if the player has enough resources to build the selected tower. """
+    #     # TODO Implement logic to check player resources against tower cost
+    #     return True
+    #
+    # def deduct_resources(self, tower):
+    #     """ Deducts resources from the player based on the tower cost. """
+    #     # TODO Implement logic to deduct resources
+    #     return True
 
     def apply_initial_skill_effects(self, tower):
         """Applies initial skill effects to a tower upon creation."""
