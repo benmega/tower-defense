@@ -19,12 +19,9 @@ def parse_levels(levels_data):
 
 class LevelManager:
     def __init__(self,tower_manager, UI_manager):
-        # self.active_waves = None
-        # self.enemy_manager = enemy_manager
         self.tower_manager = tower_manager
         self.UI_manager = UI_manager
         self.wave_panel = WavePanel(self.UI_manager)
-        #self.wave_panel = wave_panel
         self.levels = []
         self.current_level = None
         self.current_level_index = -1
@@ -33,14 +30,13 @@ class LevelManager:
 
     def load_levels(self):
         # Load levels from the JSON file
-        # try:
-        with open(LEVELS_JSON_PATH, 'r') as file:
-            levels_data = json.load(file)
-            # Parse and create Level objects
-            self.levels = parse_levels(levels_data)
-        # except Exception as e:
-        # print(f"Error loading levels: {e}")
-        # Handle exceptions (file not found, JSON parse error, etc.)
+        try:
+            with open(LEVELS_JSON_PATH, 'r') as file:
+                levels_data = json.load(file)
+                # Parse and create Level objects
+                self.levels = parse_levels(levels_data)
+        except Exception as e:
+            print(f"Error loading levels: {e}")
 
     def next_level(self):
         if self.current_level_index < len(self.levels) - 1:
@@ -54,10 +50,6 @@ class LevelManager:
         if self.current_level_index != -1 and self.current_level_index < len(self.levels):
             return self.levels[self.current_level_index]
         return None
-
-    # Additional methods as necessary for level management
-
-
 
     def update_levels(self):
         current_time = pygame.time.get_ticks()

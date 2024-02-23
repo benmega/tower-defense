@@ -46,19 +46,15 @@ class OptionsScreen(Screen):
 
     def handle_events(self, event, game):
         super().handle_events(event, game)
-        # Directly handle events here without calling super().handle_events
         if event.type == pygame.USEREVENT:
             if event.user_type == pygame_gui.UI_HORIZONTAL_SLIDER_MOVED:
                 if event.ui_element == self.music_volume_slider:
                     pygame.mixer.music.set_volume(event.value)
                 elif event.ui_element == self.sfx_volume_slider:
-                    # Assuming you have a way to set this globally for all sound effects
                     game.audio_manager.set_sfx_volume(event.value)
             elif event.user_type == pygame_gui.UI_BUTTON_PRESSED:
-                if event.ui_element == self.back_button:
-                    # Handle back button press
+                if event.ui_element == self.back_button: # Handle back button press
                     game.change_state(GameState.MAIN_MENU, self)
-                    #self.close_screen()
                 elif event.ui_element == self.fullscreen_toggle:
-                    # Handle fullscreen toggle
+                    # TODO Handle fullscreen toggle
                     print("Toggle fullscreen mode")

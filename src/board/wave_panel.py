@@ -91,4 +91,4 @@ class WavePanel(Screen):
         manually_started_wave.manually_started = True
         current_level.get_next_wave()
         current_level.enemy_wave_list[wave_index].start()
-        return  True # Success
+        return True # Success

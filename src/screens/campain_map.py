@@ -58,7 +58,6 @@ class CampaignMap(Screen):
             visible=False
         )
         self.ui_elements.append(self.skills_button) # List to hold UI elements like buttons
-        #map_full_size = load_full_size_map()  # Load the full-size map image
         self.camera = Camera((self.map_image.get_width(), self.map_image.get_height()), (SCREEN_WIDTH, SCREEN_HEIGHT))
 
 
@@ -96,7 +95,6 @@ class CampaignMap(Screen):
         if event.type == pygame.USEREVENT and event.user_type == pygame_gui.UI_BUTTON_PRESSED:
             if event.ui_element == self.skills_button:
                 game.change_state(GameState.SKILLS, self)  # Assuming GameState.SKILLS is defined
-                #self.close_screen()
 
     def handle_clicks(self, event, game):
         # Adjust mouse_pos to account for camera position
@@ -108,7 +106,6 @@ class CampaignMap(Screen):
                 game.level_manager.start_level(index)
                 game.player.start_level()
                 self.close_screen()
-                #print(f"Starting level {index}")
                 break  # Exit loop after handling the click
 
     def update_player_progress(self, new_progress):

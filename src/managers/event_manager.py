@@ -63,7 +63,6 @@ class EventManager:
             GameState.CAMPAIGN_MAP: game.campaign_map.handle_events,
             GameState.SKILLS: game.skills_screen.handle_events,
             GameState.LEVEL_COMPLETE: game.level_completion_screen.handle_events,
-            # Add more states as necessary
         }
         handler = state_handlers.get(game.current_state)
         if handler:
@@ -73,24 +72,4 @@ class EventManager:
     def add_event(self, event):
         """ Add an event to the queue. """
         self.events.append(event)
-
-    # # @staticmethod
-    # # def handle_build_tower(event, game):
-    # #     """ Handle the 'build_tower' event. """
-    # #     build_type = game.tower_manager.selected_tower_type
-    # #     build_cost = TOWER_TYPES[build_type]['cost']
-    # #     if game.player.gold >= build_cost:
-    # #         game.tower_manager.add_tower(event.pos[0],event.pos[1], game)
-    # #         game.player.gold -= build_cost
-    # #         game.UI_manager.resources = game.player.gold
-    #
-    # def handle_start_level(self, event, game):
-    #     """ Handle the 'start_level' event. """
-    #     # Implementation to handle starting a new level
-    #     # Example: game.start_level(event.level_number)
-    #
-    # def handle_pause_game(self, event, game):
-    #     """ Handle the 'pause_game' event. """
-    #     # Implementation to handle pausing the game
-    #     # Example: game.pause()
 

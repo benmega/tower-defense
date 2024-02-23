@@ -82,34 +82,20 @@ class TowerManager(EntityManager):
     def is_valid_position(self, x, y, game):
         """ Checks if the position is valid for placing a tower. """
         mouse_pos = (x,y)
-        #return game.board.is_within_panel(mouse_pos)
         return game.board.can_build_at(mouse_pos)
-
-    # def has_enough_resources_to_build(self):
-    #     """ Checks if the player has enough resources to build the selected tower. """
-    #     # TODO Implement logic to check player resources against tower cost
-    #     return True
-    #
-    # def deduct_resources(self, tower):
-    #     """ Deducts resources from the player based on the tower cost. """
-    #     # TODO Implement logic to deduct resources
-    #     return True
 
     def apply_initial_skill_effects(self, tower):
         """Applies initial skill effects to a tower upon creation."""
-        # Example: Increase initial damage based on a skill
         damage_boost_level = self.player.skills.get('damage_boost', 0)
         tower.damage *= (1 + damage_boost_level * 0.05)  # Assuming each level increases damage by 5%
 
     def update(self, enemies, projectile_manager):
         """Updated to consider skills affecting towers during the game."""
         for tower in self.towers:
-            # Example: Increase attack speed based on a skill
             attack_speed_increase = self.player.skills.get('attack_speed', 0)
             tower.attack_speed += attack_speed_increase
             tower.update(enemies, projectile_manager)
 
-    # Additional methods as needed, such as collision detection, selecting towers, etc.
 
     def add_tower_if_possible(self, x, y, player, game):
         """Attempts to add a tower at the specified location if the player has enough resources."""
