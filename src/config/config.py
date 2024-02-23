@@ -261,4 +261,3 @@ BACKGROUND_MUSIC_VOLUME = 0.5
 # Other settings
 DEBUG_MODE = DEBUG
 SAVE_GAME_PATH = '../save_data/game_save.json'
-

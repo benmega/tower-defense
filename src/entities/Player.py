@@ -67,7 +67,8 @@ class Player:
         return {
             "gold": self.gold,
             "health": self.health,
-            "score": self.totalScore,
+            "totalScore": self.totalScore,
+            "levelScores": self.scores,
             "unlocked_levels": self.unlocked_levels,
             "skills": self.skills,
         }
@@ -75,7 +76,7 @@ class Player:
     def from_dict(self, data):
         self.gold = data["gold"]
         self.health = data["health"]
-        self.totalScore = data["score"]
+        self.totalScore = data["totalScore"]
         self.unlocked_levels = data["unlocked_levels"]
         self.skills = data["skills"]
 
