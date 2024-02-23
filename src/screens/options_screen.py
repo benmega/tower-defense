@@ -32,7 +32,6 @@ class OptionsScreen(Screen):
             start_value=self.audio_manager.music_volume,
             value_range=(0, 100),
             manager=self.ui_manager,
-            background_color='blue',
             visible=False
         )
         self.sfx_volume_slider = pygame_gui.elements.UIHorizontalSlider(

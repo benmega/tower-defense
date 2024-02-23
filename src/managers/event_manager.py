@@ -33,7 +33,7 @@ class EventManager:
         # Example:
         if event.user_type == pygame_gui.UI_CONFIRMATION_DIALOG_CONFIRMED:
             # Perform actions based on the confirmed dialog
-            pass  # Placeholder for actual logic
+            pass  # Placeholder for actual logic TODO add logic
 
     def handle_state_specific_events(self, event, game):
         if game.current_state == GameState.PLAYING:
@@ -46,11 +46,13 @@ class EventManager:
 
     def handle_playing_events(self, event, game):
         # Handle events specific to the PLAYING state
+        if event.type == pygame.USEREVENT:
+            game.level_manager.wave_panel.handle_events(event, game)
         if event.type == pygame.MOUSEBUTTONDOWN:
             if game.tower_selection_panel.is_within_panel(event.pos):
                 game.tower_selection_panel.handle_mouse_click(event.pos)
             elif game.is_build_mode:
-                game.tower_manager.add_tower_if_possible(event.pos[0], event.pos[1], game.player)
+                game.tower_manager.add_tower_if_possible(event.pos[0], event.pos[1], game.player, game)
 
     def handle_menu_and_ui_states(self, event, game):
         # Handle events for various menu and UI states
@@ -66,17 +68,6 @@ class EventManager:
         handler = state_handlers.get(game.current_state)
         if handler:
             handler(event, game)
-
-        # Handle any custom events that are not pygame events
-        # for event in self.events:
-        #     if event.type == 'build_tower':
-        #         self.handle_build_tower(event, game)
-        #     elif event.type == 'start_level':
-        #         self.handle_start_level(event, game)
-        #     elif event.type == 'pause_game':
-        #         self.handle_pause_game(event, game)
-        #     # Add more event types as needed
-        #     self.events.remove(event)
 
 
     def add_event(self, event):
