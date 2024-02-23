@@ -33,9 +33,7 @@ class WavePanel(Screen):
                 self.buttons.append(button)
 
     def handle_events(self, event, game):
-        #print(event.type)  # Print the event type to confirm we're seeing USEREVENTs
         if event.type == pygame.USEREVENT:
-            #print("USEREVENT Detected", event.user_type)  # Now print the user_type of the USEREVENT
             if event.user_type == pygame_gui.UI_BUTTON_PRESSED:
                 for i, button in enumerate(self.buttons):
                     if event.ui_element == button:
@@ -77,7 +75,7 @@ class WavePanel(Screen):
     def start_wave_manually(self, wave_index, current_level):
         # Only allow next wave to be called
         if wave_index != current_level.current_wave_index + 1:
-            return None
+            return False
         current_time = pygame.time.get_ticks()
         manually_started_wave = current_level.enemy_wave_list[wave_index]
 
@@ -93,3 +91,4 @@ class WavePanel(Screen):
         manually_started_wave.manually_started = True
         current_level.get_next_wave()
         current_level.enemy_wave_list[wave_index].start()
+        return  True # Success
