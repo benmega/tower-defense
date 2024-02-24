@@ -15,12 +15,13 @@ class EnemyManager(EntityManager):
     def update(self):
         """ Update the state of all enemies and spawn new ones from the current waves. """
         current_time = pygame.time.get_ticks()
-        active_waves = self.level_manager.current_level.active_waves
-        if active_waves:
-            for wave in active_waves:
-                new_enemies = wave.update(current_time)
-                for new_enemy in new_enemies:
-                    self.add_enemy(new_enemy)
+        if self.level_manager.current_level:
+            active_waves = self.level_manager.current_level.active_waves
+            if active_waves:
+                for wave in active_waves:
+                    new_enemies = wave.update(current_time)
+                    for new_enemy in new_enemies:
+                        self.add_enemy(new_enemy)
 
         self.update_entities()
         for enemy in list(self.entities):  # Make a copy of the group list to iterate over

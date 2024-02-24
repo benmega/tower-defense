@@ -40,7 +40,7 @@ class EventManager:
             self.handle_playing_events(event, game)
         elif game.current_state in [GameState.MAIN_MENU, GameState.OPTIONS,
                                     GameState.LOAD_GAME, GameState.CAMPAIGN_MAP,
-                                    GameState.SKILLS, GameState.LEVEL_COMPLETE,
+                                    GameState.SKILLS, GameState.LEVEL_COMPLETE, GameState.LEVEL_DEFEAT,
                                     GameState.GAME_OVER]:
             self.handle_menu_and_ui_states(event, game)
 
@@ -62,7 +62,8 @@ class EventManager:
             GameState.LOAD_GAME: game.game_data_screen.handle_events,
             GameState.CAMPAIGN_MAP: game.campaign_map.handle_events,
             GameState.SKILLS: game.skills_screen.handle_events,
-            GameState.LEVEL_COMPLETE: game.level_completion_screen.handle_events,
+            GameState.LEVEL_COMPLETE: game.level_end_screen.handle_events,
+            GameState.LEVEL_DEFEAT: game.level_end_screen.handle_events,
         }
         handler = state_handlers.get(game.current_state)
         if handler:

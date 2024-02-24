@@ -7,19 +7,23 @@ from src.utils.helpers import load_scaled_image
 
 
 class LevelCompletionScreen:
-    def __init__(self, game):
+    def __init__(self, game, screen_type='completion'):
         self.isActive = None
         self.game = game
         self.ui_manager = game.UI_manager
         self.screen = game.screen
+        self.screen_type = screen_type  # 'completion' or 'defeat'
         self.width, self.height = GAME_BOARD_SCREEN_SIZE[0] * 0.4, GAME_BOARD_SCREEN_SIZE[1] * 0.5
         self.x = GAME_BOARD_SCREEN_SIZE[0] // 2 - self.width // 2
         self.y = GAME_BOARD_SCREEN_SIZE[1] // 2 - self.height // 2
         self.button_size = UI_BUTTON_SIZE
         self.button_x = self.x + (self.width - self.button_size[0]) // 2
+
+        # Adjust the button text based on the screen type
+        next_level_button_text = 'Next Level' if self.screen_type == 'completion' else 'Back to Map'
         self.next_level_button = pygame_gui.elements.UIButton(
             relative_rect=pygame.Rect([self.button_x, self.y + self.height // 4], UI_BUTTON_SIZE),
-            text='Next Level',
+            text=next_level_button_text,
             manager=self.ui_manager,
             object_id=pygame_gui.core.ObjectID(class_id="@button"),
             visible=False
@@ -75,16 +79,14 @@ class LevelCompletionScreen:
         if event.type == pygame.USEREVENT:
             if event.user_type == pygame_gui.UI_BUTTON_PRESSED:
                 if event.ui_element == self.next_level_button:
-                    game.change_state(GameState.CAMPAIGN_MAP, self)
-                    #game.level_manager.start_level()
-                    #self.close_screen()
+                    if self.screen_type == 'completion': # Logic for completing the level and moving to the next
+                        game.change_state(GameState.CAMPAIGN_MAP, self)
+                    else: # Logic for defeat screen, simply going back to the map
+                        game.change_state(GameState.CAMPAIGN_MAP, self)
                     game.player_info_panel.set_visibility(False)
                 elif event.ui_element == self.replay_button:
                     game.change_state(GameState.PLAYING, self)
-                    game.level_manager.reset_level()
-                    #self.close_screen()
+                    game.initialize_game()
                 elif event.ui_element == self.main_menu_button:
                     game.change_state(GameState.MAIN_MENU, self)
-                    #game.main_menu.open_menu()
                     game.set_gameboard_ui_visibility(False)
-                    #self.close_screen()

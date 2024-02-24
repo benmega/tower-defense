@@ -10,3 +10,4 @@ class GameState(Enum):
     LEVEL_COMPLETE = auto()
     LOAD_GAME = auto()
     SKILLS = auto()
+    LEVEL_DEFEAT = auto()

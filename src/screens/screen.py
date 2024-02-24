@@ -49,8 +49,7 @@ class Screen:
         if event.type == pygame.USEREVENT:
             if event.user_type == pygame_gui.UI_BUTTON_PRESSED:
                 if event.ui_element == self.return_button:
-                    #self.close_screen()
-                    game.change_state(game.previous_state, self)  # Assuming game object has a method to handle state change
+                    game.change_state(game.previous_state, self)
 
     def update(self, time_delta):
         if self.isActive:

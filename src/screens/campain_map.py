@@ -102,9 +102,10 @@ class CampaignMap(Screen):
 
         for index, (_, button_rect, unlocked) in enumerate(self.level_buttons):
             if button_rect.collidepoint(mouse_pos) and unlocked:
-                game.initialize_game()  # Set up the game for the selected level
-                game.level_manager.start_level(index)
-                game.player.start_level()
+                game.initialize_game(index)  # Set up the game for the selected level
+                #game.change_state(GameState.PLAYING,self)
+                # game.level_manager.start_level(index)
+                # game.player.start_level()
                 self.close_screen()
                 break  # Exit loop after handling the click
 

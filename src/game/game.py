@@ -66,7 +66,7 @@ class Game:
         self.main_menu = MainMenu(self.screen, self.UI_manager)
         self.game_data_screen = GameDataScreen(self.UI_manager)
         self.campaign_map = CampaignMap(self.UI_manager, self.player.player_progress)
-        self.level_completion_screen = LevelCompletionScreen(self)
+        self.level_end_screen = LevelCompletionScreen(self, 'defeat') # LevelCompletionScreen(self, 'completion') or LevelCompletionScreen(self, 'defeat') determined upon state change
         self.is_build_mode = True
         self.player_info_panel = PlayerInfoPanel(self.UI_manager, self.player, self.screen)
         self.skills_screen = SkillsScreen(self.UI_manager, self.player)
@@ -79,12 +79,19 @@ class Game:
             GameState.LOAD_GAME: self.open_game_data_screen,
             GameState.CAMPAIGN_MAP: self.open_campaign_map,
             GameState.SKILLS: self.open_skills_screen,
-            GameState.PLAYING: self.open_playing_scene
+            GameState.PLAYING: self.open_playing_scene,
+            GameState.LEVEL_DEFEAT: self.open_defeat_screen,
+            GameState.LEVEL_COMPLETE: self.open_complete_screen
         }
-    def initialize_game(self):
+    def initialize_game(self, levelNum=None):
         self.change_state(GameState.PLAYING)
         self.level_manager.load_levels()
         self.player_info_panel.set_visibility(True)
+        if levelNum:
+            self.level_manager.start_level(levelNum)
+        self.player.start_level()
+        self.enemy_manager.reset()
+        self.level_manager.reset_level()
 
     def draw(self):
         self.screen.fill(configuration.BACKGROUND_COLOR)  # Clear the screen with the background color
@@ -96,8 +103,8 @@ class Game:
             self.game_data_screen.draw(self.screen)
         elif self.current_state == GameState.CAMPAIGN_MAP:
             self.campaign_map.draw(screen=self.screen)
-        elif self.current_state == GameState.LEVEL_COMPLETE:
-            self.level_completion_screen.draw()
+        elif self.current_state == GameState.LEVEL_COMPLETE or self.current_state == GameState.LEVEL_DEFEAT:
+            self.level_end_screen.draw()
         elif self.current_state == GameState.SKILLS:
             self.skills_screen.draw(self.screen)
         elif self.current_state == GameState.PLAYING:
@@ -133,18 +140,15 @@ class Game:
             self.main_menu.update(time_delta)
         elif self.current_state == GameState.CAMPAIGN_MAP:
             self.campaign_map.update(time_delta)
-        elif self.current_state == GameState.LEVEL_COMPLETE:
-            self.level_completion_screen.update(time_delta)
+        elif self.current_state == GameState.LEVEL_COMPLETE or self.current_state == GameState.LEVEL_DEFEAT:
+            self.level_end_screen.update(time_delta)
         elif self.current_state == GameState.PLAYING:
             # Main game update logic for each frame
             new_enemies = self.level_manager.update_levels()
             if all(not item for item in new_enemies) and len(self.enemy_manager.entities) == 0:
                 if self.level_manager.check_level_complete():
-                    self.level_completion_screen.background = capture_screen()
-                    self.current_state = GameState.LEVEL_COMPLETE
-                    self.player.complete_level(self.level_manager.current_level_index)
-                    self.campaign_map.update_player_progress(self.player.player_progress)
-                    self.level_completion_screen.open_screen()
+                    self.change_state(GameState.LEVEL_COMPLETE)
+
             for enemy in new_enemies:
                 self.enemy_manager.add_enemy(enemy)
             self.enemy_manager.update()
@@ -179,22 +183,21 @@ class Game:
         self.player_info_panel.health_label.set_text(f'health: {self.player.health}')
         if self.player.health <= 0:
             self.player.health = 0
-            self.game_over()
+            #self.game_over()
+            self.change_state(GameState.LEVEL_DEFEAT)
 
-    def game_over(self):
-        self.is_running = False
-        self.display_game_over_screen()
-
-    def display_game_over_screen(self):
-        # Code to display your game over screen...
-        print("GAME OVER!!!!")
+    # def game_over(self):
+    #     self.is_running = False
+    #     self.display_game_over_screen()
+    #
+    # def display_game_over_screen(self):
+    #     # Code to display your game over screen...
+    #     print("GAME OVER!!!!")
 
     def set_gameboard_ui_visibility(self, visible):
         self.player_info_panel.set_visibility(visible)
         self.level_manager.wave_panel.isActive = visible
         # TODO Link to all panels in playing scene
-        #self.tower_selection_panel.set_visibilty(visible)
-        #self.board.set_visibility(visible)
 
     def update_ui(self):
         '''
@@ -211,11 +214,11 @@ class Game:
         state_handler = self.state_handlers.get(new_state)
         if state_handler:
             state_handler()
+            if screen:
+                screen.close_screen()
         else:
             print(f"No handler defined for {new_state}")
 
-        if screen:
-            screen.close_screen()
     def save_game(self, save_slot_or_filename):
         # Determine the filename based on the input parameter
         filename = f"src/save_data/{save_slot_or_filename}.json" if isinstance(save_slot_or_filename, int) else save_slot_or_filename
@@ -272,3 +275,26 @@ class Game:
 
     def open_playing_scene(self):
         self.audio_manager.play_music('assets/sounds/playing_background.mp3')
+
+    def open_complete_screen(self):
+        # Check if the screen is already initialized and set to completion mode; if not, initialize it
+        self.level_end_screen.background = capture_screen()
+        self.player.complete_level(self.level_manager.current_level_index)
+        self.campaign_map.update_player_progress(self.player.player_progress)
+        self.level_end_screen.open_screen()
+
+        if not self.level_end_screen or self.level_end_screen.screen_type != 'completion':
+            self.level_end_screen = LevelCompletionScreen(self, screen_type='completion')
+        self.level_end_screen.open_screen()
+        # Additional logic to handle game state transition or setup can be added here
+
+    def open_defeat_screen(self):
+
+        self.level_end_screen.background = capture_screen()
+        self.campaign_map.update_player_progress(self.player.player_progress)
+        self.level_end_screen.open_screen()
+        # Check if the screen is already initialized and set to defeat mode; if not, initialize it
+        if not self.level_end_screen or self.level_end_screen.screen_type != 'defeat':
+            self.level_end_screen = LevelCompletionScreen(self, screen_type='defeat')
+        self.level_end_screen.open_screen()
+        print("GAME OVER!!!!")
