@@ -65,7 +65,7 @@ class Game:
         self.previous_state = None  # Initialize previous state
         self.main_menu = MainMenu(self.screen, self.UI_manager)
         self.game_data_screen = GameDataScreen(self.UI_manager)
-        self.campaign_map = CampaignMap(self.UI_manager, self.player.player_progress)
+        self.campaign_map = CampaignMap(self.UI_manager, [0]) # self.player.player_data['unlocked_levels']
         self.level_end_screen = LevelCompletionScreen(self, 'defeat') # LevelCompletionScreen(self, 'completion') or LevelCompletionScreen(self, 'defeat') determined upon state change
         self.is_build_mode = True
         self.player_info_panel = PlayerInfoPanel(self.UI_manager, self.player, self.screen)
@@ -83,11 +83,11 @@ class Game:
             GameState.LEVEL_DEFEAT: self.open_defeat_screen,
             GameState.LEVEL_COMPLETE: self.open_complete_screen
         }
-    def initialize_game(self, levelNum=None):
+    def initialize_game(self, levelNum=-1):
         self.change_state(GameState.PLAYING)
         self.level_manager.load_levels()
         self.player_info_panel.set_visibility(True)
-        if levelNum:
+        if levelNum > -1:
             self.level_manager.start_level(levelNum)
         self.player.start_level()
         self.enemy_manager.reset()
@@ -183,16 +183,7 @@ class Game:
         self.player_info_panel.health_label.set_text(f'health: {self.player.health}')
         if self.player.health <= 0:
             self.player.health = 0
-            #self.game_over()
             self.change_state(GameState.LEVEL_DEFEAT)
-
-    # def game_over(self):
-    #     self.is_running = False
-    #     self.display_game_over_screen()
-    #
-    # def display_game_over_screen(self):
-    #     # Code to display your game over screen...
-    #     print("GAME OVER!!!!")
 
     def set_gameboard_ui_visibility(self, visible):
         self.player_info_panel.set_visibility(visible)
@@ -246,7 +237,7 @@ class Game:
                 player_data = json.load(f)
                 self.player.from_dict(player_data["player"])
                 # Assuming you have a method in campaign_map to update based on player data
-                self.campaign_map.update_player_progress(player_data["player"])
+                self.campaign_map.update_player_progress(player_data["player"]['unlocked_levels'])
                 print(f"Game loaded from {filename}")
         except FileNotFoundError:
             print(f"Save file not found: {filename}")
@@ -276,25 +267,36 @@ class Game:
     def open_playing_scene(self):
         self.audio_manager.play_music('assets/sounds/playing_background.mp3')
 
+
     def open_complete_screen(self):
         # Check if the screen is already initialized and set to completion mode; if not, initialize it
         self.level_end_screen.background = capture_screen()
         self.player.complete_level(self.level_manager.current_level_index)
-        self.campaign_map.update_player_progress(self.player.player_progress)
-        self.level_end_screen.open_screen()
+        self.campaign_map.update_player_progress(self.player.player_data['unlocked_levels'])
+        # self.level_end_screen.open_screen()
 
-        if not self.level_end_screen or self.level_end_screen.screen_type != 'completion':
-            self.level_end_screen = LevelCompletionScreen(self, screen_type='completion')
+        # if not self.level_end_screen or self.level_end_screen.screen_type != 'completion':
+        #     self.level_end_screen = LevelCompletionScreen(self, capture_screen(), screen_type='completion')
+        if not self.level_end_screen:
+            self.level_end_screen = LevelCompletionScreen(self, capture_screen(), screen_type='completion')
+        if self.level_end_screen.screen_type != 'completion':
+            self.level_end_screen.screen_type = 'completion'
+            #self.level_end_screen.background = capture_screen()
+
+
         self.level_end_screen.open_screen()
         # Additional logic to handle game state transition or setup can be added here
 
     def open_defeat_screen(self):
 
         self.level_end_screen.background = capture_screen()
-        self.campaign_map.update_player_progress(self.player.player_progress)
-        self.level_end_screen.open_screen()
+        self.campaign_map.update_player_progress(self.player.player_data['unlocked_levels'])
         # Check if the screen is already initialized and set to defeat mode; if not, initialize it
-        if not self.level_end_screen or self.level_end_screen.screen_type != 'defeat':
-            self.level_end_screen = LevelCompletionScreen(self, screen_type='defeat')
+        # if not self.level_end_screen or self.level_end_screen.screen_type != 'defeat':
+        #     self.level_end_screen = LevelCompletionScreen(self, capture_screen(), screen_type='defeat')
+        if not self.level_end_screen:
+            self.level_end_screen = LevelCompletionScreen(self, capture_screen(), screen_type='defeat')
+        if self.level_end_screen.screen_type != 'defeat':
+            self.level_end_screen.screen_type = 'defeat'
         self.level_end_screen.open_screen()
         print("GAME OVER!!!!")

@@ -7,7 +7,7 @@ from src.utils.helpers import load_scaled_image
 
 
 class LevelCompletionScreen:
-    def __init__(self, game, screen_type='completion'):
+    def __init__(self, game, background, screen_type='completion'):
         self.isActive = None
         self.game = game
         self.ui_manager = game.UI_manager
@@ -44,7 +44,7 @@ class LevelCompletionScreen:
         )
         self.background_image = load_scaled_image('assets/images/screens/level_completion.png',
                                                   (self.width, self.height))
-        self.background = None
+        self.background = background
 
     def update(self, time_delta):
         # Update logic for the screen, such as animating stars or buttons
@@ -70,6 +70,12 @@ class LevelCompletionScreen:
         overlay.fill([0, 0, 0, 128])  # Adjust alpha as needed
         self.screen.blit(overlay, (0, 0))
         # Draw the level completion UI background image
+        if self.screen_type == 'completion':
+            self.background_image = load_scaled_image('assets/images/screens/level_completion.png',
+                                                  (self.width, self.height))
+        else:
+            self.background_image = load_scaled_image('assets/images/screens/level_defeat_2.jpg',
+                                                  (self.width, self.height))
         self.screen.blit(self.background_image, (self.x, self.y))
         # Make sure to draw the UI elements last so that they are on top of everything else
         self.ui_manager.draw_ui(self.screen)
@@ -79,14 +85,15 @@ class LevelCompletionScreen:
         if event.type == pygame.USEREVENT:
             if event.user_type == pygame_gui.UI_BUTTON_PRESSED:
                 if event.ui_element == self.next_level_button:
-                    if self.screen_type == 'completion': # Logic for completing the level and moving to the next
+                    if self.screen_type == 'completion':  # Logic for completing the level and moving to the next
                         game.change_state(GameState.CAMPAIGN_MAP, self)
-                    else: # Logic for defeat screen, simply going back to the map
+                    else:  # Logic for defeat screen, simply going back to the map
                         game.change_state(GameState.CAMPAIGN_MAP, self)
                     game.player_info_panel.set_visibility(False)
                 elif event.ui_element == self.replay_button:
-                    game.change_state(GameState.PLAYING, self)
+                    # game.change_state(GameState.PLAYING, self)
                     game.initialize_game()
+                    self.close_screen()
                 elif event.ui_element == self.main_menu_button:
                     game.change_state(GameState.MAIN_MENU, self)
                     game.set_gameboard_ui_visibility(False)

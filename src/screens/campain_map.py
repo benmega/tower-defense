@@ -60,7 +60,6 @@ class CampaignMap(Screen):
         self.ui_elements.append(self.skills_button) # List to hold UI elements like buttons
         self.camera = Camera((self.map_image.get_width(), self.map_image.get_height()), (SCREEN_WIDTH, SCREEN_HEIGHT))
 
-
     def initilize_buttons(self):
         self.level_buttons.clear()
         for index, position in enumerate(self.level_positions):
@@ -83,7 +82,7 @@ class CampaignMap(Screen):
                 screen.blit(button_image, adjusted_rect.topleft)
 
     def is_level_unlocked(self, level_index):
-        return level_index in self.player_progress['unlocked_levels']
+        return level_index in self.player_progress
 
     def handle_events(self, event, game):
         if event.type == pygame.USEREVENT:

@@ -11,7 +11,7 @@ class Player:
         self.health = PLAYER_HEALTH
         self.totalScore = 0
         self.levelScore = 0
-        self.player_progress = {'unlocked_levels': [0]}  # list of completed levels
+        #self.player_progress = {'unlocked_levels': [0]}  # list of completed levels
         self.player_data = {}
         self.update_ui_callback = update_ui_callback  # Function to call when UI needs to be updated
         self.scores = {}  # Scores for each level
@@ -79,6 +79,7 @@ class Player:
         self.totalScore = data["totalScore"]
         self.unlocked_levels = data["unlocked_levels"]
         self.skills = data["skills"]
+        self.player_data = data
 
     def complete_level(self, level_index):
         if level_index not in self.completed_levels:
@@ -87,7 +88,7 @@ class Player:
             next_level = level_index + 1
             if next_level not in self.unlocked_levels:
                 self.unlocked_levels.append(next_level)
-                self.player_progress['unlocked_levels'].append(next_level)
+                self.player_data['unlocked_levels'].append(next_level)
 
 
     def can_upgrade_skill(self, skill_key):
