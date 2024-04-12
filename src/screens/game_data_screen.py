@@ -121,7 +121,7 @@ class GameDataScreen(Screen):
                     game.load_game(self.save_slot_files[self.selected_slot])
                 elif self.mode == 'save':
                     game.save_game(self.save_slot_files[self.selected_slot])
-                game.change_state(game.previous_state)
+                game.state_manager.change_state(game.previous_state)
                 self.close_screen()
 
     def initiate_action(self, mode, file_path, game):

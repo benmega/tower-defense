@@ -12,7 +12,6 @@ class Enemy(pygame.sprite.Sprite):
         if not path or len(path) == 0:
             raise ValueError("Invalid path provided to Enemy")
         self.image = load_scaled_image(image_path, TILE_SIZE).convert_alpha()
-        #self.image = load_scaled_image(image_path, TILE_SIZE)
         self.rect = self.image.get_rect(topleft=path[0])
         self.health = health
         self.speed = speed
@@ -38,13 +37,10 @@ class Enemy(pygame.sprite.Sprite):
             next_x, next_y = self.path[self.path_index]
             self.move_towards(next_x, next_y)
         else: #path complete
-            # print('idle')
             self.state = 'finished'
             self.reached_goal = True
 
     def move_towards(self, next_x, next_y):
-        if DEBUG:
-            print(f'enemy moving towards {next_x}, {next_y}')
         dir_x, dir_y = next_x - self.rect.x, next_y - self.rect.y
         distance = (dir_x**2 + dir_y**2)**0.5
 
@@ -61,9 +57,10 @@ class Enemy(pygame.sprite.Sprite):
 
     def is_invisible(self):
         if self.state == 'dead':
-            return  True
+            return True
         if self.state == 'idle':
-            return  True
+            return True
+
     def take_damage(self, amount):
         if not self.is_invisible():
             self.health -= amount

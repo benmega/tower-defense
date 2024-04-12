@@ -42,12 +42,11 @@ class SpeedBoostPowerUp(PowerUp):
         # Specific logic to increase the target's speed
         target.speed += self.speed_increase
 
-    def deactivate(self):
+    def deactivate(self, target):
         # Revert the target's speed increase
         target.speed -= self.speed_increase
         super().deactivate()
 
 # Example usage
-speed_boost = SpeedBoostPowerUp(duration=10, speed_increase=2)
+#speed_boost = SpeedBoostPowerUp(duration=10, speed_increase=2)
 # Assuming 'target' is an entity that can receive speed boosts
-speed_boost.activate(target)

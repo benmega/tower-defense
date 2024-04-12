@@ -1,6 +1,6 @@
 import pygame
 
-from src.config.config import FPS, DEBUG
+from src.config.config import DEBUG
 from src.entities.enemies.basic_enemy import BasicEnemy
 from src.entities.enemies.fast_enemy import FastEnemy
 from src.entities.enemies.flying_enemy import FlyingEnemy
@@ -54,6 +54,7 @@ class EnemyWave:
         """
         Factory method to create an EnemyWave instance from JSON data.
 
+        :param index:
         :param wave_data: A dictionary containing wave information.
         :param path: The path for the wave to follow
         """
@@ -84,7 +85,7 @@ class EnemyWave:
             'SwarmEnemy': SwarmEnemy,
             'TankEnemy': TankEnemy
         }
-        return enemy_class_map.get(enemy_type_str, BasicEnemy)  # Default to BasicEnemy if not found'
+        return enemy_class_map.get(enemy_type_str, BasicEnemy)  # Default to BasicEnemy if not found
 
     def is_finished(self):
         return self.spawned_count == self.count

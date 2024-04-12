@@ -1,12 +1,8 @@
 import pygame
 import pygame_gui
 
-from src.config.config import TOWER_TYPES
 from src.game.game_state import GameState
 
-
-import pygame
-from src.game.game_state import GameState
 
 class EventManager:
     def __init__(self):
@@ -16,21 +12,15 @@ class EventManager:
         """ Process and handle all events in the queue. """
         for event in pygame.event.get():
             game.UI_manager.process_events(event)  # Process UI events globally
-
             if event.type == pygame.QUIT:
                 game.is_running = False
-
-            # Add a general USEREVENT handler if needed
             if event.type == pygame.USEREVENT:
                 self.handle_user_event(event, game)
-
-            # Delegate to state-specific event handlers
             self.handle_state_specific_events(event, game)
 
     def handle_user_event(self, event, game):
         # Handle global USEREVENT, such as those from pygame_gui
         # This is where you'd handle dialog confirmations, etc.
-        # Example:
         if event.user_type == pygame_gui.UI_CONFIRMATION_DIALOG_CONFIRMED:
             # Perform actions based on the confirmed dialog
             pass  # Placeholder for actual logic TODO add logic
@@ -57,20 +47,18 @@ class EventManager:
     def handle_menu_and_ui_states(self, event, game):
         # Handle events for various menu and UI states
         state_handlers = {
-            GameState.MAIN_MENU: game.main_menu.handle_events,
-            GameState.OPTIONS: game.options_screen.handle_events,
-            GameState.LOAD_GAME: game.game_data_screen.handle_events,
-            GameState.CAMPAIGN_MAP: game.campaign_map.handle_events,
-            GameState.SKILLS: game.skills_screen.handle_events,
-            GameState.LEVEL_COMPLETE: game.level_end_screen.handle_events,
-            GameState.LEVEL_DEFEAT: game.level_end_screen.handle_events,
+            GameState.MAIN_MENU: game.UI_manager.main_menu.handle_events,
+            GameState.OPTIONS: game.UI_manager.options_screen.handle_events,
+            GameState.LOAD_GAME: game.UI_manager.game_data_screen.handle_events,
+            GameState.CAMPAIGN_MAP: game.UI_manager.campaign_map.handle_events,
+            GameState.SKILLS: game.UI_manager.skills_screen.handle_events,
+            GameState.LEVEL_COMPLETE: game.UI_manager.level_end_screen.handle_events,
+            GameState.LEVEL_DEFEAT: game.UI_manager.level_end_screen.handle_events,
         }
         handler = state_handlers.get(game.current_state)
         if handler:
             handler(event, game)
 
-
     def add_event(self, event):
         """ Add an event to the queue. """
         self.events.append(event)
-

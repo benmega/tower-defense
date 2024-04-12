@@ -54,7 +54,7 @@ class OptionsScreen(Screen):
                     game.audio_manager.set_sfx_volume(event.value)
             elif event.user_type == pygame_gui.UI_BUTTON_PRESSED:
                 if event.ui_element == self.back_button: # Handle back button press
-                    game.change_state(GameState.MAIN_MENU, self)
+                    game.state_manager.change_state(GameState.MAIN_MENU, self)
                 elif event.ui_element == self.fullscreen_toggle:
                     # TODO Handle fullscreen toggle
                     print("Toggle fullscreen mode")

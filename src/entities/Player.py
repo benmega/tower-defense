@@ -6,7 +6,7 @@ from src.screens.skills_screen import all_skills
 
 
 class Player:
-    def __init__(self, update_ui_callback):
+    def __init__(self, update_ui_callback, on_death_callback):
         self.gold = PLAYER_GOLD
         self.health = PLAYER_HEALTH
         self.totalScore = 0
@@ -19,6 +19,7 @@ class Player:
         self.unlocked_levels = [0]  # Start with the first level unlocked
         self.skills = {}  # Skills or buffs
         self.points = 10000  # Starting with an arbitrary number of points for upgrading skills
+        self.on_death_callback = on_death_callback
 
     def add_gold(self, amount):
         self.gold += amount
@@ -40,16 +41,16 @@ class Player:
         if self.update_ui_callback:
             self.update_ui_callback()
 
-    # def take_damage(self, damage):
-    #     self.health -= damage
-    #     if self.health <= 0:
-    #         self.health = 0
-    #         self.on_death()
+    def take_damage(self, damage):
+        self.health -= damage
+        if self.health <= 0:
+            self.health = 0
+            self.on_death()
 
-    # def on_death(self):
-    #     print("Player has died.")
-    #     if self.on_death_callback:
-    #         self.on_death_callback()
+    def on_death(self):
+        print("Player has died.")
+        if self.on_death_callback:
+            self.on_death_callback()
 
     def save_game(self, filename="src/save_data/savegame_slot1.json"):
         os.makedirs(os.path.dirname(filename), exist_ok=True)
@@ -88,6 +89,7 @@ class Player:
             next_level = level_index + 1
             if next_level not in self.unlocked_levels:
                 self.unlocked_levels.append(next_level)
+                self.player_data = self.to_dict()
                 self.player_data['unlocked_levels'].append(next_level)
 
 
@@ -130,14 +132,13 @@ class Player:
         print(f"Upgraded {skill_key} to level {new_level}. Points remaining: {self.points}.")
         self._update_ui()
 
-    # Remember to implement the _update_ui method if not already done
+
     def _update_ui(self):
         # Update UI with new points and skill levels
         if self.update_ui_callback:
             self.update_ui_callback()
 
     def start_level(self):
-        # TODO Make skills modify
         self.gold = PLAYER_GOLD + self.skills.get('additional_gold', 0) * 100
-        self.health = PLAYER_HEALTH + + self.skills.get('additional_health', 0) * 100
+        self.health = PLAYER_HEALTH + self.skills.get('additional_health', 0) * 100
         self.levelScore = 0

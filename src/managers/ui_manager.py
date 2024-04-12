@@ -1,77 +1,91 @@
-# import pygame
-# import pygame_gui
-#
-# from src.config.config import DEFAULT_GRID_SIZE, UI_FONT_COLOR, UI_SCORE_POSITION, UI_HEALTH_POSITION, \
-#     UI_RESOURCES_POSITION
-#
-#
-# class UIManager(pygame_gui.UIManager):
-#     def __init__(self, window_resolution):
-#         # Initialize the base UIManager with the window resolution
-#         super().__init__(window_resolution)
-#
-#         #self.score = 0
-#         #self.health = 100  # Example starting health
-#         #self.resources = 1000  # Example starting resources
-#
-#         # Initialize font module and create a font object
-#         pygame.font.init()
-#         self.font = pygame.font.Font(None, 36)
-#
-#     # def add_ui_element(self, ui_element):
-#     #     """ Adds a new UI element to the manager. """
-#     #     self.ui_elements.append(ui_element)
-#
-#     # def update_ui(self, game_state):
-#     #     """ Updates all UI elements based on the current game state. """
-#     #     self.update_score(game_state.player.score)
-#     #     self.update_health(game_state)
-#     #     self.update_resources(game_state.player.gold)
-#     #     # Additional updates based on game_state
-#
-#     def draw_ui(self, screen):
-#
-#         # Draw all pygame_gui elements
-#         super().draw_ui(screen)
-#
-#         # Draw custom UI elements
-#         #self.draw_score(screen)
-#         #self.draw_health(screen)
-#         #self.draw_resources(screen)
-#
-#     # def update_score(self, score):
-#     #     """ Updates the score based on the game state. """
-#     #     self.score = score
-#     #
-#
-#     # def draw_score(self, screen):
-#     #     """ Draws the score on the screen. """
-#     #     score_text = f"Score: {self.score}"  # Text to be displayed
-#     #     score_surface = self.font.render(score_text, True, UI_FONT_COLOR)  # Render the text. (255, 255, 255) is white color
-#     #
-#     #     # Blit the score surface onto the screen
-#     #     screen.blit(score_surface, UI_SCORE_POSITION)
-#
-#     # def update_health(self, health):
-#     #     """ Updates the player's health based on the game state. """
-#     #     self.health = health
-#
-#     # def draw_health(self, screen):
-#     #     health_text = f"Health: {self.health}"
-#     #     health_surface = self.font.render(health_text, True, UI_FONT_COLOR)
-#     #     screen.blit(health_surface, UI_HEALTH_POSITION)
-#
-#
-#     # def update_resources(self, resources):
-#     #     """ Updates the player's resources based on the game state. """
-#     #     self.resources = resources
-#     #
-#     # def draw_resources(self, screen):
-#     #     resources = self.resources
-#     #     resources_text = f"Resources: {resources}"
-#     #     resources_surface = self.font.render(resources_text, True, UI_FONT_COLOR)
-#     #     screen.blit(resources_surface, UI_RESOURCES_POSITION)
-#
-#
-#     # Additional methods for managing UI elements, such as button clicks, menu interactions, etc.
-#
+import pygame_gui
+import src.config.config as configuration
+import pygame
+
+
+from src.game.player_info_panel import PlayerInfoPanel
+from src.screens.campain_map import CampaignMap
+from src.screens.level_completion import LevelCompletionScreen
+from src.screens.main_menu import MainMenu
+from src.screens.game_data_screen import GameDataScreen
+from src.screens.options_screen import OptionsScreen
+from src.screens.skills_screen import SkillsScreen
+
+
+# Import other necessary UI components
+
+def capture_screen():
+    # Capture the current display surface
+    return pygame.display.get_surface().copy()
+
+
+class UIManager(pygame_gui.UIManager):
+    def __init__(self, window_size, theme_path, game):
+        super().__init__(window_size, theme_path)
+
+        # Ensure 'game.screen' is already initialized in the Game class before passing it here
+        self.screen = game.screen
+
+        # Initialize screens with necessary parameters
+        self.main_menu = MainMenu(self.screen, self)
+        self.game_data_screen = GameDataScreen(self)
+        self.campaign_map = CampaignMap(self, [0])  # Pass relevant initialization parameters
+        self.level_end_screen = LevelCompletionScreen(ui_manager=self,background=capture_screen(), screen_type='defeat')
+        self.player_info_panel = PlayerInfoPanel(self, game.player, self.screen)
+        self.skills_screen = SkillsScreen(self, game.player)
+        self.options_screen = OptionsScreen(self, game.audio_manager)
+
+        # Dictionary for managing custom screens
+        self.custom_screens = {
+            'main_menu': self.main_menu,
+            'options_screen': self.options_screen,
+            'game_data_screen': self.game_data_screen,
+            'campaign_map': self.campaign_map,
+            'level_end_screen': self.level_end_screen,
+            'skills_screen': self.skills_screen
+            # Add other screens as necessary
+        }
+
+
+    def set_screen(self, screen):
+        self.screen = screen
+        # Make sure to pass the screen to the components that need it
+        self.main_menu.set_screen(screen)  # Implement a set_screen method in MainMenu or directly assign if public
+        # Similarly, update other components that require the screen
+
+    def show_main_menu(self):
+        self.main_menu.visible = True
+        # Hide other components as necessary
+
+    def hide_main_menu(self):
+        self.main_menu.visible = False
+
+    # Define similar methods for showing/hiding other screens
+
+    def draw_ui(self, screen):
+        # Iterate through custom screens and draw if visible
+        for screen_name, custom_screen in self.custom_screens.items():
+            if getattr(custom_screen, 'visible', False):
+                custom_screen.draw(screen)
+
+        super().draw_ui(screen)
+
+    def update(self, time_delta):
+        super().update(time_delta)
+        # Update custom UI components if necessary
+
+    def show_screen(self, screen_name):
+        # Hide all screens first
+        self.hide_all_screens()
+
+        # Now, show the requested screen
+        if screen_name == "main_menu":
+            self.main_menu.visible = True
+        elif screen_name == "options":
+            self.options_screen.visible = True
+        # Add conditions for other screens
+
+    def hide_all_screens(self):
+        self.main_menu.visible = False
+        self.options_screen.visible = False
+        # Add lines to hide other screens

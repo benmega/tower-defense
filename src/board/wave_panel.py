@@ -7,14 +7,12 @@ from src.screens.screen import Screen
 
 class WavePanel(Screen):
     def __init__(self, ui_manager):
-        # Initialize the base Screen class
         super().__init__(ui_manager, None)  # Pass None if no background image, or specify a path
         self.buttons = []
         self.buttons = []
         self.start_x = SCREEN_WIDTH - 100  # Starting X position for the rightmost button
         self.pixels_per_second = 20
         self.panel_y = 600
-
 
     def create_wave_buttons(self, current_level):
         if current_level:
@@ -23,12 +21,12 @@ class WavePanel(Screen):
                 # This is a simplified example; adjust logic based on your game's timing and UI layout
                 time_until_start = (wave.start_time - pygame.time.get_ticks()) / 1000  # Seconds until wave starts
                 position_x = max(0, (time_until_start * self.pixels_per_second))
-                button_width = current_level.wave_subsequent_delay/1000 * self.pixels_per_second
+                button_width = current_level.wave_subsequent_delay / 1000 * self.pixels_per_second
                 button = pygame_gui.elements.UIButton(
                     relative_rect=pygame.Rect(position_x, self.panel_y, button_width, UI_BUTTON_SIZE[1]),
                     text=f'Wave {i + 1}',
                     manager=self.ui_manager,
-                    object_id = pygame_gui.core.ObjectID(class_id="@button")
+                    object_id=pygame_gui.core.ObjectID(class_id="@button")
                 )
                 self.buttons.append(button)
 
@@ -38,16 +36,17 @@ class WavePanel(Screen):
                 for i, button in enumerate(self.buttons):
                     if event.ui_element == button:
                         if self.start_wave_manually(i, game.level_manager.current_level):
-                            game.player.add_gold(button.relative_rect[0] * PLAYER_EARLY_WAVE_BONUS_MULTIPLIER) # gold equal to position times player bonus
+                            game.player.add_gold(button.relative_rect[
+                                                     0] * PLAYER_EARLY_WAVE_BONUS_MULTIPLIER)  # gold equal to position times player bonus
                         break
 
     def update(self, time_delta, enemy_wave_list):
-        '''
+        """
 
         :param time_delta:
         :param enemy_wave_list: self.level_manager.current_level.enemy_wave_list
         :return:
-        '''
+        """
         # Update UI Manager
         self.ui_manager.update(time_delta)
         # Here you can also include any logic to update the text on buttons or other states
@@ -91,4 +90,4 @@ class WavePanel(Screen):
         manually_started_wave.manually_started = True
         current_level.get_next_wave()
         current_level.enemy_wave_list[wave_index].start()
-        return True # Success
+        return True  # Success

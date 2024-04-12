@@ -8,7 +8,7 @@
 #
 # class LevelDefeatScreen:
 #     def __init__(self, game):
-#         self.isActive = None
+#         self.visible = None
 #         self.game = game
 #         self.ui_manager = game.UI_manager
 #         self.screen = game.screen

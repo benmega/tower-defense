@@ -30,7 +30,7 @@ class Camera:
 class CampaignMap(Screen):
     def __init__(self, ui_manager, player_progress):
         super().__init__(ui_manager, 'assets/images/screens/campaignMap/campaign_map.png')
-        self.isActive = False
+        self.visible = False
         self.ui_manager = ui_manager
         self.level_positions = [
             (770, 700), (793, 678), (864, 681), (879, 645), (781, 630),
@@ -88,12 +88,12 @@ class CampaignMap(Screen):
         if event.type == pygame.USEREVENT:
             if event.user_type == pygame_gui.UI_BUTTON_PRESSED:
                 if event.ui_element == self.return_button:
-                    game.change_state(GameState.MAIN_MENU, self)  # Assuming game object has a method to handle state change
+                    game.state_manager.change_state(GameState.MAIN_MENU, self)  # Assuming game object has a method to handle state change
         if event.type == pygame.MOUSEBUTTONDOWN:
             self.handle_clicks(event, game)
         if event.type == pygame.USEREVENT and event.user_type == pygame_gui.UI_BUTTON_PRESSED:
             if event.ui_element == self.skills_button:
-                game.change_state(GameState.SKILLS, self)  # Assuming GameState.SKILLS is defined
+                game.state_manager.change_state(GameState.SKILLS, self)  # Assuming GameState.SKILLS is defined
 
     def handle_clicks(self, event, game):
         # Adjust mouse_pos to account for camera position
@@ -102,7 +102,7 @@ class CampaignMap(Screen):
         for index, (_, button_rect, unlocked) in enumerate(self.level_buttons):
             if button_rect.collidepoint(mouse_pos) and unlocked:
                 game.initialize_game(index)  # Set up the game for the selected level
-                #game.change_state(GameState.PLAYING,self)
+                #game.state_manager.change_state(GameState.PLAYING,self)
                 # game.level_manager.start_level(index)
                 # game.player.start_level()
                 self.close_screen()

@@ -8,7 +8,7 @@ class ProjectileManager(EntityManager):
         super().__init__()
         self.projectiles = []
 
-    def create_projectile(self, x, y, projectile_type, target,effect=None):
+    def create_projectile(self, x, y, projectile_type, target):
 
         projectile = Projectile(x, y, target, **PROJECTILE_TYPES[projectile_type])
         self.projectiles.append(projectile)
