@@ -30,7 +30,7 @@ class UIManager(pygame_gui.UIManager):
         self.main_menu = MainMenu(self.screen, self)
         self.game_data_screen = GameDataScreen(self)
         self.campaign_map = CampaignMap(self, [0])  # Pass relevant initialization parameters
-        self.level_end_screen = LevelCompletionScreen(ui_manager=self,background=capture_screen(), screen_type='defeat')
+        self.level_end_screen = LevelCompletionScreen(ui_manager=self, screen_type='defeat')
         self.player_info_panel = PlayerInfoPanel(self, game.player, self.screen)
         self.skills_screen = SkillsScreen(self, game.player)
         self.options_screen = OptionsScreen(self, game.audio_manager)

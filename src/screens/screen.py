@@ -29,21 +29,20 @@ class Screen:
     def add_ui_element(self, ui_element):
         self.ui_elements.append(ui_element)
 
-    def open_screen(self):
-        self.visible = True
+    def set_ui_elements_visibility(self, visible):
         for element in self.ui_elements:
             try:
-                element.visible = True
+                element.visible = visible
             except AttributeError as e:
-                warnings.warn(f"Attempted to set visibility on an object that doesn't support it: {e}")
+                warnings.warn(f"Attempted to set visibility on an unsupported object: {e}")
+
+    def open_screen(self):
+        self.visible = True
+        self.set_ui_elements_visibility(True)
 
     def close_screen(self):
         self.visible = False
-        for element in self.ui_elements:
-            try:
-                element.visible = False
-            except AttributeError as e:
-                warnings.warn(f"Attempted to set visibility on an object that doesn't support it: {e}")
+        self.set_ui_elements_visibility(False)
 
     def handle_events(self, event, game):
         if event.type == pygame.USEREVENT:
@@ -60,4 +59,3 @@ class Screen:
             return  # Skip drawing if the screen is not active
         if self.background_image:
             screen.blit(self.background_image, (0, 0))
-        # self.ui_manager.draw_ui(screen)

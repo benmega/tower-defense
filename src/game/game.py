@@ -42,12 +42,11 @@ class Game:
     def __init__(self):
         pygame.init()
         self.screen = pygame.display.set_mode([configuration.SCREEN_WIDTH, configuration.SCREEN_HEIGHT],
-                                              pygame.DOUBLEBUF)
+                                              pygame.DOUBLEBUF, pygame.SRCALPHA)
         pygame.display.set_caption("Mr. Mega\'s Awesome Tower Defense Game")
         self.clock = pygame.time.Clock()
         self.event_manager = EventManager()
         theme_path = os.path.join(os.path.dirname(__file__), '..', 'config', 'theme.json')
-        #self.UI_manager = pygame_gui.UIManager((configuration.SCREEN_WIDTH, configuration.SCREEN_HEIGHT), theme_path)
         self.audio_manager = AudioManager()
         self.state_manager = GameStateManager(self)
         self.player = Player(update_ui_callback=self.update_ui, on_death_callback=self.player_on_death_callback)
@@ -67,7 +66,6 @@ class Game:
         self.previous_state = None  # Initialize previous state
         self.is_build_mode = True
 
-
     def initialize_game(self, level_num=-1):
         self.state_manager.change_state(GameState.PLAYING)
         self.level_manager.load_levels()
@@ -78,6 +76,17 @@ class Game:
         self.enemy_manager.reset()
         self.level_manager.reset_level()
 
+    def run(self):
+        self.is_running = True
+        self.state_manager.change_state(GameState.MAIN_MENU)
+        while self.is_running:
+            time_delta = self.clock.tick(configuration.FPS) / 1000.0
+            self.event_manager.process_events(self)
+            self.update(time_delta)
+            self.draw()
+            # pygame.display.update()
+            self.clock.tick(configuration.FPS)
+        pygame.quit()
     def draw(self):
         self.screen.fill(configuration.BACKGROUND_COLOR)  # Clear the screen with the background color
 
@@ -93,19 +102,6 @@ class Game:
         self.UI_manager.draw_ui(self.screen)
 
         pygame.display.flip()  # Update the display
-
-    def run(self):
-        self.is_running = True
-        self.state_manager.change_state(GameState.MAIN_MENU)
-        while self.is_running:
-            time_delta = self.clock.tick(configuration.FPS) / 1000.0
-            self.event_manager.process_events(self)
-            self.update(time_delta)
-            self.draw()
-            pygame.display.update()
-            # pygame.display.flip()
-            self.clock.tick(configuration.FPS)
-        pygame.quit()
 
     def update(self, time_delta):
         if configuration.DEBUG:
@@ -124,6 +120,7 @@ class Game:
             new_enemies = self.level_manager.update_levels()
             if all(not item for item in new_enemies) and len(self.enemy_manager.entities) == 0:
                 if self.level_manager.check_level_complete():
+                    # self.UI_manager.level_end_screen.capturedScreen = pygame.display.get_surface().copy()
                     self.set_gameboard_ui_visibility(False)
                     self.state_manager.change_state(GameState.LEVEL_COMPLETE)
 

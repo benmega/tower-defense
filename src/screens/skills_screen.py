@@ -98,27 +98,18 @@ class SkillsScreen(Screen):
     def initialize_skill_buttons(self):
         skill_keys = list(all_skills.keys())
         for index, skill_key in enumerate(skill_keys):
-            column = index % self.grid_columns
-            row = index // self.grid_columns
-
-            skill_info = all_skills[skill_key]
-            skill_level = self.player.skills.get(skill_key, {}).get("level", 0)
+            column, row = index % self.grid_columns, index // self.grid_columns
+            skill_info, skill_level = all_skills[skill_key], self.player.skills.get(skill_key, 0)
             skill_points_needed = skill_info["cost_per_level"][skill_level] if skill_level < skill_info[
                 "max_level"] else "Max"
             button_text = f"{skill_info['description']}: Level {skill_level} (Next: {skill_points_needed} points)"
 
-            x = self.grid_margin + column * (self.grid_cell_size[0] + self.grid_spacing)
-            y = self.grid_margin + row * (self.grid_cell_size[1] + self.grid_spacing)
-
-            button = pygame_gui.elements.UIButton(
-                relative_rect=pygame.Rect([x, y], self.grid_cell_size),
-                text=button_text,
-                manager=self.ui_manager,
-                tool_tip_text=skill_info['description'],  # Add tooltip text here
-                visible=False  # Initially invisible; made visible when the screen is opened
-            )
+            x, y = self.grid_margin + column * (self.grid_cell_size[0] + self.grid_spacing), self.grid_margin + row * (
+                        self.grid_cell_size[1] + self.grid_spacing)
+            button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect([x, y], self.grid_cell_size),
+                                                  text=button_text, manager=self.ui_manager,
+                                                  tool_tip_text=skill_info['description'], visible=self.visible)
             self.add_ui_element(button)
-            self.skill_buttons.append(button)
 
     def initialize_skill_points_label(self):
         # Create and add the skill points label to the UI elements
@@ -163,6 +154,7 @@ class SkillsScreen(Screen):
                 "max_level"] else "Max"
             button_text = f"{skill_key}: Level {skill_level} (Next: {skill_points_needed} points)"
             button.set_text(button_text)
+            button.visible = True
 
         # Update the skill points label
         if self.skill_points_label:
@@ -174,5 +166,6 @@ class SkillsScreen(Screen):
         # Additional logic for closing the skills screen, if necessary
 
     def draw(self, screen):
+        print('skill screen drawn')
         super().draw(screen)  # Call the superclass draw method
         # You can add custom drawing code here if needed, for example, drawing skill descriptions or dependencies
