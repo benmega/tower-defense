@@ -1,8 +1,5 @@
 import pygame_gui
-import src.config.config as configuration
 import pygame
-
-
 from src.game.player_info_panel import PlayerInfoPanel
 from src.screens.campain_map import CampaignMap
 from src.screens.level_completion import LevelCompletionScreen
@@ -11,8 +8,6 @@ from src.screens.game_data_screen import GameDataScreen
 from src.screens.options_screen import OptionsScreen
 from src.screens.skills_screen import SkillsScreen
 
-
-# Import other necessary UI components
 
 def capture_screen():
     # Capture the current display surface
@@ -59,8 +54,6 @@ class UIManager(pygame_gui.UIManager):
 
     def hide_main_menu(self):
         self.main_menu.visible = False
-
-    # Define similar methods for showing/hiding other screens
 
     def draw_ui(self, screen):
         # Iterate through custom screens and draw if visible

@@ -135,7 +135,7 @@ class SkillsScreen(Screen):
         # Assuming you have a list of skill keys that corresponds to the skill buttons
         all_skills_keys = list(all_skills.keys())
         skill_key = all_skills_keys[skill_index]  # This should be a list of keys in the order they appear in the UI
-        skill = all_skills[skill_key]  # Access the skill using its key
+        # skill = all_skills[skill_key]  # Access the skill using its key
 
         if game.player.can_upgrade_skill(skill_key):  # Assuming this method checks if the skill can be upgraded
             game.player.upgrade_skill(skill_key)  # Pass the skill key to upgrade
@@ -163,9 +163,7 @@ class SkillsScreen(Screen):
 
     def close_screen(self):
         super().close_screen()  # Call superclass method to handle common close screen logic
-        # Additional logic for closing the skills screen, if necessary
 
     def draw(self, screen):
         print('skill screen drawn')
         super().draw(screen)  # Call the superclass draw method
-        # You can add custom drawing code here if needed, for example, drawing skill descriptions or dependencies

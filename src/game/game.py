@@ -1,14 +1,12 @@
 import os
 import json
 import pygame
-import pygame_gui
 
 import src.config.config as configuration
 from src.board.game_board import GameBoard
 from src.board.tower_selection_panel import TowerSelectionPanel
 from src.entities.Player import Player
 from src.game.game_state import GameState
-from src.game.player_info_panel import PlayerInfoPanel
 from src.managers.audio_manager import AudioManager
 from src.managers.collision_manager import CollisionManager
 from src.managers.enemy_manager import EnemyManager
@@ -18,12 +16,6 @@ from src.managers.level_manager import LevelManager
 from src.managers.projectile_manager import ProjectileManager
 from src.managers.tower_manager import TowerManager
 from src.managers.ui_manager import UIManager
-# from src.screens.campain_map import CampaignMap
-# from src.screens.level_completion import LevelCompletionScreen
-# from src.screens.game_data_screen import GameDataScreen
-# from src.screens.main_menu import MainMenu
-# from src.screens.options_screen import OptionsScreen
-# from src.screens.skills_screen import SkillsScreen
 
 
 def capture_screen():
@@ -55,15 +47,13 @@ class Game:
         self.level_manager = LevelManager(self.tower_manager, self.UI_manager)
         self.projectile_manager = ProjectileManager()
         self.collision_manager = CollisionManager()
-
         self.tower_selection_panel = TowerSelectionPanel(self.screen, self.tower_manager)
         self.board = GameBoard(configuration.GAME_BOARD_WIDTH, configuration.GAME_BOARD_HEIGHT)
         self.is_running = False
-
         self.enemy_manager = EnemyManager(self.level_manager, self.enemy_defeated_callback,
                                           self.player_take_damage_callback)
         self.current_state = None
-        self.previous_state = None  # Initialize previous state
+        self.previous_state = None
         self.is_build_mode = True
 
     def initialize_game(self, level_num=-1):

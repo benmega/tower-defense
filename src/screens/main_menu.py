@@ -58,7 +58,6 @@ class MainMenu:
 
     def draw(self, screen):
         screen.blit(self.background_image, (0, 0))
-        #self.ui_manager.draw_ui(self.screen)
 
     def close_screen(self):
         self.exit_button.visible = False

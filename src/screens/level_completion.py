@@ -20,7 +20,6 @@ class LevelCompletionScreen:
         self.y = GAME_BOARD_SCREEN_SIZE[1] // 2 - self.height // 2
         self.button_size = UI_BUTTON_SIZE
         self.button_x = self.x + (self.width - self.button_size[0]) // 2
-        # Adjust the button text based on the screen type
         next_level_button_text = 'Next Level' if self.screen_type == 'completion' else 'Back to Map'
         self.next_level_button = pygame_gui.elements.UIButton(
             relative_rect=pygame.Rect([self.button_x, self.y + self.height // 4], UI_BUTTON_SIZE),
@@ -61,7 +60,7 @@ class LevelCompletionScreen:
 
         screen.blit(self.capturedScreen, (0,0))
         if self.overlay:
-            screen.blit(self.overlay, (0, 0)) #TODO determine why this is not showing up
+            screen.blit(self.overlay, (0, 0))
 
         # Draw the background image
         screen.blit(self.background_image, (self.x, self.y))
@@ -97,9 +96,7 @@ class LevelCompletionScreen:
                         game.state_manager.change_state(GameState.CAMPAIGN_MAP, self)
                     game.UI_manager.player_info_panel.set_visibility(False)
                 elif event.ui_element == self.replay_button:
-                    # game.state_manager.change_state(GameState.PLAYING, self)
                     game.initialize_game()
                     self.close_screen()
                 elif event.ui_element == self.main_menu_button:
                     game.state_manager.change_state(GameState.MAIN_MENU, self)
-                    # game.set_gameboard_ui_visibility(False)
