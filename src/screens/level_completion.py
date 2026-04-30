@@ -42,8 +42,6 @@ class LevelCompletionScreen:
             object_id=pygame_gui.core.ObjectID(class_id="@button"),
             visible=False
         )
-        self.background_image = load_scaled_image('assets/images/screens/level_completion.png',
-                                                  (self.width, self.height))
         self.background_image = self.load_background_image()
         self.overlay = None
         self.capturedScreen = None
@@ -96,7 +94,7 @@ class LevelCompletionScreen:
                         game.state_manager.change_state(GameState.CAMPAIGN_MAP, self)
                     game.UI_manager.player_info_panel.set_visibility(False)
                 elif event.ui_element == self.replay_button:
-                    game.initialize_game()
+                    game.initialize_game(game.level_manager.current_level_index)
                     self.close_screen()
                 elif event.ui_element == self.main_menu_button:
                     game.state_manager.change_state(GameState.MAIN_MENU, self)

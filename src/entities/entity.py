@@ -25,9 +25,7 @@ class Entity(pygame.sprite.Sprite):
 
     def draw(self, screen):
         if self.active and self.image:
-            screen.blit(self.image, (self.x, self.y))
-        else:
-            pass
+            screen.blit(self.image, (self.rect.x, self.rect.y))
 
     def on_collision(self, other_entity):
         # Collision handling logic, to be overridden by subclasses

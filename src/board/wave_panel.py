@@ -52,6 +52,8 @@ class WavePanel(Screen):
         # Here you can also include any logic to update the text on buttons or other states
         # based on the game's current status. For example:
         for i, button in enumerate(self.buttons):
+            if i >= len(enemy_wave_list):
+                break
             wave = enemy_wave_list[i]
             # Calculate the new position based on the time until the wave starts
             time_until_start = (wave.start_time - pygame.time.get_ticks()) / 1000  # Seconds until wave starts
@@ -59,8 +61,7 @@ class WavePanel(Screen):
             if position_x == 0:
                 button.visible = False
             # Update the button's position
-            button.set_relative_position(pygame.Rect(position_x, button.relative_rect.y,
-                                                     button.relative_rect.width, button.relative_rect.height))
+            button.set_relative_position((position_x, button.relative_rect.y))
 
     def recreate_wave_buttons(self, current_level):
         # Clear existing buttons if any

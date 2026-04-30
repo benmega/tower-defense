@@ -40,7 +40,7 @@ class CollisionManager:
             group2 = pygame.sprite.Group(group2)
 
         # Check for collisions between the groups
-        collisions = pygame.sprite.groupcollide(group1, group2, dokilla=False, dokillb=True)
+        collisions = pygame.sprite.groupcollide(group1, group2, dokilla=False, dokillb=False)
 
         # Handle each collision
         for entity1, entities2 in collisions.items():

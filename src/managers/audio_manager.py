@@ -40,6 +40,9 @@ class AudioManager:
         if sfx_volume is not None:
             self.sfx_volume = sfx_volume
 
+    def set_sfx_volume(self, volume):
+        self.sfx_volume = volume
+
     def play_music_for_state(self, game_state):
         music_path = self.state_music_map.get(game_state)
         if music_path and music_path != self.current_music:

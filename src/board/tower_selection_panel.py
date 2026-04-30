@@ -7,9 +7,9 @@ class TowerSelectionPanel:
     def __init__(self, screen, tower_manager):
         self.screen = screen
         self.tower_manager = tower_manager
-        self.panel_height = screen.get_height() * 0.20  # Adjust as needed
+        self.panel_height = int(screen.get_height() * 0.20)  # Adjust as needed
         self.panel_y = screen.get_height() - self.panel_height
-        self.icon_size = screen.get_width() * 0.07  # Adjust based on your icon sizes
+        self.icon_size = int(screen.get_width() * 0.07)  # Adjust based on your icon sizes
         self.font = pygame.font.Font(None, UI_FONT_SIZE)  # Adjust font as needed
         self.icons = {}  # To store preloaded and scaled images
         self.icon_padding = 5  # 5 pixels of padding

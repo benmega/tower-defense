@@ -90,10 +90,7 @@ class TowerManager(EntityManager):
         tower.damage *= (1 + damage_boost_level * 0.05)  # Assuming each level increases damage by 5%
 
     def update(self, enemies, projectile_manager):
-        """Updated to consider skills affecting towers during the game."""
         for tower in self.towers:
-            attack_speed_increase = self.player.skills.get('attack_speed', 0)
-            tower.attack_speed += attack_speed_increase
             tower.update(enemies, projectile_manager)
 
 

@@ -33,9 +33,3 @@ class Bullet:
         # Simple distance check - this could be more complex based on your game's requirements
         return (self.x == self.target.x) and (self.y == self.target.y)
 
-# Example usage
-# Assuming enemy is an instance of an Enemy class
-bullet = Bullet(x=0, y=0, speed=5, damage=10, target=enemy)
-bullet.move()
-if bullet.hit_target():
-    print("Target hit!")

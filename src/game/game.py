@@ -1,8 +1,10 @@
 import os
+import sys
 import json
 import pygame
 
 import src.config.config as configuration
+from src.utils.resource_path import resource_path
 from src.board.game_board import GameBoard
 from src.board.tower_selection_panel import TowerSelectionPanel
 from src.entities.Player import Player
@@ -38,7 +40,7 @@ class Game:
         pygame.display.set_caption("Mr. Mega\'s Awesome Tower Defense Game")
         self.clock = pygame.time.Clock()
         self.event_manager = EventManager()
-        theme_path = os.path.join(os.path.dirname(__file__), '..', 'config', 'theme.json')
+        theme_path = resource_path('src/config/theme.json')
         self.audio_manager = AudioManager()
         self.state_manager = GameStateManager(self)
         self.player = Player(update_ui_callback=self.update_ui, on_death_callback=self.player_on_death_callback)
@@ -60,11 +62,12 @@ class Game:
         self.state_manager.change_state(GameState.PLAYING)
         self.level_manager.load_levels()
         self.UI_manager.player_info_panel.set_visibility(True)
-        if level_num > -1:
-            self.level_manager.start_level(level_num)
         self.player.start_level()
         self.enemy_manager.reset()
-        self.level_manager.reset_level()
+        if level_num > -1:
+            self.level_manager.start_level(level_num)
+        else:
+            self.level_manager.reset_level()
 
     def run(self):
         self.is_running = True
@@ -74,15 +77,15 @@ class Game:
             self.event_manager.process_events(self)
             self.update(time_delta)
             self.draw()
-            # pygame.display.update()
-            self.clock.tick(configuration.FPS)
         pygame.quit()
     def draw(self):
         self.screen.fill(configuration.BACKGROUND_COLOR)  # Clear the screen with the background color
 
         # Draw game-specific elements only when in the PLAYING state
         if self.current_state == GameState.PLAYING:
-            self.board.draw_board(self.screen, self.level_manager.get_current_level().path)
+            current_level = self.level_manager.get_current_level()
+            if current_level:
+                self.board.draw_board(self.screen, current_level.path)
             self.tower_manager.draw_towers(self.screen)
             self.enemy_manager.draw(self.screen)
             self.projectile_manager.draw_projectiles(self.screen)
@@ -114,25 +117,26 @@ class Game:
                     self.set_gameboard_ui_visibility(False)
                     self.state_manager.change_state(GameState.LEVEL_COMPLETE)
 
-            for enemy in new_enemies:
-                self.enemy_manager.add_enemy(enemy)
+            for enemy_batch in new_enemies:
+                for enemy in enemy_batch:
+                    self.enemy_manager.add_enemy(enemy)
             self.enemy_manager.update()
             self.tower_manager.update(self.enemy_manager.get_enemies(), self.projectile_manager)
             self.projectile_manager.update_entities()
             self.collision_manager.handle_group_collisions(
                 self.enemy_manager.entities, self.projectile_manager.projectiles
             )
-            self.level_manager.wave_panel.update(time_delta, self.level_manager.current_level.enemy_wave_list)
+            if self.level_manager.current_level:
+                self.level_manager.wave_panel.update(time_delta, self.level_manager.current_level.enemy_wave_list)
             self.UI_manager.player_info_panel.update(self.enemy_manager)
             self.check_game_over()
 
     def check_game_over(self):
-        # Check if the game should end (e.g., player health reaches 0)
         if self.player.health <= 0:
             return True
-        if self.level_manager.get_current_level() == len(self.level_manager.levels):
+        if self.level_manager.current_level_index >= len(self.level_manager.levels) - 1:
             if self.level_manager.check_level_complete():
-                print("Finished")
+                print("Campaign finished")
                 return True
         return False
 
@@ -153,16 +157,39 @@ class Game:
         # TODO Link to all panels in playing scene
 
     def update_ui(self):
+        self.UI_manager.update(self.clock.get_time() / 1000.0)
+
+    @staticmethod
+    def _save_dir() -> str:
         """
-        Used to allow the player to update the UI without direct access to the UI_manager
-        :return:
+        Return a writable directory for save files.
+
+        When running from a frozen PyInstaller bundle the install folder may
+        be read-only (e.g. Program Files), so we store saves in
+        %APPDATA%/TowerDefense/save_data on Windows and
+        ~/.local/share/TowerDefense/save_data on other platforms.
+        When running from source we keep the original src/save_data location.
         """
-        self.UI_manager.update(self.clock.tick(configuration.FPS) / 1000.0)
+        if getattr(sys, 'frozen', False):
+            if os.name == 'nt':
+                base = os.environ.get('APPDATA', os.path.expanduser('~'))
+            else:
+                base = os.path.join(os.path.expanduser('~'), '.local', 'share')
+            save_dir = os.path.join(base, 'TowerDefense', 'save_data')
+        else:
+            save_dir = os.path.join(
+                os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                'save_data'
+            )
+        os.makedirs(save_dir, exist_ok=True)
+        return save_dir
 
     def save_game(self, save_slot_or_filename):
         # Determine the filename based on the input parameter
-        filename = f"src/save_data/{save_slot_or_filename}.json" if isinstance(save_slot_or_filename,
-                                                                               int) else save_slot_or_filename
+        if isinstance(save_slot_or_filename, int):
+            filename = os.path.join(self._save_dir(), f"savegame_slot{save_slot_or_filename}.json")
+        else:
+            filename = save_slot_or_filename
 
         player_data = {"player": self.player.to_dict()}
 
@@ -175,8 +202,10 @@ class Game:
 
     def load_game(self, save_slot_or_filename):
         # Determine the filename based on the input parameter
-        filename = f"src/save_data/{save_slot_or_filename}.json" if isinstance(save_slot_or_filename,
-                                                                               int) else save_slot_or_filename
+        if isinstance(save_slot_or_filename, int):
+            filename = os.path.join(self._save_dir(), f"savegame_slot{save_slot_or_filename}.json")
+        else:
+            filename = save_slot_or_filename
         try:
             with open(filename, 'r') as f:
                 player_data = json.load(f)

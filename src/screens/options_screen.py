@@ -3,7 +3,6 @@ import pygame
 
 from src.config.config import UI_BUTTON_SIZE
 from src.game.game_state import GameState
-from src.managers import audio_manager
 from src.screens.screen import Screen
 
 

@@ -79,8 +79,7 @@ class FrostTower(Tower):
         """
         Create a projectile and target the specified enemy.
         """
-        target_x, target_y = target.rect.x, target.rect.y
-        projectile_manager.create_projectile(self.x, self.y, self.projectile_type, target, effect='slow')
+        projectile_manager.create_projectile(self.x, self.y, self.projectile_type, target)
 
 class ElectricTower(Tower):
     def __init__(self, x, y):
@@ -141,10 +140,7 @@ class GoldBoostTower(Tower):
         super().__init__(x, y, tower_type='GoldBoost')
 
     def attack(self, target, projectile_manager):
-        projectile_manager.create_projectile(
-            self.x, self.y, self.projectile_type, target,
-            effect='gold_boost'
-        )
+        projectile_manager.create_projectile(self.x, self.y, self.projectile_type, target)
 
 
 class DebuffTower(Tower):

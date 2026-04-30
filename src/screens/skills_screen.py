@@ -110,6 +110,7 @@ class SkillsScreen(Screen):
                                                   text=button_text, manager=self.ui_manager,
                                                   tool_tip_text=skill_info['description'], visible=self.visible)
             self.add_ui_element(button)
+            self.skill_buttons.append(button)
 
     def initialize_skill_points_label(self):
         # Create and add the skill points label to the UI elements

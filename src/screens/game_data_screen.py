@@ -92,7 +92,8 @@ class GameDataScreen(Screen):
         if os.path.exists(filename):
             with open(filename, 'r') as file:
                 data = json.load(file)
-                last_level = max(data['player']['unlocked_levels'])  # Assuming this is the highest level unlocked
+                unlocked = data['player'].get('unlocked_levels', [])
+                last_level = max(unlocked) if unlocked else 0  # Highest unlocked level
                 total_score = data['player']['totalScore']
                 # For file modification time as save date
                 mod_time = os.path.getmtime(filename)

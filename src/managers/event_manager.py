@@ -21,7 +21,7 @@ class EventManager:
     def handle_user_event(self, event, game):
         # Handle global USEREVENT, such as those from pygame_gui
         # This is where you'd handle dialog confirmations, etc.
-        if event.user_type == pygame_gui.UI_CONFIRMATION_DIALOG_CONFIRMED:
+        if hasattr(event, 'user_type') and event.user_type == pygame_gui.UI_CONFIRMATION_DIALOG_CONFIRMED:
             # Perform actions based on the confirmed dialog
             pass  # Placeholder for actual logic TODO add logic
 
