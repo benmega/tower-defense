@@ -57,7 +57,6 @@ a = Analysis(
         'unittest',
         'email',
         'http',
-        'xml',
         'pydoc',
         'doctest',
         'argparse',
@@ -99,7 +98,7 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    # icon='assets/images/icons.ico',   # uncomment after converting icon
+    icon='assets/images/icons.ico',
 )
 
 # ---------------------------------------------------------------------------
