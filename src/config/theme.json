@@ -37,7 +37,9 @@
             "active_border": "#FFD700"
               },
           "font": {
-            "bold": "3"
+            "name": "fira_code",
+            "size": "20",
+            "bold": "1"
           },
          "misc":
              {

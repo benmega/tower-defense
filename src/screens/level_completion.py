@@ -25,21 +25,21 @@ class LevelCompletionScreen:
             relative_rect=pygame.Rect([self.button_x, self.y + self.height // 4], UI_BUTTON_SIZE),
             text=next_level_button_text,
             manager=self.ui_manager,
-            object_id=pygame_gui.core.ObjectID(class_id="@button"),
+            object_id="@button",
             visible=False
         )
         self.replay_button = pygame_gui.elements.UIButton(
             relative_rect=pygame.Rect([self.button_x, self.y + 2 * self.height // 4], UI_BUTTON_SIZE),
             text='Replay',
             manager=self.ui_manager,
-            object_id=pygame_gui.core.ObjectID(class_id="@button"),
+            object_id="@button",
             visible=False
         )
         self.main_menu_button = pygame_gui.elements.UIButton(
             relative_rect=pygame.Rect([self.button_x, self.y + 3 * self.height // 4], UI_BUTTON_SIZE),
             text='Main Menu',
             manager=self.ui_manager,
-            object_id=pygame_gui.core.ObjectID(class_id="@button"),
+            object_id="@button",
             visible=False
         )
         self.background_image = load_scaled_image('assets/images/screens/level_completion.png',

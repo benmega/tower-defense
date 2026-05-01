@@ -1,0 +1,21 @@
+# PyInstaller build artifacts
+build/
+dist/
+*.spec.build
+*.egg-info/
+__pycache__/
+*.pyc
+*.pyo
+.Python
+env/
+venv/
+
+# PyCharm
+.idea/
+*.iml
+
+# VS Code
+.vscode/
+
+# Local settings
+.claude/settings.local.json
