@@ -1,2 +1,2 @@
 pygame==2.5.2
-pygame-gui==0.5.4
+pygame-gui==0.5.5

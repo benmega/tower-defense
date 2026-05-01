@@ -1,0 +1,7 @@
+pygame_gui\core\ui_appearance_theme.py:655: UserWarning: Failed to open theme file at path:C:\Users\Ben\PycharmProjects\towerDefense\.claude\worktrees\laughing-ardinghelli-b72776\dist\TowerDefense\src/config/theme.json
+Traceback (most recent call last):
+  File "src\main.py", line 36, in <module>
+  File "src\game\game.py", line 47, in __init__
+  File "src\managers\ui_manager.py", line 25, in __init__
+  File "src\screens\main_menu.py", line 20, in __init__
+AttributeError: module 'pygame_gui.core' has no attribute 'ObjectID'

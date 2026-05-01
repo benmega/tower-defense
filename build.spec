@@ -55,13 +55,8 @@ a = Analysis(
     excludes=[
         'tkinter',
         'unittest',
-        'email',
-        'http',
         'pydoc',
         'doctest',
-        'argparse',
-        'pickle',
-        'calendar',
     ],
     win_no_prefer_redirects=False,
     win_private_assemblies=False,
