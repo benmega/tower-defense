@@ -14,6 +14,7 @@ a = Analysis(
     datas=[
         (os.path.join(spec_dir, 'assets'), 'assets'),
         (os.path.join(spec_dir, 'src/config/theme.json'), 'src/config'),
+        (os.path.join(spec_dir, 'src/config/levels'), 'src/config/levels'),
         ('C:\\Users\\Ben\\AppData\\Local\\Programs\\Python\\Python310\\lib\\site-packages\\pygame_gui\\data', 'pygame_gui\\data'),
     ],
     hiddenimports=['pygame_gui'],

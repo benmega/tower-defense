@@ -31,17 +31,36 @@ class LevelManager:
     def load_levels(self):
         # Load levels from the JSON file
         import os
-        try:
+        import sys
+
+        paths_to_try = []
+
+        # Try development paths first
+        if hasattr(sys, 'frozen'):
+            base_path = os.path.dirname(sys.executable)
+            paths_to_try.append(os.path.join(base_path, LEVELS_JSON_PATH))
+        else:
             current_dir = os.path.dirname(os.path.abspath(__file__))
             project_root = os.path.dirname(os.path.dirname(current_dir))
-            levels_path = os.path.join(project_root, LEVELS_JSON_PATH)
-            with open(levels_path, 'r') as file:
-                levels_data = json.load(file)
-                self.levels = parse_levels(levels_data)
-        except Exception as e:
-            print(f"Error loading levels: {e}")
-            import traceback
-            traceback.print_exc()
+            paths_to_try.append(os.path.join(project_root, LEVELS_JSON_PATH))
+
+        paths_to_try.append(LEVELS_JSON_PATH)
+
+        for levels_path in paths_to_try:
+            try:
+                if os.path.exists(levels_path):
+                    with open(levels_path, 'r') as file:
+                        levels_data = json.load(file)
+                        self.levels = parse_levels(levels_data)
+                        print(f"Successfully loaded {len(self.levels)} levels from {levels_path}")
+                        return
+            except Exception as e:
+                print(f"Failed to load from {levels_path}: {e}")
+                continue
+
+        print(f"Error: Could not load levels from any path. Tried: {paths_to_try}")
+        import traceback
+        traceback.print_exc()
 
     def next_level(self):
         if self.current_level_index < len(self.levels) - 1:
@@ -90,8 +109,15 @@ class LevelManager:
             self.start_level(level_index=self.current_level_index)
 
     def start_level(self, level_index=None):
+        if not self.levels:
+            print("ERROR: No levels loaded! Check that the levels JSON file exists and is accessible.")
+            return
+
         if level_index is not None:
             # Start the specified level
+            if level_index < 0 or level_index >= len(self.levels):
+                print(f"ERROR: Invalid level index {level_index}. Available levels: 0-{len(self.levels)-1}")
+                return
             print(f"Starting level {level_index + 1}")
             self.current_level_index = level_index
         else:
