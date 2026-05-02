@@ -70,10 +70,13 @@ class GameBoard:
 
     def create_path_layout(self, path):
         """
-
         :param path: list of (x,y) tuples where turns occur. x and y are in pixels not grids
-        :return: layout, in
+        :return: layout grid
         """
+        if not path or len(path) < 2:
+            print("ERROR: Invalid path - must have at least 2 points")
+            return [['G' for _ in range(self.width)] for _ in range(self.height)]
+
         # Convert path points to grid coordinates TODO set path to be grid based
         path = [(min(x // TILE_SIZE[0], self.width - 1), min(y // TILE_SIZE[1], self.height - 1)) for x, y in path]
 
