@@ -1,0 +1,18 @@
+{
+    "player": {
+        "gold": 8490,
+        "health": 400,
+        "totalScore": 0,
+        "levelScores": {},
+        "unlocked_levels": [
+            0,
+            1
+        ],
+        "skills": {
+            "additional_gold": 3,
+            "gold_per_kill": 3,
+            "additional_health": 3,
+            "damage_boost": 3
+        }
+    }
+}

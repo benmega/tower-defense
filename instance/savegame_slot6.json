@@ -1,0 +1,14 @@
+{
+    "player": {
+        "gold": 7672,
+        "health": 100,
+        "totalScore": 0,
+        "levelScores": {},
+        "unlocked_levels": [
+            0,
+            1,
+            1
+        ],
+        "skills": {}
+    }
+}
