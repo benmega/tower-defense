@@ -59,11 +59,22 @@ class Game:
         self.frame_time_delta = 0.0
 
     def initialize_game(self, level_num=-1):
-        self.state_manager.change_state(GameState.PLAYING)
         self.level_manager.load_levels()
+        if not self.level_manager.levels:
+            print("ERROR: Failed to load any levels. Cannot start game.")
+            self.state_manager.change_state(GameState.MAIN_MENU)
+            return
+
+        self.state_manager.change_state(GameState.PLAYING)
         self.UI_manager.player_info_panel.set_visibility(True)
         if level_num > -1:
             self.level_manager.start_level(level_num)
+
+        if not self.level_manager.current_level:
+            print("ERROR: Failed to initialize level. Cannot start game.")
+            self.state_manager.change_state(GameState.MAIN_MENU)
+            return
+
         self.player.start_level()
         self.enemy_manager.reset()
         self.level_manager.reset_level()
@@ -82,11 +93,13 @@ class Game:
 
         # Draw game-specific elements only when in the PLAYING state
         if self.current_state == GameState.PLAYING:
-            self.board.draw_board(self.screen, self.level_manager.get_current_level().path)
-            self.tower_manager.draw_towers(self.screen)
-            self.enemy_manager.draw(self.screen)
-            self.projectile_manager.draw_projectiles(self.screen)
-            self.tower_selection_panel.draw()
+            current_level = self.level_manager.get_current_level()
+            if current_level:
+                self.board.draw_board(self.screen, current_level.path)
+                self.tower_manager.draw_towers(self.screen)
+                self.enemy_manager.draw(self.screen)
+                self.projectile_manager.draw_projectiles(self.screen)
+                self.tower_selection_panel.draw()
 
         # Always draw the UI elements on top of the game elements
         self.UI_manager.draw_ui(self.screen)
@@ -106,6 +119,12 @@ class Game:
         elif self.current_state == GameState.LEVEL_COMPLETE or self.current_state == GameState.LEVEL_DEFEAT:
             self.UI_manager.level_end_screen.update(time_delta)
         elif self.current_state == GameState.PLAYING:
+            # Ensure a level is loaded before proceeding
+            if not self.level_manager.current_level:
+                print("ERROR: No level is loaded. Returning to main menu.")
+                self.state_manager.change_state(GameState.MAIN_MENU)
+                return
+
             # Main game update logic for each frame
             new_enemies = self.level_manager.update_levels()
             if all(not item for item in new_enemies) and len(self.enemy_manager.entities) == 0:
