@@ -44,11 +44,10 @@ class Screen:
         self.visible = False
         self.set_ui_elements_visibility(False)
 
-    def handle_events(self, event, game):
-        if event.type == pygame.USEREVENT:
-            if event.user_type == pygame_gui.UI_BUTTON_PRESSED:
-                if event.ui_element == self.return_button:
-                    game.state_manager.change_state(game.previous_state, self)
+    # screen.py
+    def on_button_pressed(self, ui_element, game):
+        if ui_element == self.return_button:
+            game.state_manager.change_state(game.previous_state, self)
 
     def update(self, time_delta):
         if self.visible:

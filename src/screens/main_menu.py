@@ -39,19 +39,32 @@ class MainMenu:
         )
         self.background_image = load_scaled_image(MAIN_MENU_BACKGROUND_PATH, (SCREEN_WIDTH, SCREEN_HEIGHT))
         self.visible = True
+    #
+    # def handle_events(self, event, game):
+    #     if event.type == pygame.USEREVENT:
+    #         if event.user_type == pygame_gui.UI_BUTTON_PRESSED:
+    #             if event.ui_element == self.start_button:
+    #                 game.state_manager.change_state(GameState.CAMPAIGN_MAP, self)
+    #             elif event.ui_element == self.continue_button:
+    #                 game.state_manager.change_state(GameState.LOAD_GAME, self)
+    #             elif event.ui_element == self.settings_button:
+    #                 game.state_manager.change_state(GameState.OPTIONS, self)
+    #             elif event.ui_element == self.exit_button:
+    #                 pygame.quit()
+    #                 exit()
 
-    def handle_events(self, event, game):
-        if event.type == pygame.USEREVENT:
-            if event.user_type == pygame_gui.UI_BUTTON_PRESSED:
-                if event.ui_element == self.start_button:
-                    game.state_manager.change_state(GameState.CAMPAIGN_MAP, self)
-                elif event.ui_element == self.continue_button:
-                    game.state_manager.change_state(GameState.LOAD_GAME, self)
-                elif event.ui_element == self.settings_button:
-                    game.state_manager.change_state(GameState.OPTIONS, self)
-                elif event.ui_element == self.exit_button:
-                    pygame.quit()
-                    exit()
+    # main_menu.py
+    def on_button_pressed(self, ui_element, game):
+        if ui_element == self.start_button:
+            game.state_manager.change_state(GameState.CAMPAIGN_MAP, self)
+        elif ui_element == self.continue_button:
+            game.state_manager.change_state(GameState.LOAD_GAME, self)
+        elif ui_element == self.settings_button:
+            game.state_manager.change_state(GameState.OPTIONS, self)
+        elif ui_element == self.exit_button:
+            pygame.quit()
+            exit()
+
 
     def update(self, time_delta):
         self.ui_manager.update(time_delta)

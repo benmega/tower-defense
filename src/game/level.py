@@ -60,14 +60,6 @@ class Level:
             return self.active_waves
         return []
 
-    @staticmethod
-    def load_levels():
-        """
-        Load levels from a JSON file.
-        """
-        with open(LEVELS_JSON_PATH, 'r') as file:
-            level_data = json.load(file)
-            return [Level.from_json(level) for level in level_data['levels']]
 
     def is_completed(self):
         """

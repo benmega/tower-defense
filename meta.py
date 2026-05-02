@@ -56,10 +56,9 @@ towerDefense/
 │   │   ├── audio_manager.py
 │   │   ├── collision_manager.py
 │   │   ├── event_manager.py
-│   │   ├── input_manager.py
 │   │   ├── scene_manager.py
 │   │   ├── ui_manager.py
-│   │   └── ai_manager.py
+│   │
 │   │
 │   ├── entities/            # Game entities like towers, enemies, etc.
 │   │   ├── towers/

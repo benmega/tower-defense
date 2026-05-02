@@ -17,6 +17,24 @@ class Entity(pygame.sprite.Sprite):
         self.active = True
         self.width, self.height = self.image.get_size()
 
+    @property
+    def x(self):
+        """Compatibility alias: canonical position is rect.x."""
+        return self.rect.x
+
+    @x.setter
+    def x(self, value):
+        self.rect.x = value
+
+    @property
+    def y(self):
+        """Compatibility alias: canonical position is rect.y."""
+        return self.rect.y
+
+    @y.setter
+    def y(self, value):
+        self.rect.y = value
+
 
     def update(self):
         # Update logic for the entity, to be overridden by subclasses
@@ -25,7 +43,7 @@ class Entity(pygame.sprite.Sprite):
 
     def draw(self, screen):
         if self.active and self.image:
-            screen.blit(self.image, (self.x, self.y))
+            screen.blit(self.image, self.rect.topleft)
         else:
             pass
 

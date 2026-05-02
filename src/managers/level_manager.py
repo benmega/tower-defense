@@ -30,13 +30,18 @@ class LevelManager:
 
     def load_levels(self):
         # Load levels from the JSON file
+        import os
         try:
-            with open(LEVELS_JSON_PATH, 'r') as file:
+            current_dir = os.path.dirname(os.path.abspath(__file__))
+            project_root = os.path.dirname(os.path.dirname(current_dir))
+            levels_path = os.path.join(project_root, LEVELS_JSON_PATH)
+            with open(levels_path, 'r') as file:
                 levels_data = json.load(file)
-                # Parse and create Level objects
                 self.levels = parse_levels(levels_data)
         except Exception as e:
             print(f"Error loading levels: {e}")
+            import traceback
+            traceback.print_exc()
 
     def next_level(self):
         if self.current_level_index < len(self.levels) - 1:
@@ -57,7 +62,13 @@ class LevelManager:
 
         current_level = self.get_current_level()
         if current_level:
-            new_enemies.append(current_level.update_level(current_time))
+            spawned_enemies = current_level.update_level(current_time)
+            if spawned_enemies:
+                # Defensive normalization to keep the spawn contract flat.
+                if isinstance(spawned_enemies, list):
+                    new_enemies.extend(spawned_enemies)
+                else:
+                    new_enemies.append(spawned_enemies)
             if current_level.is_completed():
                 self.start_next_level() # TODO check if this is this ever hit
 

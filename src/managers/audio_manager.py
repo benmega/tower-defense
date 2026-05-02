@@ -2,24 +2,21 @@ import pygame
 
 from src.config.config import BACKGROUND_MUSIC_VOLUME, SOUND_EFFECTS_VOLUME
 from src.game.game_state import GameState
-
-'''
-    sources = { "background_music" : "https://www.youtube.com/watch?v=pgLjYsVP4H0"
-'''
+from src.utils.helpers import resource_path
 
 class AudioManager:
     def __init__(self):
-        pygame.mixer.init()  # Initialize the mixer module
-        self.music_volume = BACKGROUND_MUSIC_VOLUME  # Default music volume
-        self.sfx_volume = SOUND_EFFECTS_VOLUME  # Default sound effects volume
-        self.build_sound = pygame.mixer.Sound('assets/sounds/hammer-hit-on-wood.wav')
+        pygame.mixer.init()
+        self.music_volume = BACKGROUND_MUSIC_VOLUME
+        self.sfx_volume = SOUND_EFFECTS_VOLUME
+        self.build_sound = pygame.mixer.Sound(resource_path('assets/sounds/hammer-hit-on-wood.wav'))
         self.state_music_map = {
-            GameState.MAIN_MENU: 'assets/sounds/main_menu_background.mp3',
-            GameState.CAMPAIGN_MAP: 'assets/sounds/campaign_map_background.mp3',
-            GameState.PLAYING: 'assets/sounds/playing_background.mp3',
-            # Add other states as necessary
+            GameState.MAIN_MENU: resource_path('assets/sounds/main_menu_background.mp3'),
+            GameState.CAMPAIGN_MAP: resource_path('assets/sounds/campaign_map_background.mp3'),
+            GameState.PLAYING: resource_path('assets/sounds/playing_background.mp3'),
         }
         self.current_music = None
+
     def play_sound(self, sound_path):
         sound = pygame.mixer.Sound(sound_path)
         sound.set_volume(self.sfx_volume)

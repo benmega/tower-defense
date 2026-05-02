@@ -22,5 +22,3 @@ class EntityManager:
         for entity in self.entities:
             entity.draw(screen)
 
-
-    # Additional shared methods like collision detection, etc.

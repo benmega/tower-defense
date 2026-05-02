@@ -2,13 +2,19 @@ import pygame
 
 class CollisionManager:
     def __init__(self):
-        # Initialize any necessary data structures or variables
         pass
+
+    @staticmethod
+    def _get_rect(entity):
+        """Prefer sprite rect; fall back to x/y/width/height for legacy entities."""
+        if hasattr(entity, "rect") and entity.rect is not None:
+            return entity.rect
+        return pygame.Rect(entity.x, entity.y, entity.width, entity.height)
 
     def check_collision(self, entity1, entity2):
         """ Checks for collision between two entities. """
-        rect1 = pygame.Rect(entity1.x, entity1.y, entity1.width, entity1.height)
-        rect2 = pygame.Rect(entity2.x, entity2.y, entity2.width, entity2.height)
+        rect1 = self._get_rect(entity1)
+        rect2 = self._get_rect(entity2)
         return rect1.colliderect(rect2)
 
     def resolve_collision(self, entity1, entity2):
@@ -49,4 +55,3 @@ class CollisionManager:
                     entity1.on_collision(entity2)
                 if hasattr(entity2, 'on_collision') and callable(getattr(entity2, 'on_collision')):
                     entity2.on_collision(entity1)
-    # Additional methods for specific collision scenarios can be added here

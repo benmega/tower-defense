@@ -96,6 +96,7 @@ class SkillsScreen(Screen):
         self.initialize_skill_points_label()
 
     def initialize_skill_buttons(self):
+        self.skill_buttons.clear()
         skill_keys = list(all_skills.keys())
         for index, skill_key in enumerate(skill_keys):
             column, row = index % self.grid_columns, index // self.grid_columns
@@ -110,6 +111,7 @@ class SkillsScreen(Screen):
                                                   text=button_text, manager=self.ui_manager,
                                                   tool_tip_text=skill_info['description'], visible=self.visible)
             self.add_ui_element(button)
+            self.skill_buttons.append(button)
 
     def initialize_skill_points_label(self):
         # Create and add the skill points label to the UI elements
@@ -121,15 +123,11 @@ class SkillsScreen(Screen):
         )
         self.add_ui_element(self.skill_points_label)
 
-    def handle_events(self, event, game):
-        super().handle_events(event, game)  # Handle common events, including the return button
-        if event.type == pygame.USEREVENT and event.user_type == pygame_gui.UI_BUTTON_PRESSED:
-            for button in self.skill_buttons:
-                if event.ui_element == button:
-                    # Handle skill button press
-                    skill_index = self.skill_buttons.index(button)
-                    self.upgrade_skill(skill_index, game)
-                    break
+    def on_button_pressed(self, ui_element, game):
+        super().on_button_pressed(ui_element, game)
+        if ui_element in self.skill_buttons:
+            skill_index = self.skill_buttons.index(ui_element)
+            self.upgrade_skill(skill_index, game)
 
     def upgrade_skill(self, skill_index, game):
         # Assuming you have a list of skill keys that corresponds to the skill buttons
@@ -161,9 +159,8 @@ class SkillsScreen(Screen):
             self.skill_points_label.set_text(f"Skill Points: {self.player.points}")
             self.skill_points_label.visible = True
 
-    def close_screen(self):
-        super().close_screen()  # Call superclass method to handle common close screen logic
-
-    def draw(self, screen):
-        print('skill screen drawn')
-        super().draw(screen)  # Call the superclass draw method
+    # def close_screen(self):
+    #     super().close_screen()  # Call superclass method to handle common close screen logic
+    #
+    # def draw(self, screen):
+    #     super().draw(screen)  # Call the superclass draw method

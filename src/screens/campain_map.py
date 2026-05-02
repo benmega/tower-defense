@@ -40,15 +40,15 @@ class CampaignMap(Screen):
             (336, 430), (296, 395), (360, 351), (356, 328), (364, 276),
             (410, 306), (465, 282), (490, 268), (481, 247), (468, 197)
         ]
-        scale_factor = 3  # The map size increased by a factor of 3
-        self.level_positions = [(x * scale_factor, y * scale_factor) for x, y in self.level_positions]
+        self.zoom_factor = 3  # The map size increased by a factor of 3
+        self.level_positions = [(x * self.zoom_factor, y * self.zoom_factor) for x, y in self.level_positions]
         self.player_progress = player_progress
         self.level_buttons = []
 
         self.map_image = load_scaled_image('assets/images/screens/campaignMap/campaign_map.png',
-                                           (SCREEN_WIDTH*scale_factor, SCREEN_HEIGHT*scale_factor))
+                                           (SCREEN_WIDTH*self.zoom_factor, SCREEN_HEIGHT*self.zoom_factor))
         self.level_visibility = {}
-        self.level_button_sizes = (30*scale_factor, 30*scale_factor)
+        self.level_button_sizes = (30*self.zoom_factor, 30*self.zoom_factor)
         self.initilize_buttons()
         self.skills_button = pygame_gui.elements.UIButton(
             relative_rect=pygame.Rect([SCREEN_WIDTH - 300, 10], UI_BUTTON_SIZE),  # Adjust position as needed
@@ -84,29 +84,24 @@ class CampaignMap(Screen):
     def is_level_unlocked(self, level_index):
         return level_index in self.player_progress
 
-    def handle_events(self, event, game):
-        if event.type == pygame.USEREVENT:
-            if event.user_type == pygame_gui.UI_BUTTON_PRESSED:
-                if event.ui_element == self.return_button:
-                    game.state_manager.change_state(GameState.MAIN_MENU, self)  # Assuming game object has a method to handle state change
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            self.handle_clicks(event, game)
-        if event.type == pygame.USEREVENT and event.user_type == pygame_gui.UI_BUTTON_PRESSED:
-            if event.ui_element == self.skills_button:
-                game.state_manager.change_state(GameState.SKILLS, self)  # Assuming GameState.SKILLS is defined
+    # campaign_map.py
+    def on_button_pressed(self, ui_element, game):
+        if ui_element == self.return_button:
+            game.state_manager.change_state(GameState.MAIN_MENU, self)
+        elif ui_element == self.skills_button:
+            game.state_manager.change_state(GameState.SKILLS, self)
 
-    def handle_clicks(self, event, game):
-        # Adjust mouse_pos to account for camera position
-        mouse_pos = pygame.Vector2(event.pos) + self.camera.position
+    def on_click(self, pos, game):
+        self.handle_clicks(pos, game)
+
+    def handle_clicks(self, pos, game):
+        mouse_pos = pygame.Vector2(pos) + self.camera.position
 
         for index, (_, button_rect, unlocked) in enumerate(self.level_buttons):
             if button_rect.collidepoint(mouse_pos) and unlocked:
                 game.initialize_game(index)  # Set up the game for the selected level
-                #game.state_manager.change_state(GameState.PLAYING,self)
-                # game.level_manager.start_level(index)
-                # game.player.start_level()
                 self.close_screen()
-                break  # Exit loop after handling the click
+                break
 
     def update_player_progress(self, new_progress):
         self.player_progress = new_progress

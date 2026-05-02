@@ -101,28 +101,49 @@ class GameDataScreen(Screen):
         else:
             return f"Slot {index + 1}: Empty"
 
-    def handle_events(self, event, game):
-        super().handle_events(event, game)
-        if event.type == pygame.USEREVENT:
-            if event.user_type == pygame_gui.UI_BUTTON_PRESSED:
-                if event.ui_element == self.toggle_button:
-                    self.toggle_mode()
-                else:
-                    buttons = self.save_buttons if self.mode == 'save' else self.load_buttons
+    # game_data_screen.py
+    def on_button_pressed(self, ui_element, game):
+        if ui_element == self.toggle_button:
+            self.toggle_mode()
+            return
+        buttons = self.save_buttons if self.mode == 'save' else self.load_buttons
+        for i, button in enumerate(buttons):
+            if ui_element == button:
+                self.selected_slot = i
+                self.initiate_action(self.mode, self.save_slot_files[i], game)
+                break
 
-                    for i, button in enumerate(buttons):
-                        if event.ui_element == button:
-                            self.selected_slot = i  # Store the selected slot index
-                            self.initiate_action(self.mode, self.save_slot_files[i], game)
-                            break  # Exit loop after finding the matching button
-            elif event.user_type == pygame_gui.UI_CONFIRMATION_DIALOG_CONFIRMED:
-                # Act based on stored mode and selected slot when confirmation is received
-                if self.mode == 'load':
-                    game.load_game(self.save_slot_files[self.selected_slot])
-                elif self.mode == 'save':
-                    game.save_game(self.save_slot_files[self.selected_slot])
-                game.state_manager.change_state(game.previous_state)
-                self.close_screen()
+    def on_confirmation(self, game):
+        if self.mode == 'load':
+            game.load_game(self.save_slot_files[self.selected_slot])
+        elif self.mode == 'save':
+            game.save_game(self.save_slot_files[self.selected_slot])
+        game.state_manager.change_state(game.previous_state)
+        self.close_screen()
+
+
+    # def handle_events(self, event, game):
+    #     super().handle_events(event, game)
+    #     if event.type == pygame.USEREVENT:
+    #         if event.user_type == pygame_gui.UI_BUTTON_PRESSED:
+    #             if event.ui_element == self.toggle_button:
+    #                 self.toggle_mode()
+    #             else:
+    #                 buttons = self.save_buttons if self.mode == 'save' else self.load_buttons
+    #
+    #                 for i, button in enumerate(buttons):
+    #                     if event.ui_element == button:
+    #                         self.selected_slot = i  # Store the selected slot index
+    #                         self.initiate_action(self.mode, self.save_slot_files[i], game)
+    #                         break  # Exit loop after finding the matching button
+    #         elif event.user_type == pygame_gui.UI_CONFIRMATION_DIALOG_CONFIRMED:
+    #             # Act based on stored mode and selected slot when confirmation is received
+    #             if self.mode == 'load':
+    #                 game.load_game(self.save_slot_files[self.selected_slot])
+    #             elif self.mode == 'save':
+    #                 game.save_game(self.save_slot_files[self.selected_slot])
+    #             game.state_manager.change_state(game.previous_state)
+    #             self.close_screen()
 
     def initiate_action(self, mode, file_path, game):
         self.show_confirmation_dialog(mode, file_path, game)

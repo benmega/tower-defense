@@ -8,6 +8,7 @@ from src.board.tower_selection_panel import TowerSelectionPanel
 from src.entities.Player import Player
 from src.game.game_state import GameState
 from src.managers.audio_manager import AudioManager
+from src.utils.helpers import resource_path
 from src.managers.collision_manager import CollisionManager
 from src.managers.enemy_manager import EnemyManager
 from src.managers.event_manager import EventManager
@@ -38,7 +39,7 @@ class Game:
         pygame.display.set_caption("Mr. Mega\'s Awesome Tower Defense Game")
         self.clock = pygame.time.Clock()
         self.event_manager = EventManager()
-        theme_path = os.path.join(os.path.dirname(__file__), '..', 'config', 'theme.json')
+        theme_path = resource_path('src/config/theme.json')
         self.audio_manager = AudioManager()
         self.state_manager = GameStateManager(self)
         self.player = Player(update_ui_callback=self.update_ui, on_death_callback=self.player_on_death_callback)
@@ -55,6 +56,7 @@ class Game:
         self.current_state = None
         self.previous_state = None
         self.is_build_mode = True
+        self.frame_time_delta = 0.0
 
     def initialize_game(self, level_num=-1):
         self.state_manager.change_state(GameState.PLAYING)
@@ -70,12 +72,10 @@ class Game:
         self.is_running = True
         self.state_manager.change_state(GameState.MAIN_MENU)
         while self.is_running:
-            time_delta = self.clock.tick(configuration.FPS) / 1000.0
+            self.frame_time_delta = self.clock.tick(configuration.FPS) / 1000.0
             self.event_manager.process_events(self)
-            self.update(time_delta)
+            self.update(self.frame_time_delta)
             self.draw()
-            # pygame.display.update()
-            self.clock.tick(configuration.FPS)
         pygame.quit()
     def draw(self):
         self.screen.fill(configuration.BACKGROUND_COLOR)  # Clear the screen with the background color
@@ -157,7 +157,7 @@ class Game:
         Used to allow the player to update the UI without direct access to the UI_manager
         :return:
         """
-        self.UI_manager.update(self.clock.tick(configuration.FPS) / 1000.0)
+        self.UI_manager.update(self.frame_time_delta)
 
     def save_game(self, save_slot_or_filename):
         # Determine the filename based on the input parameter

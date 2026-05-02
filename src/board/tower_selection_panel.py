@@ -1,6 +1,7 @@
 import pygame
 
 from src.config.config import TOWER_TYPES, UI_FONT_SIZE
+from src.utils.helpers import resource_path
 
 
 class TowerSelectionPanel:
@@ -17,7 +18,7 @@ class TowerSelectionPanel:
         # Preload and scale images
         for tower_type, tower_info in TOWER_TYPES.items():
             icon_path = tower_info['image_path']
-            icon_image = pygame.image.load(icon_path).convert_alpha()
+            icon_image = pygame.image.load(resource_path(icon_path)).convert_alpha()
             self.icons[tower_type] = pygame.transform.scale(icon_image, [self.icon_size, self.icon_size])
 
     def draw(self):
@@ -52,6 +53,9 @@ class TowerSelectionPanel:
     def is_within_panel(self, mouse_pos):
         x, y = mouse_pos
         return y > self.panel_y
+
+    def on_click(self, pos, game):
+        self.handle_mouse_click(pos)  # reuse old logic
 
     def handle_mouse_click(self, mouse_pos):
         x, y = mouse_pos
