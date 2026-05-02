@@ -102,4 +102,4 @@ class EnemyWave:
 
     def start(self):
         self.manually_started = True
-        # Set up the wave to start spawning enemies
+        self.is_active = True

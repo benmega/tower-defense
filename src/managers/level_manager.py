@@ -68,7 +68,8 @@ class LevelManager:
         else:
             return None  # No more levels
 
-
+    def start_next_level(self):
+        self.start_level()
 
     def get_current_level(self):
         if self.current_level_index != -1 and self.current_level_index < len(self.levels):
