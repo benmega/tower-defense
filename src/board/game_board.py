@@ -26,6 +26,8 @@ class GameBoard:
         self.path_image = load_scaled_image(PATH_IMAGE_PATH, TILE_SIZE)
         self.entrance_image = load_scaled_image(ENTRANCE_IMAGE_PATH, TILE_SIZE)
         self.exit_image = load_scaled_image(EXIT_IMAGE_PATH, TILE_SIZE)
+        if not self.grass_image:
+            print("WARNING: Failed to load grass image. Game board may not render properly.")
         self.grid = [[None for _ in range(width)] for _ in range(height)]
         self.path = [(0, 0), (0, 500), (500, 500)]
         self.path_layout = self.create_path_layout(self.path)
@@ -66,7 +68,8 @@ class GameBoard:
         for y in range(self.height):
             for x in range(self.width):
                 image = self.get_tile_image(x, y, path)
-                screen.blit(image, (x * TILE_SIZE[0], y * TILE_SIZE[1]))
+                if image:
+                    screen.blit(image, (x * TILE_SIZE[0], y * TILE_SIZE[1]))
 
     def create_path_layout(self, path):
         """
