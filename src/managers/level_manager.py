@@ -35,25 +35,40 @@ class LevelManager:
 
         paths_to_try = []
 
-        # Try development paths first
+        # Try frozen (PyInstaller) paths first
         if hasattr(sys, 'frozen'):
-            base_path = os.path.dirname(sys.executable)
-            paths_to_try.append(os.path.join(base_path, LEVELS_JSON_PATH))
+            # Use sys._MEIPASS for PyInstaller temp directory (most reliable)
+            if hasattr(sys, '_MEIPASS'):
+                base_path = sys._MEIPASS
+                paths_to_try.append(os.path.join(base_path, LEVELS_JSON_PATH))
+                print(f"[DEBUG] PyInstaller sys._MEIPASS: {base_path}")
+            else:
+                # Fallback for PyInstaller if _MEIPASS not available
+                base_path = os.path.dirname(sys.executable)
+                paths_to_try.append(os.path.join(base_path, LEVELS_JSON_PATH))
+                print(f"[DEBUG] PyInstaller exe directory: {base_path}")
         else:
+            # Development path
             current_dir = os.path.dirname(os.path.abspath(__file__))
             project_root = os.path.dirname(os.path.dirname(current_dir))
             paths_to_try.append(os.path.join(project_root, LEVELS_JSON_PATH))
+            print(f"[DEBUG] Development path: {os.path.join(project_root, LEVELS_JSON_PATH)}")
 
+        # Relative path fallback
         paths_to_try.append(LEVELS_JSON_PATH)
 
         for levels_path in paths_to_try:
             try:
+                print(f"[DEBUG] Trying to load levels from: {levels_path}")
                 if os.path.exists(levels_path):
+                    print(f"[DEBUG] Found file at: {levels_path}")
                     with open(levels_path, 'r') as file:
                         levels_data = json.load(file)
                         self.levels = parse_levels(levels_data)
                         print(f"Successfully loaded {len(self.levels)} levels from {levels_path}")
                         return
+                else:
+                    print(f"[DEBUG] File not found: {levels_path}")
             except Exception as e:
                 print(f"Failed to load from {levels_path}: {e}")
                 continue
