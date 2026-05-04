@@ -191,6 +191,8 @@ class SkillsScreen(Screen):
             button_text = f"{skill_key} (Lv {new_level})\nNext: {cost_text}"
             self.skill_buttons[skill_index].set_text(button_text)
             self.skill_points_label.set_text(f"Skill Points: {self.player.points}")
+            # Play skill unlock sound
+            game.audio_manager.play_sfx('skill_unlocked')
 
     def open_screen(self):
         super().open_screen()

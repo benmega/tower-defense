@@ -17,7 +17,13 @@ from src.managers.level_manager import LevelManager
 from src.managers.projectile_manager import ProjectileManager
 from src.managers.tower_manager import TowerManager
 from src.managers.ui_manager import UIManager
+<<<<<<< HEAD
 from src.utils.helpers import get_asset_path
+=======
+from src.effects.particle_system import ParticleSystem
+from src.effects.screen_shake import ScreenShake
+from src.utils import constants as C
+>>>>>>> claude/suspicious-raman-d0a593
 
 
 def capture_screen():
@@ -37,7 +43,14 @@ class Game:
         pygame.init()
         self.screen = pygame.display.set_mode([configuration.SCREEN_WIDTH, configuration.SCREEN_HEIGHT],
                                               pygame.DOUBLEBUF, pygame.SRCALPHA)
-        pygame.display.set_caption("Mr. Mega\'s Awesome Tower Defense Game")
+        pygame.display.set_caption("Tower Defense")
+        # Set window icon
+        try:
+            icon = pygame.image.load('assets/images/towers/basic_tower.png').convert_alpha()
+            pygame.display.set_icon(icon)
+        except Exception as e:
+            print(f"Failed to load icon: {e}")
+
         self.clock = pygame.time.Clock()
         self.event_manager = EventManager()
         theme_path = resource_path('src/config/theme.json')
@@ -65,6 +78,14 @@ class Game:
         from src.game.tower_info_panel import TowerInfoPanel
         self.tower_info_panel = TowerInfoPanel(self.UI_manager)
 >>>>>>> claude/great-franklin-30172d
+
+        # Initialize particle system and screen shake
+        self.particles = ParticleSystem()
+        self.shake = ScreenShake()
+        self._shake_offset = (0, 0)
+        self._last_dt = 0.0
+        self._game_surface = pygame.Surface((configuration.SCREEN_WIDTH, configuration.SCREEN_HEIGHT))
+        self._campaign_win_played = False
 
     def initialize_game(self, level_num=-1):
         self.level_manager.load_levels()
@@ -102,6 +123,7 @@ class Game:
         # Draw game-specific elements only when in the PLAYING state
         if self.current_state == GameState.PLAYING:
 <<<<<<< HEAD
+<<<<<<< HEAD
             current_level = self.level_manager.get_current_level()
             if current_level:
                 self.board.draw_board(self.screen, current_level.path)
@@ -117,6 +139,19 @@ class Game:
                 self._draw_tower_ranges()
             self.enemy_manager.draw(self.screen)
             self.projectile_manager.draw_projectiles(self.screen)
+=======
+            # Render game world to intermediate surface for shake effect
+            self._game_surface.fill(configuration.BACKGROUND_COLOR)
+            self.board.draw_board(self._game_surface, self.level_manager.get_current_level().path, self._last_dt)
+            self.tower_manager.draw_towers(self._game_surface)
+            self.enemy_manager.draw(self._game_surface)
+            self.projectile_manager.draw_projectiles(self._game_surface)
+            self.particles.draw(self._game_surface)
+            # Apply shake offset when blitting to screen
+            ox, oy = self._shake_offset
+            self.screen.blit(self._game_surface, (ox, oy))
+            # Draw UI overlays directly (tower selection panel)
+>>>>>>> claude/suspicious-raman-d0a593
             self.tower_selection_panel.draw()
             # Draw placement preview
             self._draw_placement_preview()
@@ -137,6 +172,7 @@ class Game:
         if configuration.DEBUG:
             print("Updating game state")
 
+        self._last_dt = time_delta  # Store time delta for drawing
         self.UI_manager.update(time_delta)
 
         if self.current_state == GameState.MAIN_MENU:
@@ -150,6 +186,7 @@ class Game:
             pass
         elif self.current_state == GameState.PLAYING:
 <<<<<<< HEAD
+<<<<<<< HEAD
             # Ensure a level is loaded before proceeding
             if not self.level_manager.current_level:
                 print("ERROR: No level is loaded. Returning to main menu.")
@@ -159,6 +196,11 @@ class Game:
             # Apply fast-forward multiplier to time delta
             effective_delta = time_delta * configuration.GAME_SPEED_MULTIPLIER
 >>>>>>> claude/great-franklin-30172d
+=======
+            # Update particle system and screen shake
+            self.particles.update(time_delta)
+            self._shake_offset = self.shake.update(time_delta)
+>>>>>>> claude/suspicious-raman-d0a593
 
             # Main game update logic for each frame
             new_enemies = self.level_manager.update_levels()
@@ -186,6 +228,10 @@ class Game:
             return True
         if self.level_manager.get_current_level() == len(self.level_manager.levels):
             if self.level_manager.check_level_complete():
+                # Play campaign win sound once
+                if not self._campaign_win_played:
+                    self.audio_manager.play_sfx('campaign_win')
+                    self._campaign_win_played = True
                 print("Finished")
                 return True
         return False
@@ -197,9 +243,20 @@ class Game:
         self.UI_manager.player_info_panel.score_label.set_text(f"Score: {self.player.levelScore}")
         self.UI_manager.player_info_panel.enemy_count_label.set_text(f"Enemies: {len(self.enemy_manager.entities)}")
 
+        # Emit death particle burst (red)
+        self.particles.emit(enemy.rect.centerx, enemy.rect.centery,
+                          count=10, color=C.RGB_HEALTH_RED, speed=2.0, life=0.5)
+        # Emit gold pickup particle sparkle
+        self.particles.emit(enemy.rect.centerx, enemy.rect.centery - 20,
+                          count=6, color=C.RGB_GOLD_BRIGHT, speed=1.5, life=0.8)
+        # Play death sound
+        self.audio_manager.play_sfx('enemy_death')
+
     def player_take_damage_callback(self, amount):
         self.player.take_damage(amount)
         self.UI_manager.player_info_panel.health_label.set_text(f'health: {self.player.health}')
+        # Trigger screen shake on damage
+        self.shake.trigger(magnitude=8, duration=0.25)
 
     def set_gameboard_ui_visibility(self, visible):
         self.UI_manager.player_info_panel.set_visibility(visible)

@@ -1,14 +1,22 @@
 import pygame
+<<<<<<< HEAD
 import os
+=======
+import math
+>>>>>>> claude/suspicious-raman-d0a593
 
-from src.config.config import DEBUG
+from src.config.config import DEBUG, TILE_SIZE
 from src.managers.entity_manager import EntityManager
 from src.entities.towers.tower_types import *
+<<<<<<< HEAD
 <<<<<<< HEAD
 from src.utils.helpers import resource_path
 =======
 from src.utils.helpers import get_asset_path
 >>>>>>> claude/unruffled-ramanujan-1882ca
+=======
+from src.utils import constants as C
+>>>>>>> claude/suspicious-raman-d0a593
 
 
 class TowerManager(EntityManager):
@@ -121,6 +129,11 @@ class TowerManager(EntityManager):
             if self.is_valid_position(x, y, game):
                 self.add_tower(x, y)
                 player.spend_gold(adjusted_cost)
+                # Emit tower placement particles
+                tower_center_x = x + TILE_SIZE[0] // 2
+                tower_center_y = y + TILE_SIZE[1] // 2
+                game.particles.emit(tower_center_x, tower_center_y,
+                                  count=14, color=C.RGB_AMBER, speed=3.0, spread=math.pi*2, life=0.7)
                 return True
             else:
                 print("Invalid position for tower.")

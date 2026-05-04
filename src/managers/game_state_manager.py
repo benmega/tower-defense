@@ -41,6 +41,7 @@ class GameStateTransitionHandler:
 
     def open_playing_scene(self):
         self.game.audio_manager.play_music_for_state(GameState.PLAYING)
+<<<<<<< HEAD
         # Restore music volume to normal when resuming from pause
         self.game.audio_manager.set_volume(music_volume=0.5)
 
@@ -48,6 +49,9 @@ class GameStateTransitionHandler:
         self.game.UI_manager.pause_screen.open_screen()
         # Lower music volume to 30%
         self.game.audio_manager.set_volume(music_volume=0.3)
+=======
+        self.game.audio_manager.play_sfx('level_start')
+>>>>>>> claude/suspicious-raman-d0a593
 
     def open_complete_screen(self):
 <<<<<<< HEAD
@@ -67,6 +71,7 @@ class GameStateTransitionHandler:
         if screen.screen_type != 'completion':
             screen.screen_type = 'completion'
 
+        self.game.audio_manager.play_sfx('level_complete')
         self.game.UI_manager.level_end_screen.open_screen()
 
     def open_defeat_screen(self):
@@ -75,6 +80,7 @@ class GameStateTransitionHandler:
             self.game.UI_manager.level_end_screen = LevelCompletionScreen(self.game.UI_manager,
                                                                           screen_type='defeat')
         self.game.UI_manager.level_end_screen.screen_type = 'defeat'
+        self.game.audio_manager.play_sfx('level_defeat')
         self.game.UI_manager.level_end_screen.open_screen()
         self.game.UI_manager.campaign_map.update_player_progress(self.game.player.player_data['unlocked_levels'])
 
