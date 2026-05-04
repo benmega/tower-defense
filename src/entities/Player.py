@@ -3,6 +3,7 @@ import os
 import json
 
 from src.screens.skills_screen import all_skills
+from src.utils.helpers import get_asset_path
 
 
 class Player:
@@ -53,8 +54,9 @@ class Player:
             self.on_death_callback()
 
     def save_game(self, filename="src/save_data/savegame_slot1.json"):
-        os.makedirs(os.path.dirname(filename), exist_ok=True)
-        with open(filename, 'w') as f:
+        full_path = get_asset_path(filename) if not os.path.isabs(filename) else filename
+        os.makedirs(os.path.dirname(full_path), exist_ok=True)
+        with open(full_path, 'w') as f:
             json.dump(self.player_data, f, indent=4)
 
     def load_data(self, player_data):

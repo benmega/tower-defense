@@ -6,7 +6,11 @@
       "text_shadow": "#505050"
     },
     "font": {
+<<<<<<< HEAD
       "name": "arial",
+=======
+      "name": "fira_code",
+>>>>>>> claude/unruffled-ramanujan-1882ca
       "size": "12",
       "bold": "0",
       "italic": "0"
@@ -40,9 +44,15 @@
             "active_border": "#FFD700"
               },
           "font": {
+<<<<<<< HEAD
             "name": "arial",
             "size": "14",
             "bold": "1",
+=======
+            "name": "fira_code",
+            "size": "12",
+            "bold": "0",
+>>>>>>> claude/unruffled-ramanujan-1882ca
             "italic": "0"
           },
          "misc":

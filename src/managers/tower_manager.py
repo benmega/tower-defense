@@ -1,9 +1,14 @@
 import pygame
+import os
 
 from src.config.config import DEBUG
 from src.managers.entity_manager import EntityManager
 from src.entities.towers.tower_types import *
+<<<<<<< HEAD
 from src.utils.helpers import resource_path
+=======
+from src.utils.helpers import get_asset_path
+>>>>>>> claude/unruffled-ramanujan-1882ca
 
 
 class TowerManager(EntityManager):
@@ -29,7 +34,12 @@ class TowerManager(EntityManager):
             'GoldBoost': GoldBoostTower,
             'Debuff': DebuffTower,
         }
+<<<<<<< HEAD
         self.build_sound = pygame.mixer.Sound(resource_path('assets/sounds/tower_build_effect_2.mp3'))  # Preload sound
+=======
+        sound_path = get_asset_path('assets/sounds/tower_build_effect_2.mp3')
+        self.build_sound = pygame.mixer.Sound(sound_path)  # Preload sound
+>>>>>>> claude/unruffled-ramanujan-1882ca
 
     def add_tower(self, x, y):
         """Adds a new tower at specified coordinates."""

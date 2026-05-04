@@ -1,6 +1,14 @@
 import pygame
+import os
+import sys
 from src.config.config import TOWER_IMAGE_PATH, ENEMY_IMAGE_PATH
 
+def get_asset_path(relative_path):
+    if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
+        base_path = sys._MEIPASS
+    else:
+        base_path = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+    return os.path.join(base_path, relative_path)
 
 class AssetManager:
     def __init__(self):
@@ -10,7 +18,8 @@ class AssetManager:
 
     def load_image(self, key, path):
         """ Loads an image and stores it with the specified key. """
-        image = pygame.image.load(path)
+        full_path = get_asset_path(path) if not os.path.isabs(path) else path
+        image = pygame.image.load(full_path)
         self.images[key] = image
         return image
 
@@ -20,7 +29,8 @@ class AssetManager:
 
     def load_sound(self, key, path):
         """ Loads a sound and stores it with the specified key. """
-        sound = pygame.mixer.Sound(path)
+        full_path = get_asset_path(path) if not os.path.isabs(path) else path
+        sound = pygame.mixer.Sound(full_path)
         self.sounds[key] = sound
         return sound
 
@@ -30,7 +40,8 @@ class AssetManager:
 
     def load_font(self, key, path, size):
         """ Loads a font and stores it with the specified key. """
-        font = pygame.font.Font(path, size)
+        full_path = get_asset_path(path) if not os.path.isabs(path) else path
+        font = pygame.font.Font(full_path, size)
         self.fonts[key] = font
         return font
 

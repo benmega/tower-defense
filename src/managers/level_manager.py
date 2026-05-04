@@ -1,10 +1,12 @@
 import json
+import os
 
 import pygame
 
 from src.board.wave_panel import WavePanel
 from src.config.config import LEVELS_JSON_PATH
 from src.game.level import Level
+from src.utils.helpers import get_asset_path
 
 
 def parse_levels(levels_data):
@@ -30,6 +32,7 @@ class LevelManager:
 
     def load_levels(self):
         # Load levels from the JSON file
+<<<<<<< HEAD
         import os
         import sys
 
@@ -76,6 +79,16 @@ class LevelManager:
         print(f"Error: Could not load levels from any path. Tried: {paths_to_try}")
         import traceback
         traceback.print_exc()
+=======
+        try:
+            full_path = get_asset_path(LEVELS_JSON_PATH) if not os.path.isabs(LEVELS_JSON_PATH) else LEVELS_JSON_PATH
+            with open(full_path, 'r') as file:
+                levels_data = json.load(file)
+                # Parse and create Level objects
+                self.levels = parse_levels(levels_data)
+        except Exception as e:
+            print(f"Error loading levels: {e}")
+>>>>>>> claude/unruffled-ramanujan-1882ca
 
     def next_level(self):
         if self.current_level_index < len(self.levels) - 1:

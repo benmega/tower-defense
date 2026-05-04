@@ -17,6 +17,7 @@ from src.managers.level_manager import LevelManager
 from src.managers.projectile_manager import ProjectileManager
 from src.managers.tower_manager import TowerManager
 from src.managers.ui_manager import UIManager
+from src.utils.helpers import get_asset_path
 
 
 def capture_screen():
@@ -182,13 +183,15 @@ class Game:
         # Determine the filename based on the input parameter
         filename = f"src/save_data/{save_slot_or_filename}.json" if isinstance(save_slot_or_filename,
                                                                                int) else save_slot_or_filename
+        full_path = get_asset_path(filename) if not os.path.isabs(filename) else filename
 
         player_data = {"player": self.player.to_dict()}
 
         try:
-            with open(filename, 'w') as f:
+            os.makedirs(os.path.dirname(full_path), exist_ok=True)
+            with open(full_path, 'w') as f:
                 json.dump(player_data, f, indent=4)
-                print(f"Game saved to {filename}")
+                print(f"Game saved to {full_path}")
         except Exception as e:
             print(f"Failed to save game: {e}")
 
@@ -196,14 +199,15 @@ class Game:
         # Determine the filename based on the input parameter
         filename = f"src/save_data/{save_slot_or_filename}.json" if isinstance(save_slot_or_filename,
                                                                                int) else save_slot_or_filename
+        full_path = get_asset_path(filename) if not os.path.isabs(filename) else filename
         try:
-            with open(filename, 'r') as f:
+            with open(full_path, 'r') as f:
                 player_data = json.load(f)
                 self.player.from_dict(player_data["player"])
                 self.UI_manager.campaign_map.update_player_progress(player_data["player"]['unlocked_levels'])
-                print(f"Game loaded from {filename}")
+                print(f"Game loaded from {full_path}")
         except FileNotFoundError:
-            print(f"Save file not found: {filename}")
+            print(f"Save file not found: {full_path}")
 
 
     def player_on_death_callback(self):
