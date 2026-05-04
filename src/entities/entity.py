@@ -43,9 +43,13 @@ class Entity(pygame.sprite.Sprite):
 
     def draw(self, screen):
         if self.active and self.image:
+<<<<<<< HEAD
             screen.blit(self.image, self.rect.topleft)
         else:
             pass
+=======
+            screen.blit(self.image, (self.rect.x, self.rect.y))
+>>>>>>> claude/laughing-ardinghelli-b72776
 
     def on_collision(self, other_entity):
         # Collision handling logic, to be overridden by subclasses

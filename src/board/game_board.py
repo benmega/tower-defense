@@ -51,29 +51,16 @@ class GameBoard:
         # TODO Have grid update
         return self.grid[grid_y][grid_x] if self.is_valid_position(grid_x, grid_y) else None
 
-    def get_tile_image(self, x, y, path=None):
-        """
-
-        :param x: in pixels not grids
-        :param y: in pixels not grids
-        :param path: in pixels not grids
-        :return:
-        """
-        if path:
-            self.path = path
-        self.path_layout = self.create_path_layout(self.path)
-        tile_type = self.path_layout[y][x]
-        if tile_type == 'G':
-            return self.grass_image
-        elif tile_type == 'P':
+    def _tile_image(self, tile_type):
+        if tile_type == 'P':
             return self.path_image
         elif tile_type == 'E':
             return self.entrance_image
         elif tile_type == 'X':
             return self.exit_image
-        else:
-            return self.grass_image  # Default to grass if unknown type
+        return self.grass_image
 
+<<<<<<< HEAD
     def draw_board(self, screen, path, time_delta=0):
         # Update animation timers
         self._path_anim_time += time_delta
@@ -84,8 +71,16 @@ class GameBoard:
         self.draw_path_chevrons(screen, path)
 
     def draw_background(self, screen, path):
+=======
+    def draw_board(self, screen, path):
+        if path != self.path:
+            self.path = path
+            self.path_layout = self.create_path_layout(path)
+>>>>>>> claude/laughing-ardinghelli-b72776
         for y in range(self.height):
+            row = self.path_layout[y]
             for x in range(self.width):
+<<<<<<< HEAD
                 image = self.get_tile_image(x, y, path)
                 if image:
                     screen.blit(image, (x * TILE_SIZE[0], y * TILE_SIZE[1]))
@@ -134,6 +129,9 @@ class GameBoard:
                 pos += spacing
 
         screen.blit(overlay, (0, 0))
+=======
+                screen.blit(self._tile_image(row[x]), (x * TILE_SIZE[0], y * TILE_SIZE[1]))
+>>>>>>> claude/laughing-ardinghelli-b72776
 
     def create_path_layout(self, path):
         """

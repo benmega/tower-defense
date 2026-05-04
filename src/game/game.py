@@ -1,8 +1,10 @@
 import os
+import sys
 import json
 import pygame
 
 import src.config.config as configuration
+from src.utils.resource_path import resource_path
 from src.board.game_board import GameBoard
 from src.board.tower_selection_panel import TowerSelectionPanel
 from src.entities.Player import Player
@@ -96,6 +98,7 @@ class Game:
 
         self.state_manager.change_state(GameState.PLAYING)
         self.UI_manager.player_info_panel.set_visibility(True)
+<<<<<<< HEAD
         if level_num > -1:
             self.level_manager.start_level(level_num)
 
@@ -104,9 +107,14 @@ class Game:
             self.state_manager.change_state(GameState.MAIN_MENU)
             return
 
+=======
+>>>>>>> claude/laughing-ardinghelli-b72776
         self.player.start_level()
         self.enemy_manager.reset()
-        self.level_manager.reset_level()
+        if level_num > -1:
+            self.level_manager.start_level(level_num)
+        else:
+            self.level_manager.reset_level()
 
     def run(self):
         self.is_running = True
@@ -124,6 +132,7 @@ class Game:
         if self.current_state == GameState.PLAYING:
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
             current_level = self.level_manager.get_current_level()
             if current_level:
                 self.board.draw_board(self.screen, current_level.path)
@@ -133,6 +142,11 @@ class Game:
                 self.tower_selection_panel.draw()
 =======
             self.board.draw_board(self.screen, self.level_manager.get_current_level().path)
+=======
+            current_level = self.level_manager.get_current_level()
+            if current_level:
+                self.board.draw_board(self.screen, current_level.path)
+>>>>>>> claude/laughing-ardinghelli-b72776
             self.tower_manager.draw_towers(self.screen)
             # Draw tower range circles if enabled
             if self.tower_manager.show_ranges:
@@ -210,29 +224,38 @@ class Game:
                     self.set_gameboard_ui_visibility(False)
                     self.state_manager.change_state(GameState.LEVEL_COMPLETE)
 
-            for enemy in new_enemies:
-                self.enemy_manager.add_enemy(enemy)
+            for enemy_batch in new_enemies:
+                for enemy in enemy_batch:
+                    self.enemy_manager.add_enemy(enemy)
             self.enemy_manager.update()
             self.tower_manager.update(self.enemy_manager.get_enemies(), self.projectile_manager)
             self.projectile_manager.update_entities()
             self.collision_manager.handle_group_collisions(
                 self.enemy_manager.entities, self.projectile_manager.projectiles
             )
+<<<<<<< HEAD
             self.level_manager.wave_panel.update(effective_delta, self.level_manager.current_level.enemy_wave_list)
+=======
+            if self.level_manager.current_level:
+                self.level_manager.wave_panel.update(time_delta, self.level_manager.current_level.enemy_wave_list)
+>>>>>>> claude/laughing-ardinghelli-b72776
             self.UI_manager.player_info_panel.update(self.enemy_manager)
             self.check_game_over()
 
     def check_game_over(self):
-        # Check if the game should end (e.g., player health reaches 0)
         if self.player.health <= 0:
             return True
-        if self.level_manager.get_current_level() == len(self.level_manager.levels):
+        if self.level_manager.current_level_index >= len(self.level_manager.levels) - 1:
             if self.level_manager.check_level_complete():
+<<<<<<< HEAD
                 # Play campaign win sound once
                 if not self._campaign_win_played:
                     self.audio_manager.play_sfx('campaign_win')
                     self._campaign_win_played = True
                 print("Finished")
+=======
+                print("Campaign finished")
+>>>>>>> claude/laughing-ardinghelli-b72776
                 return True
         return False
 
@@ -264,10 +287,20 @@ class Game:
         # TODO Link to all panels in playing scene
 
     def update_ui(self):
+        self.UI_manager.update(self.clock.get_time() / 1000.0)
+
+    @staticmethod
+    def _save_dir() -> str:
         """
-        Used to allow the player to update the UI without direct access to the UI_manager
-        :return:
+        Return a writable directory for save files.
+
+        When running from a frozen PyInstaller bundle the install folder may
+        be read-only (e.g. Program Files), so we store saves in
+        %APPDATA%/TowerDefense/save_data on Windows and
+        ~/.local/share/TowerDefense/save_data on other platforms.
+        When running from source we keep the original src/save_data location.
         """
+<<<<<<< HEAD
         self.UI_manager.update(self.frame_time_delta)
 
     def save_game(self, save_slot_or_filename):
@@ -275,6 +308,28 @@ class Game:
         filename = f"src/save_data/{save_slot_or_filename}.json" if isinstance(save_slot_or_filename,
                                                                                int) else save_slot_or_filename
         full_path = get_asset_path(filename) if not os.path.isabs(filename) else filename
+=======
+        if getattr(sys, 'frozen', False):
+            if os.name == 'nt':
+                base = os.environ.get('APPDATA', os.path.expanduser('~'))
+            else:
+                base = os.path.join(os.path.expanduser('~'), '.local', 'share')
+            save_dir = os.path.join(base, 'TowerDefense', 'save_data')
+        else:
+            save_dir = os.path.join(
+                os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                'save_data'
+            )
+        os.makedirs(save_dir, exist_ok=True)
+        return save_dir
+
+    def save_game(self, save_slot_or_filename):
+        # Determine the filename based on the input parameter
+        if isinstance(save_slot_or_filename, int):
+            filename = os.path.join(self._save_dir(), f"savegame_slot{save_slot_or_filename}.json")
+        else:
+            filename = save_slot_or_filename
+>>>>>>> claude/laughing-ardinghelli-b72776
 
         player_data = {"player": self.player.to_dict()}
 
@@ -288,9 +343,16 @@ class Game:
 
     def load_game(self, save_slot_or_filename):
         # Determine the filename based on the input parameter
+<<<<<<< HEAD
         filename = f"src/save_data/{save_slot_or_filename}.json" if isinstance(save_slot_or_filename,
                                                                                int) else save_slot_or_filename
         full_path = get_asset_path(filename) if not os.path.isabs(filename) else filename
+=======
+        if isinstance(save_slot_or_filename, int):
+            filename = os.path.join(self._save_dir(), f"savegame_slot{save_slot_or_filename}.json")
+        else:
+            filename = save_slot_or_filename
+>>>>>>> claude/laughing-ardinghelli-b72776
         try:
             with open(full_path, 'r') as f:
                 player_data = json.load(f)

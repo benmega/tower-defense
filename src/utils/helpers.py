@@ -1,4 +1,5 @@
 import pygame
+<<<<<<< HEAD
 import os
 import sys
 
@@ -17,10 +18,15 @@ def get_asset_path(relative_path):
         base_path = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
 >>>>>>> claude/unruffled-ramanujan-1882ca
     return os.path.join(base_path, relative_path)
+=======
+from src.utils.resource_path import resource_path
+
+>>>>>>> claude/laughing-ardinghelli-b72776
 
 def load_scaled_image(path, size):
     if not path or not size:
         return None
+<<<<<<< HEAD
 <<<<<<< HEAD
 
     try:
@@ -35,6 +41,12 @@ def load_scaled_image(path, size):
         return pygame.transform.scale(image, size)
     except pygame.error as e:
         print(f"Error loading image {full_path}: {e}")
+=======
+    abs_path = resource_path(path)
+    try:
+        image = pygame.image.load(abs_path)
+        return pygame.transform.scale(image, size)
+    except pygame.error as e:
+        print(f"Error loading image {abs_path}: {e}")
+>>>>>>> claude/laughing-ardinghelli-b72776
         return None
-
-

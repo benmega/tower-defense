@@ -118,7 +118,7 @@ class LevelManager:
                 else:
                     new_enemies.append(spawned_enemies)
             if current_level.is_completed():
-                self.start_next_level() # TODO check if this is this ever hit
+                self.start_level()  # advance to next level
 
         return new_enemies
 

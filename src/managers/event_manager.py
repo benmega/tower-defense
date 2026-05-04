@@ -94,6 +94,7 @@ class EventManager:
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 self._handle_mouse_event(event, game)
 
+<<<<<<< HEAD
     def _handle_ui_event(self, event, game):
         if event.user_type == pygame_gui.UI_BUTTON_PRESSED:
             self._dispatch_button(event.ui_element, game)
@@ -101,6 +102,14 @@ class EventManager:
             self._dispatch_slider(event.ui_element, event.value, game)
         elif event.user_type == pygame_gui.UI_CONFIRMATION_DIALOG_CONFIRMED:
             game.UI_manager.game_data_screen.on_confirmation(game)
+=======
+    def handle_user_event(self, event, game):
+        # Handle global USEREVENT, such as those from pygame_gui
+        # This is where you'd handle dialog confirmations, etc.
+        if hasattr(event, 'user_type') and event.user_type == pygame_gui.UI_CONFIRMATION_DIALOG_CONFIRMED:
+            # Perform actions based on the confirmed dialog
+            pass  # Placeholder for actual logic TODO add logic
+>>>>>>> claude/laughing-ardinghelli-b72776
 
 <<<<<<< HEAD
     def _handle_mouse_event(self, event, game):

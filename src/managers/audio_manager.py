@@ -97,6 +97,7 @@ class AudioManager:
         if sfx_volume is not None:
             self.sfx_volume = sfx_volume
 
+<<<<<<< HEAD
     def play_ui_click(self):
         self.click_sound.set_volume(self.sfx_volume)
         self.click_sound.play()
@@ -104,6 +105,10 @@ class AudioManager:
     def play_ui_hover(self):
         self.hover_sound.set_volume(self.sfx_volume * 0.4)
         self.hover_sound.play()
+=======
+    def set_sfx_volume(self, volume):
+        self.sfx_volume = volume
+>>>>>>> claude/laughing-ardinghelli-b72776
 
     def play_music_for_state(self, game_state):
         music_path = self.state_music_map.get(game_state)

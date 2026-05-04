@@ -1,7 +1,11 @@
 import pygame
+<<<<<<< HEAD
 import os
 import sys
 from src.config.config import TOWER_IMAGE_PATH, ENEMY_IMAGE_PATH
+=======
+from src.config.config import ENEMY_IMAGE_PATH
+>>>>>>> claude/laughing-ardinghelli-b72776
 
 def get_asset_path(relative_path):
     if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
@@ -53,7 +57,7 @@ class AssetManager:
         """ Preloads necessary assets for the game. """
         # Example assets (You'll replace these with your actual asset paths)
         self.load_image('enemy', ENEMY_IMAGE_PATH)
-        self.load_image('tower', TOWER_IMAGE_PATH)
+        self.load_image('tower', 'assets/images/towers/basic_tower.png')
         self.load_sound('explosion', 'assets/sounds/explosion.wav')
         self.load_font('main_font', 'assets/fonts/main_font.ttf', 24)
 

@@ -37,11 +37,6 @@ class Player:
         self.health += amount
         self._update_ui()
 
-    def _update_ui(self):
-        # Call the UI update callback if it's set
-        if self.update_ui_callback:
-            self.update_ui_callback()
-
     def take_damage(self, damage):
         self.health -= damage
         if self.health <= 0:
@@ -92,7 +87,6 @@ class Player:
             if next_level not in self.unlocked_levels:
                 self.unlocked_levels.append(next_level)
                 self.player_data = self.to_dict()
-                self.player_data['unlocked_levels'].append(next_level)
 
 
     def can_upgrade_skill(self, skill_key):

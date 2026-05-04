@@ -13,7 +13,11 @@ class EnemyManager(EntityManager):
         self.reach_end_callback = reach_end_callback
 
     def update(self):
+<<<<<<< HEAD
         """Update active enemies; spawning is owned by Level/LevelManager."""
+=======
+        """ Update the state of all enemies. """
+>>>>>>> claude/laughing-ardinghelli-b72776
         self.update_entities()
         for enemy in list(self.entities):  # Make a copy of the group list to iterate over
             if enemy.state == 'dead':

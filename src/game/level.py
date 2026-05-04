@@ -107,12 +107,15 @@ class Level:
 
         # Update active waves and handle spawning
         new_enemies = []
+        finished_waves = []
         for wave in self.active_waves:
             enemies = wave.update(current_time)
             if enemies:
                 new_enemies.extend(enemies)
             if wave.is_finished():
-                self.active_waves.remove(wave)
+                finished_waves.append(wave)
+        for wave in finished_waves:
+            self.active_waves.remove(wave)
         if self.active_waves:
             self.current_wave_index = max([wave.index for wave in self.active_waves])
         else:

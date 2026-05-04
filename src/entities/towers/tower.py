@@ -24,8 +24,8 @@ class Tower(Entity):
         self.build_cost = TOWER_TYPES[self.tower_type]['cost']
         self.upgrade_cost = upgrade_cost
         self.targeting_mode = "closest"  # or "strongest", "weakest", etc.
-        self.animation_state = ...
-        self.effect_sprites = ...
+        self.animation_state = None
+        self.effect_sprites = []
         self.state = "active"  # "disabled", "enhanced", etc.
         self.special_abilities = {"slow": 0.5, "AOE_radius": 50}
         self.sell_value = int(self.build_cost * 0.75)
