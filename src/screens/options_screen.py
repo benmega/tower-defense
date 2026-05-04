@@ -1,60 +1,114 @@
 import pygame_gui
 import pygame
 
-from src.config.config import UI_BUTTON_SIZE
+from src.config.config import UI_BUTTON_SIZE, SCREEN_WIDTH, SCREEN_HEIGHT
 from src.game.game_state import GameState
 from src.managers import audio_manager
 from src.screens.screen import Screen
+from src.utils.layout import stack_rects, anchor
+import src.utils.constants as C
 
 
 class OptionsScreen(Screen):
     def __init__(self, ui_manager, audio_manager):
         super().__init__(ui_manager, 'assets/images/screens/options_screen.png')
         self.audio_manager = audio_manager
+
+        btn_w, btn_h = int(UI_BUTTON_SIZE[0]), int(UI_BUTTON_SIZE[1])
+        sx, sy = anchor(btn_w, btn_h, h='center', v='bottom', margin=C.SPACE_MD * 2)
+
         self.back_button = pygame_gui.elements.UIButton(
-            relative_rect=pygame.Rect([350, 425], UI_BUTTON_SIZE),
+            relative_rect=pygame.Rect([sx, sy], UI_BUTTON_SIZE),
             text='Back',
             manager=self.ui_manager,
             visible=False
         )
+
         self.fullscreen_toggle = pygame_gui.elements.UIButton(
-            relative_rect=pygame.Rect([350, 275], UI_BUTTON_SIZE),
+            relative_rect=pygame.Rect([sx, sy - 60], UI_BUTTON_SIZE),
             text='Toggle Fullscreen',
             manager=self.ui_manager,
             visible=False
         )
-        # Register UI elements with the base class
+
         self.add_ui_element(self.back_button)
         self.add_ui_element(self.fullscreen_toggle)
-        # Use the audio manager's current settings to initialize sliders
+
+        # Create sliders using layout helpers
+        slider_rects = stack_rects(count=2, item_w=300, item_h=30, gap=40,
+                                    top=int(SCREEN_HEIGHT * 0.25))
+
         self.music_volume_slider = pygame_gui.elements.UIHorizontalSlider(
-            relative_rect=pygame.Rect((350, 150), (300, 100)),
+            relative_rect=slider_rects[0],
             start_value=self.audio_manager.music_volume,
             value_range=(0, 100),
             manager=self.ui_manager,
             visible=False
         )
+
         self.sfx_volume_slider = pygame_gui.elements.UIHorizontalSlider(
-            relative_rect=pygame.Rect((350, 300), (300, 100)),
+            relative_rect=slider_rects[1],
             start_value=self.audio_manager.sfx_volume,
             value_range=(0, 100),
             manager=self.ui_manager,
             visible=False
         )
+
         self.add_ui_element(self.music_volume_slider)
         self.add_ui_element(self.sfx_volume_slider)
+
+        # Add labels for sliders
+        label_y_music = slider_rects[0].y - 30
+        label_y_sfx = slider_rects[1].y - 30
+
+        self.music_label = pygame_gui.elements.UILabel(
+            relative_rect=pygame.Rect([slider_rects[0].x, label_y_music], [200, 25]),
+            text='Music Volume',
+            manager=self.ui_manager,
+            visible=False
+        )
+
+        self.sfx_label = pygame_gui.elements.UILabel(
+            relative_rect=pygame.Rect([slider_rects[1].x, label_y_sfx], [200, 25]),
+            text='Sound Effects Volume',
+            manager=self.ui_manager,
+            visible=False
+        )
+
+        self.add_ui_element(self.music_label)
+        self.add_ui_element(self.sfx_label)
+
+        # Value display labels (to the right of sliders)
+        value_label_x = slider_rects[0].x + slider_rects[0].width + 15
+        self.music_value_label = pygame_gui.elements.UILabel(
+            relative_rect=pygame.Rect([value_label_x, slider_rects[0].y], [60, 30]),
+            text=f"{int(self.audio_manager.music_volume)}%",
+            manager=self.ui_manager,
+            visible=False
+        )
+
+        self.sfx_value_label = pygame_gui.elements.UILabel(
+            relative_rect=pygame.Rect([value_label_x, slider_rects[1].y], [60, 30]),
+            text=f"{int(self.audio_manager.sfx_volume)}%",
+            manager=self.ui_manager,
+            visible=False
+        )
+
+        self.add_ui_element(self.music_value_label)
+        self.add_ui_element(self.sfx_value_label)
 
     def handle_events(self, event, game):
         super().handle_events(event, game)
         if event.type == pygame.USEREVENT:
             if event.user_type == pygame_gui.UI_HORIZONTAL_SLIDER_MOVED:
                 if event.ui_element == self.music_volume_slider:
-                    pygame.mixer.music.set_volume(event.value)
+                    pygame.mixer.music.set_volume(event.value / 100)
+                    self.music_value_label.set_text(f"{int(event.value)}%")
                 elif event.ui_element == self.sfx_volume_slider:
                     game.audio_manager.set_sfx_volume(event.value)
+                    self.sfx_value_label.set_text(f"{int(event.value)}%")
             elif event.user_type == pygame_gui.UI_BUTTON_PRESSED:
-                if event.ui_element == self.back_button: # Handle back button press
+                if event.ui_element == self.back_button:
                     game.state_manager.change_state(GameState.MAIN_MENU, self)
                 elif event.ui_element == self.fullscreen_toggle:
-                    # TODO Handle fullscreen toggle
-                    print("Toggle fullscreen mode")
+                    pygame.display.toggle_fullscreen()
