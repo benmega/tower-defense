@@ -1,21 +1,32 @@
+<<<<<<< HEAD:src/tests.disabled/test_entities/enemies/test_enemy_pathfinding.py
 """
 Test enemy pathfinding, movement, and AI behavior.
 """
 
+=======
+"""Test enemy pathfinding, movement, and AI behavior."""
+>>>>>>> claude/dreamy-ishizaka-bb716d:src/tests/test_entities/enemies/test_enemy_pathfinding.py
 import unittest
 from unittest.mock import Mock
 import math
 
+<<<<<<< HEAD:src/tests.disabled/test_entities/enemies/test_enemy_pathfinding.py
 
 class TestEnemyPathfinding(unittest.TestCase):
     """Test enemy movement and AI pathfinding."""
 
     def setUp(self):
         """Setup test enemies."""
+=======
+class TestEnemyPathfinding(unittest.TestCase):
+    """Test enemy movement and AI."""
+    def setUp(self):
+>>>>>>> claude/dreamy-ishizaka-bb716d:src/tests/test_entities/enemies/test_enemy_pathfinding.py
         self.enemy = Mock()
         self.enemy.x = 0
         self.enemy.y = 0
         self.enemy.speed = 2.0
+<<<<<<< HEAD:src/tests.disabled/test_entities/enemies/test_enemy_pathfinding.py
         self.enemy.original_speed = 2.0
         self.enemy.path = [(0, 0), (100, 0), (100, 100), (200, 100)]
         self.enemy.path_index = 0
@@ -232,5 +243,22 @@ class TestEnemyPathfinding(unittest.TestCase):
         pass
 
 
+=======
+        self.enemy.path = [(0, 0), (100, 0), (100, 100)]
+        self.enemy.path_index = 0
+        self.enemy.health = 50
+    
+    def test_enemy_initialization(self):
+        self.assertEqual(self.enemy.speed, 2.0)
+        self.assertIsNotNone(self.enemy.path)
+    
+    def test_slow_effect_reduces_speed(self):
+        self.enemy.speed = 2.0 * 0.5
+        self.assertEqual(self.enemy.speed, 1.0)
+    
+    def tearDown(self):
+        pass
+
+>>>>>>> claude/dreamy-ishizaka-bb716d:src/tests/test_entities/enemies/test_enemy_pathfinding.py
 if __name__ == '__main__':
     unittest.main()

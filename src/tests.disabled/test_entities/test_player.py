@@ -1,3 +1,4 @@
+<<<<<<< HEAD:src/tests.disabled/test_entities/test_player.py
 """
 Test player resource management and progression.
 """
@@ -11,12 +12,22 @@ class TestPlayer(unittest.TestCase):
 
     def setUp(self):
         """Setup player for tests."""
+=======
+"""Test player resource management and progression."""
+import unittest
+from unittest.mock import Mock
+
+class TestPlayer(unittest.TestCase):
+    """Test player resource management."""
+    def setUp(self):
+>>>>>>> claude/dreamy-ishizaka-bb716d:src/tests/test_entities/test_player.py
         self.player = Mock()
         self.player.gold = 100
         self.player.health = 20
         self.player.max_health = 20
         self.player.score = 0
         self.player.level = 1
+<<<<<<< HEAD:src/tests.disabled/test_entities/test_player.py
         self.player.unlocked_levels = [0]
 
     def test_player_initialization(self):
@@ -261,5 +272,23 @@ class TestPlayer(unittest.TestCase):
         pass
 
 
+=======
+    
+    def test_player_initialization(self):
+        self.assertEqual(self.player.gold, 100)
+        self.assertEqual(self.player.health, 20)
+    
+    def test_player_add_gold(self):
+        self.player.gold += 50
+        self.assertEqual(self.player.gold, 150)
+    
+    def test_player_take_damage(self):
+        self.player.health -= 5
+        self.assertEqual(self.player.health, 15)
+    
+    def tearDown(self):
+        pass
+
+>>>>>>> claude/dreamy-ishizaka-bb716d:src/tests/test_entities/test_player.py
 if __name__ == '__main__':
     unittest.main()

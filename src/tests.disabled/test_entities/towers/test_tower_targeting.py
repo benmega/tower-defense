@@ -1,22 +1,33 @@
+<<<<<<< HEAD:src/tests.disabled/test_entities/towers/test_tower_targeting.py
 """
 Test tower targeting, range detection, and attack mechanics.
 """
 
+=======
+"""Test tower targeting, range detection, and attack mechanics."""
+>>>>>>> claude/dreamy-ishizaka-bb716d:src/tests/test_entities/towers/test_tower_targeting.py
 import unittest
 from unittest.mock import Mock
 import math
 
+<<<<<<< HEAD:src/tests.disabled/test_entities/towers/test_tower_targeting.py
 
 class TestTowerTargeting(unittest.TestCase):
     """Test tower attack and targeting systems."""
 
     def setUp(self):
         """Setup test towers and enemies."""
+=======
+class TestTowerTargeting(unittest.TestCase):
+    """Test tower attack and targeting."""
+    def setUp(self):
+>>>>>>> claude/dreamy-ishizaka-bb716d:src/tests/test_entities/towers/test_tower_targeting.py
         self.tower = Mock()
         self.tower.x = 100
         self.tower.y = 100
         self.tower.attack_range = 150
         self.tower.damage = 20
+<<<<<<< HEAD:src/tests.disabled/test_entities/towers/test_tower_targeting.py
         self.tower.attack_speed = 1.0
         self.tower.cooldown = 0
 
@@ -223,5 +234,20 @@ class TestTowerTargeting(unittest.TestCase):
         pass
 
 
+=======
+        self.tower.cooldown = 0
+    
+    def test_enemy_in_range(self):
+        enemy = Mock(x=150, y=100)
+        distance = abs(self.tower.x - enemy.x)
+        self.assertLessEqual(distance, self.tower.attack_range)
+    
+    def test_cooldown_ready(self):
+        self.assertTrue(self.tower.cooldown <= 0)
+    
+    def tearDown(self):
+        pass
+
+>>>>>>> claude/dreamy-ishizaka-bb716d:src/tests/test_entities/towers/test_tower_targeting.py
 if __name__ == '__main__':
     unittest.main()
