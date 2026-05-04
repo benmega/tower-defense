@@ -1,6 +1,8 @@
 import pygame
+import os
 
 from src.config.config import TOWER_TYPES, UI_FONT_SIZE
+from src.utils.helpers import get_asset_path
 
 
 class TowerSelectionPanel:
@@ -17,7 +19,8 @@ class TowerSelectionPanel:
         # Preload and scale images
         for tower_type, tower_info in TOWER_TYPES.items():
             icon_path = tower_info['image_path']
-            icon_image = pygame.image.load(icon_path).convert_alpha()
+            full_path = get_asset_path(icon_path) if not os.path.isabs(icon_path) else icon_path
+            icon_image = pygame.image.load(full_path).convert_alpha()
             self.icons[tower_type] = pygame.transform.scale(icon_image, [self.icon_size, self.icon_size])
 
     def draw(self):

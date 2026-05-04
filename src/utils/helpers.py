@@ -1,19 +1,25 @@
 import pygame
 import os
+import sys
+
+def get_asset_path(relative_path):
+    if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
+        base_path = sys._MEIPASS
+    else:
+        base_path = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+    return os.path.join(base_path, relative_path)
 
 def load_scaled_image(path, size):
-    # Calculate the absolute path relative to the current script
     if not path or not size:
         return None
-    current_dir = os.path.dirname(__file__)  # Get the directory where the current script is located
-    project_root = os.path.join(current_dir, '../..')  # Adjust this as needed
-    absolute_path = os.path.join(project_root, path)  # Construct the absolute path
+
+    full_path = get_asset_path(path) if not os.path.isabs(path) else path
 
     try:
-        image = pygame.image.load(path)
+        image = pygame.image.load(full_path)
         return pygame.transform.scale(image, size)
     except pygame.error as e:
-        print(f"Error loading image {path}: {e}")
+        print(f"Error loading image {full_path}: {e}")
         return None
 
 

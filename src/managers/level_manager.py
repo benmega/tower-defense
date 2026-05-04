@@ -1,10 +1,12 @@
 import json
+import os
 
 import pygame
 
 from src.board.wave_panel import WavePanel
 from src.config.config import LEVELS_JSON_PATH
 from src.game.level import Level
+from src.utils.helpers import get_asset_path
 
 
 def parse_levels(levels_data):
@@ -31,7 +33,8 @@ class LevelManager:
     def load_levels(self):
         # Load levels from the JSON file
         try:
-            with open(LEVELS_JSON_PATH, 'r') as file:
+            full_path = get_asset_path(LEVELS_JSON_PATH) if not os.path.isabs(LEVELS_JSON_PATH) else LEVELS_JSON_PATH
+            with open(full_path, 'r') as file:
                 levels_data = json.load(file)
                 # Parse and create Level objects
                 self.levels = parse_levels(levels_data)

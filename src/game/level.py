@@ -1,9 +1,11 @@
 import json
+import os
 
 import pygame
 
 from src.config.config import LEVELS_JSON_PATH
 from src.entities.enemies.enemy_wave import EnemyWave
+from src.utils.helpers import get_asset_path
 
 
 class Level:
@@ -65,7 +67,8 @@ class Level:
         """
         Load levels from a JSON file.
         """
-        with open(LEVELS_JSON_PATH, 'r') as file:
+        full_path = get_asset_path(LEVELS_JSON_PATH) if not os.path.isabs(LEVELS_JSON_PATH) else LEVELS_JSON_PATH
+        with open(full_path, 'r') as file:
             level_data = json.load(file)
             return [Level.from_json(level) for level in level_data['levels']]
 
