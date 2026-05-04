@@ -1,0 +1,26 @@
+{
+  "skill_name": "launch",
+  "evals": [
+    {
+      "id": 1,
+      "name": "successful-clean-launch",
+      "prompt": "The tower defense game code is ready. Run /launch to validate everything works end-to-end before we test it manually.",
+      "expected_output": "Full test-launch cycle completes with final status ✓ READY TO PLAY. All 5 phases pass without requiring fixes.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "name": "launch-with-auto-fix",
+      "prompt": "I just made changes to the tower defense game. Can you run /launch to make sure everything still works? Fix any issues you find automatically if possible.",
+      "expected_output": "Test-launch cycle runs, Phase 3 fails initially, Phase 4 auto-fixes the issue, final status shows ✓ READY TO PLAY with fixes_applied list populated.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "name": "launch-catch-syntax-error",
+      "prompt": "I'm about to submit the tower defense game. Run /launch to catch any issues before I push.",
+      "expected_output": "Phase 1 syntax check detects Python syntax error, stops gracefully, and reports exact file and line number. Final status is ✗ NEEDS ATTENTION with clear guidance on the syntax error.",
+      "files": []
+    }
+  ]
+}
