@@ -50,6 +50,7 @@
           "font": {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
             "name": "arial",
             "size": "14",
             "bold": "1",
@@ -64,6 +65,11 @@
             "bold": "1",
 >>>>>>> claude/great-franklin-30172d
             "italic": "0"
+=======
+            "name": "fira_code",
+            "size": "20",
+            "bold": "1"
+>>>>>>> claude/busy-visvesvaraya-31e7fc
           },
          "misc":
              {

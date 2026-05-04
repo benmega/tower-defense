@@ -26,7 +26,7 @@ class WavePanel(Screen):
                     relative_rect=pygame.Rect(position_x, self.panel_y, button_width, UI_BUTTON_SIZE[1]),
                     text=f'Wave {i + 1}',
                     manager=self.ui_manager,
-                    object_id=pygame_gui.core.ObjectID(class_id="@button")
+                    object_id="@button"
                 )
                 self.buttons.append(button)
 

@@ -85,7 +85,7 @@ class CampaignMap(Screen):
             relative_rect=pygame.Rect([sx, sy], UI_BUTTON_SIZE),
             text='Skills',
             manager=self.ui_manager,
-            object_id=pygame_gui.core.ObjectID(class_id="@button"),
+            object_id="@button",
             visible=False
         )
         self.ui_elements.append(self.skills_button)

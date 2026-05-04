@@ -1,5 +1,6 @@
 # -*- mode: python ; coding: utf-8 -*-
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 block_cipher = None
 
@@ -26,17 +27,26 @@ a = Analysis(
 =======
 #
 # PyInstaller spec file for Mr. Mega's Awesome Tower Defense Game
+=======
+#
+# PyInstaller spec file for Tower Defense Game
+>>>>>>> claude/busy-visvesvaraya-31e7fc
 #
 # Build with:  pyinstaller build.spec
 # Output:      dist/TowerDefense/TowerDefense.exe
 #
+<<<<<<< HEAD
 # NOTE: Run this from the project root directory (the folder containing
 #       assets/, src/, and this spec file).
+=======
+# NOTE: Run this from the project root directory
+>>>>>>> claude/busy-visvesvaraya-31e7fc
 
 import os
 
 block_cipher = None
 
+<<<<<<< HEAD
 # ---------------------------------------------------------------------------
 # Collect data files
 # ---------------------------------------------------------------------------
@@ -57,6 +67,14 @@ datas = [
 # ---------------------------------------------------------------------------
 # Hidden imports that PyInstaller may miss
 # ---------------------------------------------------------------------------
+=======
+datas = [
+    ('assets', 'assets'),
+    ('src/config/theme.json', 'src/config'),
+    ('src/config/levels', 'src/config/levels'),
+]
+
+>>>>>>> claude/busy-visvesvaraya-31e7fc
 hiddenimports = [
     'pygame',
     'pygame_gui',
@@ -65,12 +83,18 @@ hiddenimports = [
     'pygame.image',
 ]
 
+<<<<<<< HEAD
 # ---------------------------------------------------------------------------
 # Analysis
 # ---------------------------------------------------------------------------
 a = Analysis(
     ['src/main.py'],
     pathex=['.'],           # project root on the search path
+=======
+a = Analysis(
+    ['src/main.py'],
+    pathex=['.'],
+>>>>>>> claude/busy-visvesvaraya-31e7fc
     binaries=[],
     datas=datas,
     hiddenimports=hiddenimports,
@@ -83,13 +107,17 @@ a = Analysis(
         'pydoc',
         'doctest',
     ],
+<<<<<<< HEAD
 >>>>>>> claude/laughing-ardinghelli-b72776
+=======
+>>>>>>> claude/busy-visvesvaraya-31e7fc
     win_no_prefer_redirects=False,
     win_private_assemblies=False,
     cipher=block_cipher,
     noarchive=False,
 )
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
 
@@ -108,19 +136,28 @@ pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
 # For now we leave icon unset; PyInstaller will use its default.
 
 >>>>>>> claude/laughing-ardinghelli-b72776
+=======
+pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
+
+>>>>>>> claude/busy-visvesvaraya-31e7fc
 exe = EXE(
     pyz,
     a.scripts,
     [],
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
     exclude_binaries=True,   # one-folder build (not onefile)
 >>>>>>> claude/laughing-ardinghelli-b72776
+=======
+    exclude_binaries=True,
+>>>>>>> claude/busy-visvesvaraya-31e7fc
     name='TowerDefense',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
     upx=True,
+<<<<<<< HEAD
 <<<<<<< HEAD
     upx_exclude=[],
     runtime_tmpdir=None,
@@ -134,10 +171,15 @@ exe = EXE(
 =======
     console=False,           # hide the console window (windowed mode)
     disable_windowed_traceback=False,
+=======
+    console=False,
+    disable_windowed_traceback=False,
+>>>>>>> claude/busy-visvesvaraya-31e7fc
     argv_emulation=False,
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
+<<<<<<< HEAD
     icon='assets/images/icons.ico',
 )
 
@@ -145,6 +187,11 @@ exe = EXE(
 # COLLECT (one-folder distribution)
 # ---------------------------------------------------------------------------
 >>>>>>> claude/laughing-ardinghelli-b72776
+=======
+    icon='assets/images/icons.ico' if os.path.exists('assets/images/icons.ico') else None,
+)
+
+>>>>>>> claude/busy-visvesvaraya-31e7fc
 coll = COLLECT(
     exe,
     a.binaries,
@@ -154,8 +201,12 @@ coll = COLLECT(
     upx=True,
     upx_exclude=[],
 <<<<<<< HEAD
+<<<<<<< HEAD
     name='TowerDefense',
 =======
     name='TowerDefense',     # dist/TowerDefense/
 >>>>>>> claude/laughing-ardinghelli-b72776
+=======
+    name='TowerDefense',
+>>>>>>> claude/busy-visvesvaraya-31e7fc
 )

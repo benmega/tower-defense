@@ -24,14 +24,14 @@ class MainMenu:
             relative_rect=rects[0],
             text='Start Game',
             manager=self.ui_manager,
-            object_id=pygame_gui.core.ObjectID(class_id="@button"),
+            object_id="@button",
             visible=True
         )
         self.continue_button = pygame_gui.elements.UIButton(
             relative_rect=rects[1],
             text='Continue Game',
             manager=self.ui_manager,
-            object_id=pygame_gui.core.ObjectID(class_id="@button"),
+            object_id="@button",
             visible=True
         )
         self.settings_button = pygame_gui.elements.UIButton(

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Python
 __pycache__/
 *.py[cod]
@@ -54,3 +55,26 @@ htmlcov/
 *.log
 .env
 .env.local
+=======
+# PyInstaller build artifacts
+build/
+dist/
+*.spec.build
+*.egg-info/
+__pycache__/
+*.pyc
+*.pyo
+.Python
+env/
+venv/
+
+# PyCharm
+.idea/
+*.iml
+
+# VS Code
+.vscode/
+
+# Local settings
+.claude/settings.local.json
+>>>>>>> claude/busy-visvesvaraya-31e7fc
