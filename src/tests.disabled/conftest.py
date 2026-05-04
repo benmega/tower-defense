@@ -2,12 +2,33 @@
 Centralized pytest configuration and shared fixtures for tower defense tests.
 """
 
+<<<<<<< HEAD:src/tests/conftest.py
 import sys
 import types
 from unittest.mock import Mock, MagicMock
 
 import pytest
 
+=======
+class TestPathfinding(unittest.TestCase):
+    def test_find_path(self):
+        # Test the find_path function
+        # TODO: Set up various grid layouts with and without obstacles
+        # Test if the path is correctly found in each case
+        pass
+
+    def test_no_path_scenario(self):
+        # Test scenarios where no path is available
+        # TODO: Create grid layouts where no path is possible
+        # Ensure the pathfinding algorithm correctly identifies these scenarios
+        pass
+
+    def test_performance_on_large_grid(self):
+        # Test the pathfinding performance on a large grid
+        # TODO: Create a large grid and measure the time taken to find a path
+        # Consider setting a reasonable time limit for pathfinding
+        pass
+>>>>>>> claude/great-franklin-30172d:src/tests.disabled/conftest.py
 
 # === PYGAME MOCKING ===
 # Set up minimal pygame stubs before any imports that depend on pygame

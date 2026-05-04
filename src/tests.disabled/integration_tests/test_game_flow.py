@@ -30,6 +30,7 @@ class TestGameFlow(unittest.TestCase):
         """Setup game for integration tests."""
         self.game = Game()
 
+<<<<<<< HEAD:src/tests/integration_tests/test_game_flow.py
     def test_game_initialization_flow(self):
         """Test the complete game initialization flow."""
         self.assertFalse(self.game.is_running)
@@ -189,6 +190,22 @@ class TestGameFlow(unittest.TestCase):
         # Toggle back
         self.game.is_build_mode = True
         self.assertTrue(self.game.is_build_mode)
+=======
+    def test_game_start(self):
+        # Test starting the game
+        # TODO: Implement the test logic
+        pass
+
+    def test_game_pause(self):
+        # Test pausing and resuming the game
+        # TODO: Implement the test logic
+        pass
+
+    def test_game_end(self):
+        # Test ending the game
+        # TODO: Implement the test logic
+        pass
+>>>>>>> claude/great-franklin-30172d:src/tests.disabled/integration_tests/test_game_flow.py
 
     def tearDown(self):
         """Teardown if necessary."""

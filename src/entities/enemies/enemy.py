@@ -2,6 +2,7 @@ import pygame
 
 
 from src.utils.helpers import load_scaled_image
+import src.config.config as configuration
 from src.config.config import ENEMY_IMAGE_PATH, TILE_SIZE, DEBUG, ENEMY_GOLD_VALUE, ENEMY_SCORE_VALUE, \
     ENEMY_DAMAGE_TO_PLAYER
 
@@ -47,8 +48,10 @@ class Enemy(pygame.sprite.Sprite):
         if distance != 0:
             dir_x, dir_y = dir_x / distance, dir_y / distance
 
-        self.rect.x += dir_x * self.speed
-        self.rect.y += dir_y * self.speed
+        # Apply game speed multiplier for fast-forward
+        effective_speed = self.speed * configuration.GAME_SPEED_MULTIPLIER
+        self.rect.x += dir_x * effective_speed
+        self.rect.y += dir_y * effective_speed
 
         if abs(self.rect.x - next_x) <= self.speed and abs(self.rect.y - next_y) <= self.speed:
             self.rect.x, self.rect.y = next_x, next_y

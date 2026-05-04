@@ -57,6 +57,10 @@ class TowerSelectionPanel:
             cost_text_rect = cost_text.get_rect(center=(x + self.icon_size // 2, y + self.icon_size + 20))
             self.screen.blit(cost_text, cost_text_rect)
 
+        # Draw build mode status text on the right
+        status_text = self.font.render("(Click Build Mode to place towers)", True, [100, 100, 100])
+        self.screen.blit(status_text, (self.screen.get_width() - 400, self.panel_y + 10))
+
     def update_selected_tower(self, new_selected_tower_type):
         self.tower_manager.selected_tower_type = new_selected_tower_type
 
@@ -77,3 +81,12 @@ class TowerSelectionPanel:
                 if icon_x <= x <= icon_x + self.icon_size and icon_y <= y <= icon_y + self.icon_size:
                     self.update_selected_tower(tower_type)
                     break
+
+    def deselect(self):
+        """Deselect the currently selected tower."""
+        self.tower_manager.selected_tower_type = None
+
+    @property
+    def selected_tower_type(self):
+        """Expose selected_tower_type from tower_manager."""
+        return self.tower_manager.selected_tower_type

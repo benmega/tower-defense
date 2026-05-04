@@ -7,10 +7,14 @@
     },
     "font": {
 <<<<<<< HEAD
+<<<<<<< HEAD
       "name": "arial",
 =======
       "name": "fira_code",
 >>>>>>> claude/unruffled-ramanujan-1882ca
+=======
+      "name": "Arial",
+>>>>>>> claude/great-franklin-30172d
       "size": "12",
       "bold": "0",
       "italic": "0"
@@ -45,6 +49,7 @@
               },
           "font": {
 <<<<<<< HEAD
+<<<<<<< HEAD
             "name": "arial",
             "size": "14",
             "bold": "1",
@@ -53,6 +58,11 @@
             "size": "12",
             "bold": "0",
 >>>>>>> claude/unruffled-ramanujan-1882ca
+=======
+            "name": "Arial",
+            "size": "12",
+            "bold": "1",
+>>>>>>> claude/great-franklin-30172d
             "italic": "0"
           },
          "misc":

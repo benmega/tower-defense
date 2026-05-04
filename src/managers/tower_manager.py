@@ -17,6 +17,8 @@ class TowerManager(EntityManager):
         self.player = player  # Reference to the player object to access skills
         self.towers = []
         self.selected_tower_type = 'Basic'
+        self.selected_tower = None
+        self.show_ranges = False
         self.tower_types = {
             'Basic': BasicTower,
             'Advanced': AdvancedTower,
@@ -125,3 +127,34 @@ class TowerManager(EntityManager):
         else:
             print("Not enough gold to build tower.")
         return False
+
+    def handle_click(self, pos):
+        """Handle clicks on the game board. Selects a tower if clicked. Returns the selected tower or None."""
+        self.selected_tower = None
+        for tower in self.towers:
+            # Check if click is within tower's rect
+            tower_rect = pygame.Rect(tower.x, tower.y, tower.width, tower.height)
+            if tower_rect.collidepoint(pos):
+                self.selected_tower = tower
+                return tower
+        return None
+
+    def toggle_ranges(self):
+        """Toggle the visibility of tower range circles."""
+        self.show_ranges = not self.show_ranges
+
+    def sell_tower(self, tower, player):
+        """Sell a tower and refund its value to the player."""
+        if tower in self.towers:
+            player.add_gold(tower.sell_value)
+            self.towers.remove(tower)
+            if self.selected_tower == tower:
+                self.selected_tower = None
+
+    def handle_hover(self, pos):
+        """Check if mouse is hovering over a tower. Returns the tower or None."""
+        for tower in self.towers:
+            tower_rect = pygame.Rect(tower.x, tower.y, tower.width, tower.height)
+            if tower_rect.collidepoint(pos):
+                return tower
+        return None

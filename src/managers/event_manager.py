@@ -102,6 +102,7 @@ class EventManager:
         elif event.user_type == pygame_gui.UI_CONFIRMATION_DIALOG_CONFIRMED:
             game.UI_manager.game_data_screen.on_confirmation(game)
 
+<<<<<<< HEAD
     def _handle_mouse_event(self, event, game):
         if game.current_state == GameState.CAMPAIGN_MAP:
             game.UI_manager.campaign_map.on_click(event.pos, game)
@@ -110,6 +111,48 @@ class EventManager:
                 game.tower_selection_panel.on_click(event.pos, game)
             else:
                 game.tower_manager.add_tower_if_possible(event.pos[0], event.pos[1], game.player, game)
+=======
+    def handle_state_specific_events(self, event, game):
+        if game.current_state == GameState.PLAYING:
+            self.handle_playing_events(event, game)
+        elif game.current_state == GameState.PAUSED:
+            game.UI_manager.pause_screen.handle_events(event, game)
+        elif game.current_state in [GameState.MAIN_MENU, GameState.OPTIONS,
+                                    GameState.LOAD_GAME, GameState.CAMPAIGN_MAP,
+                                    GameState.SKILLS, GameState.LEVEL_COMPLETE, GameState.LEVEL_DEFEAT,
+                                    GameState.GAME_OVER]:
+            self.handle_menu_and_ui_states(event, game)
+
+    def handle_playing_events(self, event, game):
+        # Handle events specific to the PLAYING state
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE:
+                game.state_manager.change_state(GameState.PAUSED)
+        if event.type == pygame.USEREVENT:
+            game.level_manager.wave_panel.handle_events(event, game)
+            # Handle HUD button clicks
+            game.UI_manager.player_info_panel.handle_events(event, game)
+            # Handle tower info panel events
+            if hasattr(game, 'tower_info_panel'):
+                game.tower_info_panel.handle_events(event, game)
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if game.tower_selection_panel.is_within_panel(event.pos):
+                game.tower_selection_panel.handle_mouse_click(event.pos)
+            else:
+                # First, check if clicking on a placed tower
+                clicked_tower = game.tower_manager.handle_click(event.pos)
+                if clicked_tower:
+                    # Tower was clicked - select it (don't try to place)
+                    pass
+                elif game.is_build_mode and game.tower_manager.selected_tower_type is not None:
+                    # No tower clicked, and we're in build mode - try to place
+                    success = game.tower_manager.add_tower_if_possible(
+                        event.pos[0], event.pos[1], game.player, game
+                    )
+                    # Exit build mode after placement attempt
+                    if success:
+                        game.is_build_mode = False
+>>>>>>> claude/great-franklin-30172d
 
     def _dispatch_button(self, ui_element, game):
         state = game.current_state

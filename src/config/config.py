@@ -261,3 +261,6 @@ BACKGROUND_MUSIC_VOLUME = 0.5
 # Other settings
 DEBUG_MODE = DEBUG
 SAVE_GAME_PATH = '../save_data/game_save.json'
+
+# Game speed multiplier (1.0 = normal, 2.0 = fast-forward)
+GAME_SPEED_MULTIPLIER: float = 1.0

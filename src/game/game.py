@@ -56,8 +56,15 @@ class Game:
                                           self.player_take_damage_callback)
         self.current_state = None
         self.previous_state = None
+<<<<<<< HEAD
         self.is_build_mode = True
         self.frame_time_delta = 0.0
+=======
+        self.is_build_mode = False  # Start in selection mode, not build mode
+        # Initialize tower info panel after UI_manager
+        from src.game.tower_info_panel import TowerInfoPanel
+        self.tower_info_panel = TowerInfoPanel(self.UI_manager)
+>>>>>>> claude/great-franklin-30172d
 
     def initialize_game(self, level_num=-1):
         self.level_manager.load_levels()
@@ -94,6 +101,7 @@ class Game:
 
         # Draw game-specific elements only when in the PLAYING state
         if self.current_state == GameState.PLAYING:
+<<<<<<< HEAD
             current_level = self.level_manager.get_current_level()
             if current_level:
                 self.board.draw_board(self.screen, current_level.path)
@@ -101,6 +109,24 @@ class Game:
                 self.enemy_manager.draw(self.screen)
                 self.projectile_manager.draw_projectiles(self.screen)
                 self.tower_selection_panel.draw()
+=======
+            self.board.draw_board(self.screen, self.level_manager.get_current_level().path)
+            self.tower_manager.draw_towers(self.screen)
+            # Draw tower range circles if enabled
+            if self.tower_manager.show_ranges:
+                self._draw_tower_ranges()
+            self.enemy_manager.draw(self.screen)
+            self.projectile_manager.draw_projectiles(self.screen)
+            self.tower_selection_panel.draw()
+            # Draw placement preview
+            self._draw_placement_preview()
+            # Update and draw tower info panel
+            if self.tower_manager.selected_tower:
+                self.tower_info_panel.show(self.tower_manager.selected_tower)
+            else:
+                self.tower_info_panel.hide()
+            self.tower_info_panel.draw(self.screen)
+>>>>>>> claude/great-franklin-30172d
 
         # Always draw the UI elements on top of the game elements
         self.UI_manager.draw_ui(self.screen)
@@ -119,12 +145,20 @@ class Game:
             self.UI_manager.campaign_map.update(time_delta)
         elif self.current_state == GameState.LEVEL_COMPLETE or self.current_state == GameState.LEVEL_DEFEAT:
             self.UI_manager.level_end_screen.update(time_delta)
+        elif self.current_state == GameState.PAUSED:
+            # Game logic frozen while paused
+            pass
         elif self.current_state == GameState.PLAYING:
+<<<<<<< HEAD
             # Ensure a level is loaded before proceeding
             if not self.level_manager.current_level:
                 print("ERROR: No level is loaded. Returning to main menu.")
                 self.state_manager.change_state(GameState.MAIN_MENU)
                 return
+=======
+            # Apply fast-forward multiplier to time delta
+            effective_delta = time_delta * configuration.GAME_SPEED_MULTIPLIER
+>>>>>>> claude/great-franklin-30172d
 
             # Main game update logic for each frame
             new_enemies = self.level_manager.update_levels()
@@ -142,7 +176,7 @@ class Game:
             self.collision_manager.handle_group_collisions(
                 self.enemy_manager.entities, self.projectile_manager.projectiles
             )
-            self.level_manager.wave_panel.update(time_delta, self.level_manager.current_level.enemy_wave_list)
+            self.level_manager.wave_panel.update(effective_delta, self.level_manager.current_level.enemy_wave_list)
             self.UI_manager.player_info_panel.update(self.enemy_manager)
             self.check_game_over()
 
@@ -213,3 +247,56 @@ class Game:
     def player_on_death_callback(self):
         self.state_manager.change_state(GameState.LEVEL_DEFEAT)
         self.set_gameboard_ui_visibility(False)
+
+    def _draw_placement_preview(self):
+        """Draw a preview of the tower being placed, showing range and validity."""
+        if self.tower_manager.selected_tower_type is None:
+            return
+
+        mouse_x, mouse_y = pygame.mouse.get_pos()
+        # Snap to nearest grid cell
+        grid_x = (mouse_x // configuration.TILE_SIZE[0]) * configuration.TILE_SIZE[0]
+        grid_y = (mouse_y // configuration.TILE_SIZE[1]) * configuration.TILE_SIZE[1]
+
+        # Check if position is valid
+        if self.board.can_build_at((grid_x, grid_y)):
+            tint_color = (0, 200, 0, 100)  # Green for valid
+        else:
+            tint_color = (200, 0, 0, 100)  # Red for invalid
+
+        # Get preview surface and blit with transparency
+        from src.entities.towers.tower import Tower
+        preview_surface = Tower.get_preview_surface(self.tower_manager.selected_tower_type)
+        self.screen.blit(preview_surface, (grid_x, grid_y))
+
+        # Draw tint overlay
+        tint_surface = pygame.Surface(configuration.TILE_SIZE, pygame.SRCALPHA)
+        tint_surface.fill(tint_color)
+        self.screen.blit(tint_surface, (grid_x, grid_y))
+
+        # Draw range circle
+        import src.utils.constants as constants
+        tower_center_x = grid_x + configuration.TILE_SIZE[0] // 2
+        tower_center_y = grid_y + configuration.TILE_SIZE[1] // 2
+        # Get default attack range from tower type
+        tower_class = self.tower_manager.tower_types.get(self.tower_manager.selected_tower_type)
+        if tower_class:
+            default_range = 100  # Default range
+            pygame.draw.circle(
+                self.screen, constants.RGB_GOLD_BRIGHT,
+                (int(tower_center_x), int(tower_center_y)),
+                int(default_range), 1
+            )
+
+    def _draw_tower_ranges(self):
+        """Draw range circles for all towers."""
+        import src.utils.constants as constants
+        for tower in self.tower_manager.towers:
+            center_x = tower.x + configuration.TILE_SIZE[0] // 2
+            center_y = tower.y + configuration.TILE_SIZE[1] // 2
+            # Semi-transparent circle
+            pygame.draw.circle(
+                self.screen, constants.RGB_GOLD_BRIGHT,
+                (int(center_x), int(center_y)),
+                int(tower.attack_range), 1
+            )
