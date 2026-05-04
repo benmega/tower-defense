@@ -2,11 +2,7 @@ import pygame
 
 from src.game.game_state import GameState
 from src.screens.level_completion import LevelCompletionScreen
-
-
-def capture_screen():
-    # Capture the current display surface
-    return pygame.display.get_surface().copy()
+from src.managers.ui_manager import capture_screen
 
 
 class GameStateTransitionHandler:

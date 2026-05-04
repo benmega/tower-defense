@@ -12,6 +12,11 @@ class EventManager:
         """ Process and handle all events in the queue. """
         for event in pygame.event.get():
             game.UI_manager.process_events(event)  # Process UI events globally
+            if event.type == pygame.USEREVENT and hasattr(event, 'user_type'):
+                if event.user_type == pygame_gui.UI_BUTTON_PRESSED:
+                    game.audio_manager.play_ui_click()
+                elif event.user_type == pygame_gui.UI_BUTTON_ON_HOVERED:
+                    game.audio_manager.play_ui_hover()
             if event.type == pygame.QUIT:
                 game.is_running = False
             if event.type == pygame.USEREVENT:

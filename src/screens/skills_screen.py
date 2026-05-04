@@ -165,5 +165,4 @@ class SkillsScreen(Screen):
         super().close_screen()  # Call superclass method to handle common close screen logic
 
     def draw(self, screen):
-        print('skill screen drawn')
         super().draw(screen)  # Call the superclass draw method
