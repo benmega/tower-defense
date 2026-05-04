@@ -74,8 +74,17 @@ class EventManager:
 
     def process_events(self, game):
         for event in pygame.event.get():
+<<<<<<< HEAD
             game.UI_manager.process_events(event)
 
+=======
+            game.UI_manager.process_events(event)  # Process UI events globally
+            if event.type == pygame.USEREVENT and hasattr(event, 'user_type'):
+                if event.user_type == pygame_gui.UI_BUTTON_PRESSED:
+                    game.audio_manager.play_ui_click()
+                elif event.user_type == pygame_gui.UI_BUTTON_ON_HOVERED:
+                    game.audio_manager.play_ui_hover()
+>>>>>>> claude/dazzling-herschel-e80896
             if event.type == pygame.QUIT:
                 game.is_running = False
                 return

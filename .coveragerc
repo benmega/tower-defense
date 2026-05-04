@@ -1,0 +1,33 @@
+[run]
+source = src
+omit =
+    */tests/*
+    */__pycache__/*
+    */site-packages/*
+    src/main.py
+branch = True
+
+[report]
+precision = 2
+show_missing = True
+skip_covered = False
+exclude_lines =
+    pragma: no cover
+    def __repr__
+    raise AssertionError
+    raise NotImplementedError
+    if __name__ == .__main__.:
+    if TYPE_CHECKING:
+    if typing.TYPE_CHECKING:
+    @abstractmethod
+    @abc.abstractmethod
+fail_under = 80
+
+[html]
+directory = htmlcov
+title = Tower Defense Coverage Report
+
+[paths]
+source =
+    src
+    */site-packages/src

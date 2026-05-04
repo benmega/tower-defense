@@ -1,0 +1,18 @@
+# Core game dependencies
+pygame>=2.5.0
+pygame-gui>=0.6.0
+
+# Testing framework
+pytest>=7.0
+pytest-cov>=4.0
+pytest-mock>=3.10
+
+# Code quality
+black>=23.0
+flake8>=6.0
+mypy>=1.0
+pylint>=2.16
+isort>=5.12
+
+# Pre-commit hooks
+pre-commit>=3.0

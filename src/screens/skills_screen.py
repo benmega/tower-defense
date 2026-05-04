@@ -159,8 +159,16 @@ class SkillsScreen(Screen):
             self.skill_points_label.set_text(f"Skill Points: {self.player.points}")
             self.skill_points_label.visible = True
 
+<<<<<<< HEAD
     # def close_screen(self):
     #     super().close_screen()  # Call superclass method to handle common close screen logic
     #
     # def draw(self, screen):
     #     super().draw(screen)  # Call the superclass draw method
+=======
+    def close_screen(self):
+        super().close_screen()  # Call superclass method to handle common close screen logic
+
+    def draw(self, screen):
+        super().draw(screen)  # Call the superclass draw method
+>>>>>>> claude/dazzling-herschel-e80896
