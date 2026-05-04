@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 """
 Design tokens — the single source of truth for all UI values.
 
@@ -108,3 +109,11 @@ SFX_SUCCESS = 'assets/sounds/mixkit-fantasy-game-success-notification-270.wav'
 SFX_UNLOCK = 'assets/sounds/mixkit-unlock-game-notification-253.wav'
 SFX_TOWER_BUILD = 'assets/sounds/tower_build_effect_2.mp3'
 >>>>>>> claude/great-franklin-30172d
+=======
+ANIM_NORMAL = 0.3   # fade/transition duration in seconds
+
+SPACE_SM = 8        # small gap between UI elements
+SPACE_MD = 16       # medium margin / padding
+
+TEXT_LIGHT = (230, 230, 230)   # label colour on dark backgrounds
+>>>>>>> claude/festive-edison-84275f

@@ -6,7 +6,12 @@ import pygame_gui
 
 from src.config.config import UI_BUTTON_SIZE, SCREEN_WIDTH
 from src.screens.screen import Screen
+<<<<<<< HEAD
 from src.utils.helpers import get_asset_path
+=======
+from src.utils.layout import anchor
+import src.utils.constants as C
+>>>>>>> claude/festive-edison-84275f
 from datetime import datetime
 
 
@@ -23,38 +28,41 @@ class GameDataScreen(Screen):
             "src/save_data/savegame_slot5.json",
             "src/save_data/savegame_slot6.json"
         ]
+<<<<<<< HEAD
         self.save_slot_files = [get_asset_path(path) for path in self.save_slot_relative_paths]
         self.mode = 'load'  # Default mode
+=======
+        self.mode = 'load'
+>>>>>>> claude/festive-edison-84275f
         self.load_save_button_size = UI_BUTTON_SIZE[0] * 6, UI_BUTTON_SIZE[1]
         self.create_buttons(ui_manager)
 
+        btn_w, btn_h = 100, 50
+        tx, ty = anchor(btn_w, btn_h, h='right', v='top', margin=C.SPACE_MD)
         self.toggle_button = pygame_gui.elements.UIButton(
-            relative_rect=pygame.Rect((50, 50), (100, 50)),  # Adjust as necessary
-            text='Toggle Mode',
+            relative_rect=pygame.Rect((tx, ty), (btn_w, btn_h)),
+            text='Switch to Save',
             manager=ui_manager,
             object_id='toggle_button'
         )
-        self.add_ui_element(self.toggle_button)  # Assuming you have a method to add UI elements
+        self.add_ui_element(self.toggle_button)
 
-        self.update_button_visibility()  # Make sure this method updates button visibility based on mode
+        self.update_button_visibility()
         self.close_screen()
-
 
     def update_button_visibility(self):
         for button in self.load_buttons + self.save_buttons:
-            button.visible = False  # Initially hide all, then show based on mode below
-        # Update visibility based on current mode
+            button.visible = False
         if self.mode == 'load':
             for button in self.load_buttons:
                 button.visible = True
         elif self.mode == 'save':
             for button in self.save_buttons:
                 button.visible = True
-        else: # mode == 'closed'
-            pass
+
     def open_screen(self):
         super().open_screen()
-        self.update_button_visibility()  # Ensure correct buttons are visible when screen is opened
+        self.update_button_visibility()
 
     def create_buttons(self, ui_manager):
         screen_width = SCREEN_WIDTH  # Assuming SCREEN_WIDTH is defined elsewhere
@@ -162,7 +170,7 @@ class GameDataScreen(Screen):
 
     def toggle_mode(self):
         self.mode = 'save' if self.mode == 'load' else 'load'
-        for button in self.load_buttons + self.save_buttons:  # Assuming you combine both lists for simplicity
+        for button in self.load_buttons + self.save_buttons:
             button.visible = (self.mode == 'load' and button in self.load_buttons) or \
                              (self.mode == 'save' and button in self.save_buttons)
-        self.toggle_button.set_text('To Load' if self.mode == 'save' else 'To Save')  # Update the toggle b
+        self.toggle_button.set_text('Switch to Load' if self.mode == 'save' else 'Switch to Save')
