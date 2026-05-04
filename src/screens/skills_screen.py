@@ -143,6 +143,8 @@ class SkillsScreen(Screen):
             new_level = game.player.skills[skill_key]  # Assuming player.skills stores levels of each skill
             self.skill_buttons[skill_index].set_text(f"{skill_key}: Level {new_level}")
             self.skill_points_label.set_text(f"Skill Points: {self.player.points}")
+            # Play skill unlock sound
+            game.audio_manager.play_sfx('skill_unlocked')
 
     def open_screen(self):
         super().open_screen()  # Make sure to call the superclass method to handle common open screen logic

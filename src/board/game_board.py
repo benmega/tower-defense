@@ -1,6 +1,6 @@
 # game_board.py
 
-# import pygame
+import pygame
 
 from src.config.config import TILE_SIZE, GRASS_IMAGE_PATH, ENTRANCE_IMAGE_PATH, PATH_IMAGE_PATH, EXIT_IMAGE_PATH
 from src.utils.helpers import load_scaled_image
@@ -26,9 +26,20 @@ class GameBoard:
         self.path_image = load_scaled_image(PATH_IMAGE_PATH, TILE_SIZE)
         self.entrance_image = load_scaled_image(ENTRANCE_IMAGE_PATH, TILE_SIZE)
         self.exit_image = load_scaled_image(EXIT_IMAGE_PATH, TILE_SIZE)
+        # Load lava and water images for future use
+        try:
+            self.lava_image = load_scaled_image('assets/images/gameBoardTiles/lava.png', TILE_SIZE)
+            self.water_image = load_scaled_image('assets/images/gameBoardTiles/water.png', TILE_SIZE)
+        except Exception as e:
+            print(f"Failed to load lava/water images: {e}")
+            self.lava_image = self.grass_image
+            self.water_image = self.grass_image
         self.grid = [[None for _ in range(width)] for _ in range(height)]
         self.path = [(0, 0), (0, 500), (500, 500)]
         self.path_layout = self.create_path_layout(self.path)
+        # Animation accumulators
+        self._path_anim_time = 0.0
+        self._tile_anim_offset = 0.0
 
     def get_tower_at(self, grid_x, grid_y):
         """grid_x and way are tile grid numbers not pixels"""
@@ -58,15 +69,65 @@ class GameBoard:
         else:
             return self.grass_image  # Default to grass if unknown type
 
-    def draw_board(self, screen, path):
+    def draw_board(self, screen, path, time_delta=0):
+        # Update animation timers
+        self._path_anim_time += time_delta
+        self._tile_anim_offset += time_delta * 20  # scroll speed in pixels/sec
         # Draw the background
         self.draw_background(screen, path)
+        # Draw animated path direction indicators
+        self.draw_path_chevrons(screen, path)
 
     def draw_background(self, screen, path):
         for y in range(self.height):
             for x in range(self.width):
                 image = self.get_tile_image(x, y, path)
                 screen.blit(image, (x * TILE_SIZE[0], y * TILE_SIZE[1]))
+
+    def draw_path_chevrons(self, screen, path):
+        """Draw animated chevrons along the path to show direction of travel."""
+        if not path or len(path) < 2:
+            return
+
+        spacing = TILE_SIZE[0]
+        speed = 20  # pixels per second
+        anim_offset = (self._path_anim_time * speed) % spacing
+        color = (255, 215, 0, 60)  # gold with low alpha
+
+        # Create overlay surface for all chevrons
+        overlay = pygame.Surface((screen.get_width(), screen.get_height()), pygame.SRCALPHA)
+
+        for i in range(len(path) - 1):
+            x1, y1 = path[i]
+            x2, y2 = path[i + 1]
+            dx = x2 - x1
+            dy = y2 - y1
+            length = (dx * dx + dy * dy) ** 0.5
+            if length == 0:
+                continue
+
+            # Unit direction vector
+            ndx, ndy = dx / length, dy / length
+
+            # Draw chevrons along this segment
+            pos = anim_offset
+            while pos < length:
+                cx = x1 + ndx * pos
+                cy = y1 + ndy * pos
+
+                # Perpendicular direction for chevron width
+                px, py = -ndy, ndx
+                size = 6
+
+                # Create chevron triangle pointing in direction of travel
+                tip = (int(cx + ndx * size), int(cy + ndy * size))
+                base1 = (int(cx + px * size * 0.6 - ndx * size), int(cy + py * size * 0.6 - ndy * size))
+                base2 = (int(cx - px * size * 0.6 - ndx * size), int(cy - py * size * 0.6 - ndy * size))
+
+                pygame.draw.polygon(overlay, color, [tip, base1, base2])
+                pos += spacing
+
+        screen.blit(overlay, (0, 0))
 
     def create_path_layout(self, path):
         """

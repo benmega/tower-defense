@@ -36,6 +36,7 @@ class GameStateTransitionHandler:
 
     def open_playing_scene(self):
         self.game.audio_manager.play_music_for_state(GameState.PLAYING)
+        self.game.audio_manager.play_sfx('level_start')
 
     def open_complete_screen(self):
         # Check if the screen is already initialized and set to completion mode; if not, initialize it
@@ -51,6 +52,7 @@ class GameStateTransitionHandler:
         if screen.screen_type != 'completion':
             screen.screen_type = 'completion'
 
+        self.game.audio_manager.play_sfx('level_complete')
         self.game.UI_manager.level_end_screen.open_screen()
 
     def open_defeat_screen(self):
@@ -58,6 +60,7 @@ class GameStateTransitionHandler:
         if not self.game.UI_manager.level_end_screen:
             self.game.UI_manager.level_end_screen = LevelCompletionScreen(self.game.UI_manager, screen_type='defeat')
         self.game.UI_manager.level_end_screen.screen_type = 'defeat'
+        self.game.audio_manager.play_sfx('level_defeat')
         self.game.UI_manager.level_end_screen.open_screen()
         self.game.UI_manager.campaign_map.update_player_progress(self.game.player.player_data['unlocked_levels'])
 
