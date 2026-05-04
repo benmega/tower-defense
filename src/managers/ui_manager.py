@@ -7,6 +7,7 @@ from src.screens.main_menu import MainMenu
 from src.screens.game_data_screen import GameDataScreen
 from src.screens.options_screen import OptionsScreen
 from src.screens.skills_screen import SkillsScreen
+from src.screens.pause_screen import PauseScreen
 
 
 def capture_screen():
@@ -27,6 +28,7 @@ class UIManager(pygame_gui.UIManager):
         self.campaign_map = CampaignMap(self, [0])  # Pass relevant initialization parameters
         self.level_end_screen = LevelCompletionScreen(ui_manager=self, screen_type='defeat')
         self.player_info_panel = PlayerInfoPanel(self, game.player, self.screen)
+        self.pause_screen = PauseScreen(self)
         self.skills_screen = SkillsScreen(self, game.player)
         self.options_screen = OptionsScreen(self, game.audio_manager)
 
@@ -37,7 +39,9 @@ class UIManager(pygame_gui.UIManager):
             'game_data_screen': self.game_data_screen,
             'campaign_map': self.campaign_map,
             'level_end_screen': self.level_end_screen,
-            'skills_screen': self.skills_screen
+            'skills_screen': self.skills_screen,
+            'pause_screen': self.pause_screen,
+            'player_info_panel': self.player_info_panel
             # Add other screens as necessary
         }
 

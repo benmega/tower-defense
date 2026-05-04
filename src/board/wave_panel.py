@@ -1,7 +1,7 @@
 import pygame
 import pygame_gui
 
-from src.config.config import UI_BUTTON_SIZE, SCREEN_WIDTH, PLAYER_EARLY_WAVE_BONUS_MULTIPLIER
+from src.config.config import UI_BUTTON_SIZE, SCREEN_WIDTH, SCREEN_HEIGHT, PLAYER_EARLY_WAVE_BONUS_MULTIPLIER
 from src.screens.screen import Screen
 
 
@@ -12,7 +12,7 @@ class WavePanel(Screen):
         self.buttons = []
         self.start_x = SCREEN_WIDTH - 100  # Starting X position for the rightmost button
         self.pixels_per_second = 20
-        self.panel_y = 600
+        self.panel_y = SCREEN_HEIGHT - 40
 
     def create_wave_buttons(self, current_level):
         if current_level:

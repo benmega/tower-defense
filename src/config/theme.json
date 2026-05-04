@@ -6,6 +6,7 @@
       "text_shadow": "#505050"
     },
     "font": {
+      "name": "Arial",
       "size": "12",
       "bold": "0",
       "italic": "0"
@@ -37,7 +38,10 @@
             "active_border": "#FFD700"
               },
           "font": {
-            "bold": "3"
+            "name": "Arial",
+            "size": "12",
+            "bold": "1",
+            "italic": "0"
           },
          "misc":
              {

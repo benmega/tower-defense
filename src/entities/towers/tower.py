@@ -72,3 +72,28 @@ class Tower(Entity):
                 if self.is_enemy_in_range(enemy):
                     self.attack(enemy, projectile_manager)
                     break  # Attack the first enemy in range and stop checking
+
+    def can_upgrade(self):
+        """Check if this tower can be upgraded."""
+        return self.upgrade_level < 3
+
+    def upgrade(self):
+        """Upgrade the tower, increasing damage and range."""
+        if self.can_upgrade():
+            self.upgrade_level += 1
+            self.damage = int(self.damage * 1.25)
+            self.attack_range = int(self.attack_range * 1.1)
+            self.upgrade_cost = int(self.build_cost * (0.5 * (self.upgrade_level + 1)))
+
+    _preview_surfaces_cache = {}
+
+    @staticmethod
+    def get_preview_surface(tower_type):
+        """Get a semi-transparent preview surface for a tower type."""
+        if tower_type not in Tower._preview_surfaces_cache:
+            from src.utils.helpers import load_scaled_image
+            image_path = TOWER_TYPES[tower_type]['image_path']
+            surface = load_scaled_image(image_path, TILE_SIZE)
+            surface.set_alpha(140)
+            Tower._preview_surfaces_cache[tower_type] = surface
+        return Tower._preview_surfaces_cache[tower_type]
