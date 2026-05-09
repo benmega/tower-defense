@@ -109,11 +109,8 @@ class SkillsScreen(Screen):
         self.initialize_skill_points_label()
 
     def initialize_skill_buttons(self):
-<<<<<<< HEAD
         self.skill_buttons.clear()
-=======
         layout = self.grid_layout
->>>>>>> claude/festive-edison-84275f
         skill_keys = list(all_skills.keys())
         for index, skill_key in enumerate(skill_keys):
             column, row = index % layout['cols'], index // layout['cols']
@@ -157,21 +154,11 @@ class SkillsScreen(Screen):
         )
         self.add_ui_element(self.skill_points_label)
 
-<<<<<<< HEAD
     def on_button_pressed(self, ui_element, game):
         super().on_button_pressed(ui_element, game)
         if ui_element in self.skill_buttons:
             skill_index = self.skill_buttons.index(ui_element)
             self.upgrade_skill(skill_index, game)
-=======
-    def handle_events(self, event, game):
-        super().handle_events(event, game)
-        if event.type == pygame.USEREVENT and event.user_type == pygame_gui.UI_BUTTON_PRESSED:
-            for button_index, button in enumerate(self.skill_buttons):
-                if event.ui_element == button:
-                    self.upgrade_skill(button_index, game)
-                    break
->>>>>>> claude/festive-edison-84275f
 
     def upgrade_skill(self, skill_index, game):
         all_skills_keys = list(all_skills.keys())
@@ -191,7 +178,6 @@ class SkillsScreen(Screen):
             button_text = f"{skill_key} (Lv {new_level})\nNext: {cost_text}"
             self.skill_buttons[skill_index].set_text(button_text)
             self.skill_points_label.set_text(f"Skill Points: {self.player.points}")
-            # Play skill unlock sound
             game.audio_manager.play_sfx('skill_unlocked')
 
     def open_screen(self):
@@ -217,20 +203,8 @@ class SkillsScreen(Screen):
             self.skill_points_label.set_text(f"Skill Points: {self.player.points}")
             self.skill_points_label.visible = True
 
-<<<<<<< HEAD
-    # def close_screen(self):
-    #     super().close_screen()  # Call superclass method to handle common close screen logic
-    #
-    # def draw(self, screen):
-    #     super().draw(screen)  # Call the superclass draw method
-=======
     def close_screen(self):
         super().close_screen()
 
     def draw(self, screen):
-<<<<<<< HEAD
-        super().draw(screen)  # Call the superclass draw method
->>>>>>> claude/dazzling-herschel-e80896
-=======
         super().draw(screen)
->>>>>>> claude/festive-edison-84275f

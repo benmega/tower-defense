@@ -53,21 +53,15 @@ class MainMenu:
 
         self.background_image = load_scaled_image(MAIN_MENU_BACKGROUND_PATH, (SCREEN_WIDTH, SCREEN_HEIGHT))
         self.visible = True
-    #
-    # def handle_events(self, event, game):
-    #     if event.type == pygame.USEREVENT:
-    #         if event.user_type == pygame_gui.UI_BUTTON_PRESSED:
-    #             if event.ui_element == self.start_button:
-    #                 game.state_manager.change_state(GameState.CAMPAIGN_MAP, self)
-    #             elif event.ui_element == self.continue_button:
-    #                 game.state_manager.change_state(GameState.LOAD_GAME, self)
-    #             elif event.ui_element == self.settings_button:
-    #                 game.state_manager.change_state(GameState.OPTIONS, self)
-    #             elif event.ui_element == self.exit_button:
-    #                 pygame.quit()
-    #                 exit()
+        self._fade_alpha = 255
+        self._fading_in = False
+        self._fade_timer = 0.0
 
-    # main_menu.py
+    def on_enter(self):
+        self._fade_alpha = 255
+        self._fading_in = True
+        self._fade_timer = 0.0
+
     def on_button_pressed(self, ui_element, game):
         if ui_element == self.start_button:
             game.state_manager.change_state(GameState.CAMPAIGN_MAP, self)
@@ -78,31 +72,6 @@ class MainMenu:
         elif ui_element == self.exit_button:
             pygame.quit()
             exit()
-
-<<<<<<< HEAD
-=======
-        self._fade_alpha = 255
-        self._fading_in = False
-        self._fade_timer = 0.0
-
-    def on_enter(self):
-        self._fade_alpha = 255
-        self._fading_in = True
-        self._fade_timer = 0.0
-
-    def handle_events(self, event, game):
-        if event.type == pygame.USEREVENT:
-            if event.user_type == pygame_gui.UI_BUTTON_PRESSED:
-                if event.ui_element == self.start_button:
-                    game.state_manager.change_state(GameState.CAMPAIGN_MAP, self)
-                elif event.ui_element == self.continue_button:
-                    game.state_manager.change_state(GameState.LOAD_GAME, self)
-                elif event.ui_element == self.settings_button:
-                    game.state_manager.change_state(GameState.OPTIONS, self)
-                elif event.ui_element == self.exit_button:
-                    pygame.quit()
-                    exit()
->>>>>>> claude/festive-edison-84275f
 
     def update(self, time_delta):
         self.ui_manager.update(time_delta)

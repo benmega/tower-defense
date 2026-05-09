@@ -1,7 +1,4 @@
-from typing import Optional
-
 import pygame
-from pygame import Surface
 
 from src.entities.enemies.enemy import Enemy
 from src.entities.entity import Entity
@@ -41,9 +38,7 @@ class Projectile(Entity):
         self.target = target
         self.state = 'in-flight'  # Only one state for active projectiles
         self.image_path = image_path
-        self.effect = effect  # New attribute to specify the projectile's effect
-        self.target = target
-        self.damage = damage
+        self.effect = effect
         self.poison_damage = poison_damage
         self.poison_duration = poison_duration
         self.gold_boost_factor = gold_boost_factor

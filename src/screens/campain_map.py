@@ -29,17 +29,27 @@ class Camera:
 
 
 def _generate_level_positions(count: int, cols: int = 6) -> list:
-    """Lay out levels in a snake pattern across the map."""
+    """Lay out levels in a snake pattern across the entire map."""
     MAP_W = SCREEN_WIDTH * 3
     MAP_H = SCREEN_HEIGHT * 3
     positions = []
-    row_h = MAP_H // (count // cols + 1)
+
+    # Calculate rows needed
+    rows = (count + cols - 1) // cols
+
+    # Spacing between levels
+    col_spacing = MAP_W / (cols + 1)
+    row_spacing = MAP_H / (rows + 1)
+
     for i in range(count):
         row = i // cols
         col = i % cols if row % 2 == 0 else (cols - 1 - i % cols)
-        x = int(MAP_W * (col + 0.5) / cols)
-        y = int(row_h * (row + 0.5))
+
+        # Position with proper spacing across the entire map
+        x = int(col_spacing * (col + 1))
+        y = int(row_spacing * (row + 1))
         positions.append((x, y))
+
     return positions
 
 
@@ -48,31 +58,12 @@ class CampaignMap(Screen):
         super().__init__(ui_manager, 'assets/images/screens/campaignMap/campaign_map.png')
         self.visible = False
         self.ui_manager = ui_manager
-<<<<<<< HEAD
-        self.level_positions = [
-            (770, 700), (793, 678), (864, 681), (879, 645), (781, 630),
-            (817, 602), (752, 603), (741, 573), (801, 526), (828, 522),
-            (796, 492), (743, 502), (688, 534), (718, 469), (704, 427),
-            (645, 413), (592, 382), (546, 372), (560, 358), (410, 380),
-            (336, 430), (296, 395), (360, 351), (356, 328), (364, 276),
-            (410, 306), (465, 282), (490, 268), (481, 247), (468, 197)
-        ]
-        self.zoom_factor = 3  # The map size increased by a factor of 3
-        self.level_positions = [(x * self.zoom_factor, y * self.zoom_factor) for x, y in self.level_positions]
-=======
         self.level_positions = _generate_level_positions(30)
         scale_factor = 3
->>>>>>> claude/festive-edison-84275f
         self.player_progress = player_progress
         self.level_buttons = []
 
         self.map_image = load_scaled_image('assets/images/screens/campaignMap/campaign_map.png',
-<<<<<<< HEAD
-                                           (SCREEN_WIDTH*self.zoom_factor, SCREEN_HEIGHT*self.zoom_factor))
-        self.level_visibility = {}
-        self.level_button_sizes = (30*self.zoom_factor, 30*self.zoom_factor)
-        self.initilize_buttons()
-=======
                                            (SCREEN_WIDTH * scale_factor, SCREEN_HEIGHT * scale_factor))
         self.level_visibility = {}
         self.level_button_sizes = (30 * scale_factor, 30 * scale_factor)
@@ -80,7 +71,6 @@ class CampaignMap(Screen):
 
         btn_w, btn_h = int(UI_BUTTON_SIZE[0]), int(UI_BUTTON_SIZE[1])
         sx, sy = anchor(btn_w, btn_h, h='right', v='top', margin=C.SPACE_MD)
->>>>>>> claude/festive-edison-84275f
         self.skills_button = pygame_gui.elements.UIButton(
             relative_rect=pygame.Rect([sx, sy], UI_BUTTON_SIZE),
             text='Skills',
@@ -120,8 +110,6 @@ class CampaignMap(Screen):
     def is_level_unlocked(self, level_index):
         return level_index in self.player_progress
 
-<<<<<<< HEAD
-    # campaign_map.py
     def on_button_pressed(self, ui_element, game):
         if ui_element == self.return_button:
             game.state_manager.change_state(GameState.MAIN_MENU, self)
@@ -136,24 +124,7 @@ class CampaignMap(Screen):
 
         for index, (_, button_rect, unlocked) in enumerate(self.level_buttons):
             if button_rect.collidepoint(mouse_pos) and unlocked:
-                game.initialize_game(index)  # Set up the game for the selected level
-=======
-    def handle_events(self, event, game):
-        if event.type == pygame.USEREVENT:
-            if event.user_type == pygame_gui.UI_BUTTON_PRESSED:
-                if event.ui_element == self.return_button:
-                    game.state_manager.change_state(GameState.MAIN_MENU, self)
-                elif event.ui_element == self.skills_button:
-                    game.state_manager.change_state(GameState.SKILLS, self)
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            self.handle_clicks(event, game)
-
-    def handle_clicks(self, event, game):
-        mouse_pos = pygame.Vector2(event.pos) + self.camera.position
-        for index, (_, button_rect, unlocked) in enumerate(self.level_buttons):
-            if button_rect.collidepoint(mouse_pos) and unlocked:
                 game.initialize_game(index)
->>>>>>> claude/festive-edison-84275f
                 self.close_screen()
                 break
 

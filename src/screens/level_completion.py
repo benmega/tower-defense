@@ -67,10 +67,7 @@ class LevelCompletionScreen:
             object_id="@button",
             visible=False
         )
-<<<<<<< HEAD
 
-=======
->>>>>>> claude/laughing-ardinghelli-b72776
         self.background_image = self.load_background_image()
         self.overlay = None
         self.capturedScreen = None
@@ -134,27 +131,12 @@ class LevelCompletionScreen:
         self.replay_button.visible = False
         self.main_menu_button.visible = False
 
-<<<<<<< HEAD
-    # level_completion_screen.py
     def on_button_pressed(self, ui_element, game):
         if ui_element == self.next_level_button:
             game.state_manager.change_state(GameState.CAMPAIGN_MAP, self)
             game.UI_manager.player_info_panel.set_visibility(False)
         elif ui_element == self.replay_button:
-            game.initialize_game()
+            game.initialize_game(game.level_manager.current_level_index)
             self.close_screen()
         elif ui_element == self.main_menu_button:
             game.state_manager.change_state(GameState.MAIN_MENU, self)
-=======
-    def handle_events(self, event, game):
-        if event.type == pygame.USEREVENT:
-            if event.user_type == pygame_gui.UI_BUTTON_PRESSED:
-                if event.ui_element == self.next_level_button:
-                    game.state_manager.change_state(GameState.CAMPAIGN_MAP, self)
-                    game.UI_manager.player_info_panel.set_visibility(False)
-                elif event.ui_element == self.replay_button:
-                    game.initialize_game(game.level_manager.current_level_index)
-                    self.close_screen()
-                elif event.ui_element == self.main_menu_button:
-                    game.state_manager.change_state(GameState.MAIN_MENU, self)
->>>>>>> claude/festive-edison-84275f

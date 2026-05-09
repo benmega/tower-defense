@@ -1,18 +1,8 @@
 import pygame
-<<<<<<< HEAD
-import os
-import sys
-from src.config.config import TOWER_IMAGE_PATH, ENEMY_IMAGE_PATH
-=======
-from src.config.config import ENEMY_IMAGE_PATH
->>>>>>> claude/laughing-ardinghelli-b72776
 
-def get_asset_path(relative_path):
-    if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
-        base_path = sys._MEIPASS
-    else:
-        base_path = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
-    return os.path.join(base_path, relative_path)
+from src.config.config import ENEMY_IMAGE_PATH
+from src.utils.resource_path import resource_path
+
 
 class AssetManager:
     def __init__(self):
@@ -22,8 +12,7 @@ class AssetManager:
 
     def load_image(self, key, path):
         """ Loads an image and stores it with the specified key. """
-        full_path = get_asset_path(path) if not os.path.isabs(path) else path
-        image = pygame.image.load(full_path)
+        image = pygame.image.load(resource_path(path))
         self.images[key] = image
         return image
 
@@ -33,8 +22,7 @@ class AssetManager:
 
     def load_sound(self, key, path):
         """ Loads a sound and stores it with the specified key. """
-        full_path = get_asset_path(path) if not os.path.isabs(path) else path
-        sound = pygame.mixer.Sound(full_path)
+        sound = pygame.mixer.Sound(resource_path(path))
         self.sounds[key] = sound
         return sound
 
@@ -44,8 +32,7 @@ class AssetManager:
 
     def load_font(self, key, path, size):
         """ Loads a font and stores it with the specified key. """
-        full_path = get_asset_path(path) if not os.path.isabs(path) else path
-        font = pygame.font.Font(full_path, size)
+        font = pygame.font.Font(resource_path(path), size)
         self.fonts[key] = font
         return font
 
@@ -55,10 +42,7 @@ class AssetManager:
 
     def preload_assets(self):
         """ Preloads necessary assets for the game. """
-        # Example assets (You'll replace these with your actual asset paths)
         self.load_image('enemy', ENEMY_IMAGE_PATH)
         self.load_image('tower', 'assets/images/towers/basic_tower.png')
         self.load_sound('explosion', 'assets/sounds/explosion.wav')
         self.load_font('main_font', 'assets/fonts/main_font.ttf', 24)
-
-    # Additional methods for managing assets, such as clearing assets or handling animations, etc.

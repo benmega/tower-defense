@@ -25,15 +25,25 @@ def get_base_path() -> str:
     """
     Return the root directory that contains the bundled game data.
 
-    - Frozen (PyInstaller one-folder): directory of TowerDefense.exe
-    - Frozen (PyInstaller onefile):    sys._MEIPASS temp directory
-    - Running from source:             project root (two levels above this file)
+    - Frozen (PyInstaller): looks for assets in exe_dir, then exe_dir/_internal
+    - Running from source:   project root (two levels above this file)
     """
     if getattr(sys, 'frozen', False):
-        # sys._MEIPASS is set for onefile builds; for one-folder builds the
-        # data sits next to the exe, so sys.executable's directory is correct
-        # in both cases.
-        return os.path.dirname(sys.executable)
+        # For PyInstaller builds, sys._MEIPASS is set by the bootloader
+        if hasattr(sys, '_MEIPASS'):
+            return sys._MEIPASS
+
+        # For one-folder builds with _internal subdirectory
+        exe_dir = os.path.dirname(sys.executable)
+        if os.path.exists(os.path.join(exe_dir, '_internal', 'assets')):
+            return os.path.join(exe_dir, '_internal')
+
+        # Check if assets exist directly in exe directory
+        if os.path.exists(os.path.join(exe_dir, 'assets')):
+            return exe_dir
+
+        # Fall back to exe directory
+        return exe_dir
     else:
         # Running from source: this file is at src/utils/resource_path.py,
         # so the project root is two directories up.

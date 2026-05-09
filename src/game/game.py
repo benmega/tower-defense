@@ -10,7 +10,6 @@ from src.board.tower_selection_panel import TowerSelectionPanel
 from src.entities.Player import Player
 from src.game.game_state import GameState
 from src.managers.audio_manager import AudioManager
-from src.utils.helpers import resource_path
 from src.managers.collision_manager import CollisionManager
 from src.managers.enemy_manager import EnemyManager
 from src.managers.event_manager import EventManager
@@ -19,13 +18,9 @@ from src.managers.level_manager import LevelManager
 from src.managers.projectile_manager import ProjectileManager
 from src.managers.tower_manager import TowerManager
 from src.managers.ui_manager import UIManager
-<<<<<<< HEAD
-from src.utils.helpers import get_asset_path
-=======
 from src.effects.particle_system import ParticleSystem
 from src.effects.screen_shake import ScreenShake
 from src.utils import constants as C
->>>>>>> claude/suspicious-raman-d0a593
 
 
 def capture_screen():
@@ -71,15 +66,11 @@ class Game:
                                           self.player_take_damage_callback)
         self.current_state = None
         self.previous_state = None
-<<<<<<< HEAD
-        self.is_build_mode = True
-        self.frame_time_delta = 0.0
-=======
         self.is_build_mode = False  # Start in selection mode, not build mode
+        self.frame_time_delta = 0.0
         # Initialize tower info panel after UI_manager
         from src.game.tower_info_panel import TowerInfoPanel
         self.tower_info_panel = TowerInfoPanel(self.UI_manager)
->>>>>>> claude/great-franklin-30172d
 
         # Initialize particle system and screen shake
         self.particles = ParticleSystem()
@@ -98,7 +89,6 @@ class Game:
 
         self.state_manager.change_state(GameState.PLAYING)
         self.UI_manager.player_info_panel.set_visibility(True)
-<<<<<<< HEAD
         if level_num > -1:
             self.level_manager.start_level(level_num)
 
@@ -107,8 +97,6 @@ class Game:
             self.state_manager.change_state(GameState.MAIN_MENU)
             return
 
-=======
->>>>>>> claude/laughing-ardinghelli-b72776
         self.player.start_level()
         self.enemy_manager.reset()
         if level_num > -1:
@@ -125,47 +113,29 @@ class Game:
             self.update(self.frame_time_delta)
             self.draw()
         pygame.quit()
+
     def draw(self):
         self.screen.fill(configuration.BACKGROUND_COLOR)  # Clear the screen with the background color
 
         # Draw game-specific elements only when in the PLAYING state
         if self.current_state == GameState.PLAYING:
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
             current_level = self.level_manager.get_current_level()
             if current_level:
-                self.board.draw_board(self.screen, current_level.path)
-                self.tower_manager.draw_towers(self.screen)
-                self.enemy_manager.draw(self.screen)
-                self.projectile_manager.draw_projectiles(self.screen)
-                self.tower_selection_panel.draw()
-=======
-            self.board.draw_board(self.screen, self.level_manager.get_current_level().path)
-=======
-            current_level = self.level_manager.get_current_level()
-            if current_level:
-                self.board.draw_board(self.screen, current_level.path)
->>>>>>> claude/laughing-ardinghelli-b72776
-            self.tower_manager.draw_towers(self.screen)
-            # Draw tower range circles if enabled
-            if self.tower_manager.show_ranges:
-                self._draw_tower_ranges()
-            self.enemy_manager.draw(self.screen)
-            self.projectile_manager.draw_projectiles(self.screen)
-=======
-            # Render game world to intermediate surface for shake effect
-            self._game_surface.fill(configuration.BACKGROUND_COLOR)
-            self.board.draw_board(self._game_surface, self.level_manager.get_current_level().path, self._last_dt)
-            self.tower_manager.draw_towers(self._game_surface)
-            self.enemy_manager.draw(self._game_surface)
-            self.projectile_manager.draw_projectiles(self._game_surface)
-            self.particles.draw(self._game_surface)
-            # Apply shake offset when blitting to screen
-            ox, oy = self._shake_offset
-            self.screen.blit(self._game_surface, (ox, oy))
-            # Draw UI overlays directly (tower selection panel)
->>>>>>> claude/suspicious-raman-d0a593
+                # Render game world to intermediate surface for shake effect
+                self._game_surface.fill(configuration.BACKGROUND_COLOR)
+                self.board.draw_board(self._game_surface, current_level.path, self._last_dt)
+                self.tower_manager.draw_towers(self._game_surface)
+                # Draw tower range circles if enabled
+                if self.tower_manager.show_ranges:
+                    self._draw_tower_ranges_to(self._game_surface)
+                self.enemy_manager.draw(self._game_surface)
+                self.projectile_manager.draw_projectiles(self._game_surface)
+                self.particles.draw(self._game_surface)
+                # Apply shake offset when blitting to screen
+                ox, oy = self._shake_offset
+                self.screen.blit(self._game_surface, (ox, oy))
+
+            # Draw UI overlays directly (not affected by shake)
             self.tower_selection_panel.draw()
             # Draw placement preview
             self._draw_placement_preview()
@@ -175,7 +145,6 @@ class Game:
             else:
                 self.tower_info_panel.hide()
             self.tower_info_panel.draw(self.screen)
->>>>>>> claude/great-franklin-30172d
 
         # Always draw the UI elements on top of the game elements
         self.UI_manager.draw_ui(self.screen)
@@ -195,50 +164,34 @@ class Game:
             self.UI_manager.campaign_map.update(time_delta)
         elif self.current_state == GameState.LEVEL_COMPLETE or self.current_state == GameState.LEVEL_DEFEAT:
             self.UI_manager.level_end_screen.update(time_delta)
-        elif self.current_state == GameState.PAUSED:
-            # Game logic frozen while paused
-            pass
         elif self.current_state == GameState.PLAYING:
-<<<<<<< HEAD
-<<<<<<< HEAD
             # Ensure a level is loaded before proceeding
             if not self.level_manager.current_level:
                 print("ERROR: No level is loaded. Returning to main menu.")
                 self.state_manager.change_state(GameState.MAIN_MENU)
                 return
-=======
-            # Apply fast-forward multiplier to time delta
-            effective_delta = time_delta * configuration.GAME_SPEED_MULTIPLIER
->>>>>>> claude/great-franklin-30172d
-=======
+
             # Update particle system and screen shake
             self.particles.update(time_delta)
             self._shake_offset = self.shake.update(time_delta)
->>>>>>> claude/suspicious-raman-d0a593
 
             # Main game update logic for each frame
             new_enemies = self.level_manager.update_levels()
             if all(not item for item in new_enemies) and len(self.enemy_manager.entities) == 0:
                 if self.level_manager.check_level_complete():
-                    # self.UI_manager.level_end_screen.capturedScreen = pygame.display.get_surface().copy()
                     self.set_gameboard_ui_visibility(False)
                     self.state_manager.change_state(GameState.LEVEL_COMPLETE)
 
-            for enemy_batch in new_enemies:
-                for enemy in enemy_batch:
-                    self.enemy_manager.add_enemy(enemy)
+            for enemy in new_enemies:
+                self.enemy_manager.add_enemy(enemy)
             self.enemy_manager.update()
             self.tower_manager.update(self.enemy_manager.get_enemies(), self.projectile_manager)
             self.projectile_manager.update_entities()
             self.collision_manager.handle_group_collisions(
                 self.enemy_manager.entities, self.projectile_manager.projectiles
             )
-<<<<<<< HEAD
-            self.level_manager.wave_panel.update(effective_delta, self.level_manager.current_level.enemy_wave_list)
-=======
             if self.level_manager.current_level:
                 self.level_manager.wave_panel.update(time_delta, self.level_manager.current_level.enemy_wave_list)
->>>>>>> claude/laughing-ardinghelli-b72776
             self.UI_manager.player_info_panel.update(self.enemy_manager)
             self.check_game_over()
 
@@ -247,15 +200,11 @@ class Game:
             return True
         if self.level_manager.current_level_index >= len(self.level_manager.levels) - 1:
             if self.level_manager.check_level_complete():
-<<<<<<< HEAD
                 # Play campaign win sound once
                 if not self._campaign_win_played:
                     self.audio_manager.play_sfx('campaign_win')
                     self._campaign_win_played = True
-                print("Finished")
-=======
                 print("Campaign finished")
->>>>>>> claude/laughing-ardinghelli-b72776
                 return True
         return False
 
@@ -284,7 +233,6 @@ class Game:
     def set_gameboard_ui_visibility(self, visible):
         self.UI_manager.player_info_panel.set_visibility(visible)
         self.level_manager.wave_panel.visible = visible
-        # TODO Link to all panels in playing scene
 
     def update_ui(self):
         self.UI_manager.update(self.clock.get_time() / 1000.0)
@@ -300,15 +248,6 @@ class Game:
         ~/.local/share/TowerDefense/save_data on other platforms.
         When running from source we keep the original src/save_data location.
         """
-<<<<<<< HEAD
-        self.UI_manager.update(self.frame_time_delta)
-
-    def save_game(self, save_slot_or_filename):
-        # Determine the filename based on the input parameter
-        filename = f"src/save_data/{save_slot_or_filename}.json" if isinstance(save_slot_or_filename,
-                                                                               int) else save_slot_or_filename
-        full_path = get_asset_path(filename) if not os.path.isabs(filename) else filename
-=======
         if getattr(sys, 'frozen', False):
             if os.name == 'nt':
                 base = os.environ.get('APPDATA', os.path.expanduser('~'))
@@ -329,39 +268,31 @@ class Game:
             filename = os.path.join(self._save_dir(), f"savegame_slot{save_slot_or_filename}.json")
         else:
             filename = save_slot_or_filename
->>>>>>> claude/laughing-ardinghelli-b72776
 
         player_data = {"player": self.player.to_dict()}
 
         try:
-            os.makedirs(os.path.dirname(full_path), exist_ok=True)
-            with open(full_path, 'w') as f:
+            os.makedirs(os.path.dirname(filename), exist_ok=True)
+            with open(filename, 'w') as f:
                 json.dump(player_data, f, indent=4)
-                print(f"Game saved to {full_path}")
+                print(f"Game saved to {filename}")
         except Exception as e:
             print(f"Failed to save game: {e}")
 
     def load_game(self, save_slot_or_filename):
         # Determine the filename based on the input parameter
-<<<<<<< HEAD
-        filename = f"src/save_data/{save_slot_or_filename}.json" if isinstance(save_slot_or_filename,
-                                                                               int) else save_slot_or_filename
-        full_path = get_asset_path(filename) if not os.path.isabs(filename) else filename
-=======
         if isinstance(save_slot_or_filename, int):
             filename = os.path.join(self._save_dir(), f"savegame_slot{save_slot_or_filename}.json")
         else:
             filename = save_slot_or_filename
->>>>>>> claude/laughing-ardinghelli-b72776
         try:
-            with open(full_path, 'r') as f:
+            with open(filename, 'r') as f:
                 player_data = json.load(f)
                 self.player.from_dict(player_data["player"])
                 self.UI_manager.campaign_map.update_player_progress(player_data["player"]['unlocked_levels'])
-                print(f"Game loaded from {full_path}")
+                print(f"Game loaded from {filename}")
         except FileNotFoundError:
-            print(f"Save file not found: {full_path}")
-
+            print(f"Save file not found: {filename}")
 
     def player_on_death_callback(self):
         self.state_manager.change_state(GameState.LEVEL_DEFEAT)
@@ -394,28 +325,24 @@ class Game:
         self.screen.blit(tint_surface, (grid_x, grid_y))
 
         # Draw range circle
-        import src.utils.constants as constants
         tower_center_x = grid_x + configuration.TILE_SIZE[0] // 2
         tower_center_y = grid_y + configuration.TILE_SIZE[1] // 2
-        # Get default attack range from tower type
         tower_class = self.tower_manager.tower_types.get(self.tower_manager.selected_tower_type)
         if tower_class:
             default_range = 100  # Default range
             pygame.draw.circle(
-                self.screen, constants.RGB_GOLD_BRIGHT,
+                self.screen, C.RGB_GOLD_BRIGHT,
                 (int(tower_center_x), int(tower_center_y)),
                 int(default_range), 1
             )
 
-    def _draw_tower_ranges(self):
-        """Draw range circles for all towers."""
-        import src.utils.constants as constants
+    def _draw_tower_ranges_to(self, surface):
+        """Draw range circles for all towers onto the given surface."""
         for tower in self.tower_manager.towers:
             center_x = tower.x + configuration.TILE_SIZE[0] // 2
             center_y = tower.y + configuration.TILE_SIZE[1] // 2
-            # Semi-transparent circle
             pygame.draw.circle(
-                self.screen, constants.RGB_GOLD_BRIGHT,
+                surface, C.RGB_GOLD_BRIGHT,
                 (int(center_x), int(center_y)),
                 int(tower.attack_range), 1
             )

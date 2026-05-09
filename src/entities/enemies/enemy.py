@@ -23,7 +23,7 @@ class Enemy(pygame.sprite.Sprite):
         self.reached_goal = False
         self.score_value = ENEMY_SCORE_VALUE
         self.base_gold_value = ENEMY_GOLD_VALUE
-        self.gold_value = ENEMY_GOLD_VALUE
+        self.gold_value = max(5, int(health / 10))
         self.damage_to_player = ENEMY_DAMAGE_TO_PLAYER
         self.original_speed = speed
         self.slow_effect_active = False
@@ -74,7 +74,7 @@ class Enemy(pygame.sprite.Sprite):
         self.state = 'dead'
         self.active = False
 
-    def update(self):
+    def update(self, entities=None):
         if self.state == 'dead' or not self.active:
             return  # Skip updating if the enemy is dead or inactive
         self.update_slow_effect()

@@ -13,9 +13,7 @@ class EntityManager:
             self.entities.remove(entity)
 
     def update_entities(self):
-        for e in self.entities: #TODO avoid duplication
-            e.update()
-       # self.entities.update() #TODO avoid duplication
+        self.entities.update()
 
 
     def draw(self, screen):

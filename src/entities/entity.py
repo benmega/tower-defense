@@ -12,8 +12,6 @@ class Entity(pygame.sprite.Sprite):
         self.size = size
         self.image = load_scaled_image(image_path, self.size).convert_alpha()
         self.rect = self.image.get_rect(topleft=(x, y))
-        # self.grid_x = grid_x
-        # self.grid_y = grid_y
         self.active = True
         self.width, self.height = self.image.get_size()
 
@@ -35,21 +33,13 @@ class Entity(pygame.sprite.Sprite):
     def y(self, value):
         self.rect.y = value
 
-
     def update(self):
         # Update logic for the entity, to be overridden by subclasses
         pass
 
-
     def draw(self, screen):
         if self.active and self.image:
-<<<<<<< HEAD
             screen.blit(self.image, self.rect.topleft)
-        else:
-            pass
-=======
-            screen.blit(self.image, (self.rect.x, self.rect.y))
->>>>>>> claude/laughing-ardinghelli-b72776
 
     def on_collision(self, other_entity):
         # Collision handling logic, to be overridden by subclasses
@@ -58,5 +48,3 @@ class Entity(pygame.sprite.Sprite):
     def deactivate(self):
         # Deactivate the entity (e.g., when it is destroyed)
         self.active = False
-
-# Additional methods as needed

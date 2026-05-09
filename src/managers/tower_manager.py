@@ -1,22 +1,11 @@
 import pygame
-<<<<<<< HEAD
-import os
-=======
 import math
->>>>>>> claude/suspicious-raman-d0a593
 
 from src.config.config import DEBUG, TILE_SIZE
 from src.managers.entity_manager import EntityManager
 from src.entities.towers.tower_types import *
-<<<<<<< HEAD
-<<<<<<< HEAD
-from src.utils.helpers import resource_path
-=======
-from src.utils.helpers import get_asset_path
->>>>>>> claude/unruffled-ramanujan-1882ca
-=======
 from src.utils import constants as C
->>>>>>> claude/suspicious-raman-d0a593
+from src.utils.resource_path import resource_path
 
 
 class TowerManager(EntityManager):
@@ -44,12 +33,10 @@ class TowerManager(EntityManager):
             'GoldBoost': GoldBoostTower,
             'Debuff': DebuffTower,
         }
-<<<<<<< HEAD
-        self.build_sound = pygame.mixer.Sound(resource_path('assets/sounds/tower_build_effect_2.mp3'))  # Preload sound
-=======
-        sound_path = get_asset_path('assets/sounds/tower_build_effect_2.mp3')
-        self.build_sound = pygame.mixer.Sound(sound_path)  # Preload sound
->>>>>>> claude/unruffled-ramanujan-1882ca
+        try:
+            self.build_sound = pygame.mixer.Sound(resource_path('assets/sounds/tower_build_effect_2.mp3'))
+        except Exception:
+            self.build_sound = None
 
     def add_tower(self, x, y):
         """Adds a new tower at specified coordinates."""
@@ -63,7 +50,8 @@ class TowerManager(EntityManager):
             print(f"Unknown tower type: {self.selected_tower_type}")
 
     def play_build_sound(self):
-        self.build_sound.play()
+        if self.build_sound:
+            self.build_sound.play()
 
     def upgrade_tower(self, tower_id, upgrade_type):
         """ Upgrades a tower based on an upgrade type. """
@@ -114,12 +102,11 @@ class TowerManager(EntityManager):
         for tower in self.towers:
             tower.update(enemies, projectile_manager)
 
-
     def add_tower_if_possible(self, x, y, player, game):
         """Attempts to add a tower at the specified location if the player has enough resources."""
         build_type = self.selected_tower_type
         build_cost = TOWER_TYPES[build_type]['cost']
-        build_cost_reduction = player.skills.get('tower_build_discount', 0) * 10  # Adjust formula as needed
+        build_cost_reduction = player.skills.get('tower_build_discount', 0) * 10
         adjusted_cost = max(0, build_cost - build_cost_reduction)
 
         if player.gold >= adjusted_cost:
@@ -142,7 +129,6 @@ class TowerManager(EntityManager):
         """Handle clicks on the game board. Selects a tower if clicked. Returns the selected tower or None."""
         self.selected_tower = None
         for tower in self.towers:
-            # Check if click is within tower's rect
             tower_rect = pygame.Rect(tower.x, tower.y, tower.width, tower.height)
             if tower_rect.collidepoint(pos):
                 self.selected_tower = tower

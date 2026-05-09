@@ -3,6 +3,8 @@ from src.entities.entity import Entity
 from src.config.config import DEBUG, TOWER_TYPES, TILE_SIZE
 from src.utils.helpers import load_scaled_image
 
+DEFAULT_TOWER_RANGE = 100
+
 
 class Tower(Entity):
     def __init__(self, x, y, tower_type="Basic", attack_range=100, damage=10, attack_speed=20, upgrade_cost=0, width=10, height=10):
@@ -13,7 +15,7 @@ class Tower(Entity):
         self.y = y // TILE_SIZE[1] * TILE_SIZE[1]  # Y-coordinate of the tower's position
         self.width = width
         self.height = height
-        self.attack_range = attack_range  # Range within which the tower can attack #TODO remove reliance on default of 100
+        self.attack_range = attack_range  # Range within which the tower can attack
         self.damage = damage  # Damage dealt per attack
         self.attack_speed = attack_speed  # Time between attacks
         self.cooldown = 0  # Cooldown to track attack timing

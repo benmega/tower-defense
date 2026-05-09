@@ -56,20 +56,6 @@ class OptionsScreen(Screen):
         self.add_ui_element(self.music_volume_slider)
         self.add_ui_element(self.sfx_volume_slider)
 
-<<<<<<< HEAD
-    def on_slider_moved(self, ui_element, value):
-        if ui_element == self.music_volume_slider:
-            self.audio_manager.set_music_volume(value)
-        elif ui_element == self.sfx_volume_slider:
-            self.audio_manager.set_sfx_volume(value)
-
-    def on_button_pressed(self, ui_element, game):
-        if ui_element == self.back_button:
-            game.state_manager.change_state(GameState.MAIN_MENU, self)
-        elif ui_element == self.fullscreen_toggle:
-            # TODO implement fullscreen toggle
-            print("Toggle fullscreen mode")
-=======
         # Add labels for sliders
         label_y_music = slider_rects[0].y - 30
         label_y_sfx = slider_rects[1].y - 30
@@ -110,19 +96,16 @@ class OptionsScreen(Screen):
         self.add_ui_element(self.music_value_label)
         self.add_ui_element(self.sfx_value_label)
 
-    def handle_events(self, event, game):
-        super().handle_events(event, game)
-        if event.type == pygame.USEREVENT:
-            if event.user_type == pygame_gui.UI_HORIZONTAL_SLIDER_MOVED:
-                if event.ui_element == self.music_volume_slider:
-                    pygame.mixer.music.set_volume(event.value / 100)
-                    self.music_value_label.set_text(f"{int(event.value)}%")
-                elif event.ui_element == self.sfx_volume_slider:
-                    game.audio_manager.set_sfx_volume(event.value)
-                    self.sfx_value_label.set_text(f"{int(event.value)}%")
-            elif event.user_type == pygame_gui.UI_BUTTON_PRESSED:
-                if event.ui_element == self.back_button:
-                    game.state_manager.change_state(GameState.MAIN_MENU, self)
-                elif event.ui_element == self.fullscreen_toggle:
-                    pygame.display.toggle_fullscreen()
->>>>>>> claude/festive-edison-84275f
+    def on_slider_moved(self, ui_element, value):
+        if ui_element == self.music_volume_slider:
+            pygame.mixer.music.set_volume(value / 100)
+            self.music_value_label.set_text(f"{int(value)}%")
+        elif ui_element == self.sfx_volume_slider:
+            self.audio_manager.set_sfx_volume(value)
+            self.sfx_value_label.set_text(f"{int(value)}%")
+
+    def on_button_pressed(self, ui_element, game):
+        if ui_element == self.back_button:
+            game.state_manager.change_state(GameState.MAIN_MENU, self)
+        elif ui_element == self.fullscreen_toggle:
+            pygame.display.toggle_fullscreen()
