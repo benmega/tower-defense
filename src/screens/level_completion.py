@@ -28,6 +28,9 @@ class LevelCompletionScreen:
         self.ui_manager = ui_manager
         self.screen_type = screen_type
         self.stars = 1
+        self.final_score = 0
+        self.wave_reached = 0
+        self.total_waves = 0
 
         modal_w = int(SCREEN_WIDTH * 0.38)
         modal_h = int(SCREEN_HEIGHT * 0.48)
@@ -90,6 +93,7 @@ class LevelCompletionScreen:
 
         if self.screen_type == 'completion':
             self._draw_stars(screen)
+        self._draw_stats(screen)
 
     def _draw_stars(self, screen):
         """Draw 1-3 stars and star-rating criteria."""
@@ -119,12 +123,30 @@ class LevelCompletionScreen:
             screen.blit(surf, surf.get_rect(centerx=self.x + self.width // 2, y=cy))
             cy += surf.get_height() + 2
 
+    def _draw_stats(self, screen):
+        """Draw final score and wave info below the stars / near the top of the modal."""
+        font = pygame.font.Font(None, 22)
+        lines = [f"Score: {self.final_score:,}"]
+        if self.total_waves > 0:
+            if self.screen_type == 'completion':
+                lines.append(f"Waves cleared: {self.total_waves}/{self.total_waves}")
+            else:
+                lines.append(f"Wave reached: {self.wave_reached}/{self.total_waves}")
+        cy = self.y + self.height // 2 - 30
+        for line in lines:
+            surf = font.render(line, True, (220, 220, 220))
+            screen.blit(surf, surf.get_rect(centerx=self.x + self.width // 2, y=cy))
+            cy += surf.get_height() + 4
+
     def update(self, time_delta):
         self.ui_manager.update(time_delta)
 
-    def open_screen(self, stars: int = 1):
+    def open_screen(self, stars: int = 1, score: int = 0, wave: int = 0, total_waves: int = 0):
         self.visible = True
         self.stars = stars
+        self.final_score = score
+        self.wave_reached = wave
+        self.total_waves = total_waves
         self.next_level_button.visible = True
         self.replay_button.visible = True
         self.main_menu_button.visible = True

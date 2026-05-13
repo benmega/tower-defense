@@ -45,8 +45,13 @@ class GameStateTransitionHandler:
     def open_complete_screen(self):
         self.game.UI_manager.level_end_screen.capturedScreen = capture_screen()
         screen = self.game.UI_manager.level_end_screen
-        self.game.player.complete_level(self.game.level_manager.current_level_index)
-        self.game.UI_manager.campaign_map.update_player_progress(self.game.player.player_data['unlocked_levels'])
+        health = self.game.player.health
+        stars = 3 if health >= 100 else (2 if health > 50 else 1)
+        self.game.player.complete_level(self.game.level_manager.current_level_index, stars=stars)
+        self.game.UI_manager.campaign_map.update_player_progress(
+            self.game.player.player_data['unlocked_levels'],
+            level_stars=self.game.player.level_stars,
+        )
 
         if not screen:
             self.game.UI_manager.level_end_screen = LevelCompletionScreen(self.game.UI_manager,
@@ -54,25 +59,38 @@ class GameStateTransitionHandler:
         if screen.screen_type != 'completion':
             screen.screen_type = 'completion'
 
-        # Star rating: 3 = no damage taken, 2 = healthy (>50 hp), 1 = survived
-        health = self.game.player.health
-        stars = 3 if health >= 100 else (2 if health > 50 else 1)
-
         # Auto-save progress
         try:
             self.game.save_game(1)
         except Exception as e:
             print(f"Auto-save failed: {e}")
 
+        level = self.game.level_manager.current_level
+        total_waves = len(level.enemy_wave_list) if level else 0
         self.game.audio_manager.play_sfx('level_complete')
-        self.game.UI_manager.level_end_screen.open_screen(stars=stars)
+        self.game.UI_manager.level_end_screen.open_screen(
+            stars=stars,
+            score=self.game.player.levelScore,
+            wave=total_waves,
+            total_waves=total_waves,
+        )
 
     def open_defeat_screen(self):
         self.game.UI_manager.level_end_screen.capturedScreen = capture_screen()
         self.game.UI_manager.level_end_screen.screen_type = 'defeat'
         self.game.audio_manager.play_sfx('level_defeat')
-        self.game.UI_manager.level_end_screen.open_screen()
-        self.game.UI_manager.campaign_map.update_player_progress(self.game.player.unlocked_levels)
+        level = self.game.level_manager.current_level
+        wave_reached = (level.current_wave_index + 1) if level else 0
+        total_waves = len(level.enemy_wave_list) if level else 0
+        self.game.UI_manager.level_end_screen.open_screen(
+            score=self.game.player.levelScore,
+            wave=wave_reached,
+            total_waves=total_waves,
+        )
+        self.game.UI_manager.campaign_map.update_player_progress(
+            self.game.player.unlocked_levels,
+            level_stars=self.game.player.level_stars,
+        )
 
 
 class GameStateManager:

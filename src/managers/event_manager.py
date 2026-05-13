@@ -57,6 +57,10 @@ class EventManager:
             elif game.current_state == GameState.PAUSED:
                 game.UI_manager.pause_screen.close_screen()
                 game.state_manager.change_state(GameState.PLAYING)
+            elif game.current_state in (GameState.LEVEL_COMPLETE, GameState.LEVEL_DEFEAT):
+                game.UI_manager.level_end_screen.close_screen()
+                game.UI_manager.player_info_panel.set_visibility(False)
+                game.state_manager.change_state(GameState.CAMPAIGN_MAP)
         elif game.current_state == GameState.PLAYING:
             # Number keys 1-9 select towers by index
             num_keys = [pygame.K_1, pygame.K_2, pygame.K_3, pygame.K_4, pygame.K_5,
@@ -68,6 +72,8 @@ class EventManager:
                 if idx < len(tower_list):
                     game.tower_selection_panel.update_selected_tower(tower_list[idx])
                     game.is_build_mode = True
+            elif event.key == pygame.K_r:
+                game.tower_manager.toggle_ranges()
             elif event.key == pygame.K_SPACE:
                 # Space bar starts the next wave early
                 level = game.level_manager.current_level

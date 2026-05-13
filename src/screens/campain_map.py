@@ -14,7 +14,6 @@ class Camera:
         self.position = pygame.Vector2(0, 0)
         self.map_size = pygame.Vector2(map_size)
         self.viewport_size = pygame.Vector2(viewport_size)
-        self.move(SCREEN_WIDTH * 3, SCREEN_HEIGHT * 3)
 
     def center_on(self, target_position):
         self.position.x = target_position[0] - self.viewport_size[0] / 2
@@ -61,6 +60,7 @@ class CampaignMap(Screen):
         self.level_positions = _generate_level_positions(30)
         scale_factor = 3
         self.player_progress = player_progress
+        self.level_stars = {}  # str(level_index) -> best star count
         self.level_buttons = []
 
         self.map_image = load_scaled_image('assets/images/screens/campaignMap/campaign_map.png',
@@ -83,6 +83,9 @@ class CampaignMap(Screen):
                              (SCREEN_WIDTH, SCREEN_HEIGHT))
         self._cam_vel_x = 0.0
         self._cam_vel_y = 0.0
+        self._level_font = pygame.font.Font(None, 22)
+        self._tooltip_font = pygame.font.Font(None, 22)
+        self._center_camera_on_progress()
 
     def initialize_buttons(self):
         self.level_buttons.clear()
@@ -100,10 +103,51 @@ class CampaignMap(Screen):
         screen.blit(visible_map, (0, 0))
         screen_rect = pygame.Rect(0, 0, self.camera.viewport_size.x, self.camera.viewport_size.y)
 
-        for button_image, button_rect, _ in self.level_buttons:
+        # Draw connecting path lines between consecutive levels
+        for i in range(len(self.level_positions) - 1):
+            p1 = pygame.Vector2(self.level_positions[i]) - self.camera.position
+            p2 = pygame.Vector2(self.level_positions[i + 1]) - self.camera.position
+            color = (180, 140, 80) if self.level_buttons[i][2] else (80, 80, 80)
+            pygame.draw.line(screen, color, (int(p1.x), int(p1.y)), (int(p2.x), int(p2.y)), 3)
+
+        mouse_pos = pygame.mouse.get_pos()
+        hovered_index = None
+
+        for index, (button_image, button_rect, unlocked) in enumerate(self.level_buttons):
             adjusted_rect = button_rect.move(-self.camera.position.x, -self.camera.position.y)
             if screen_rect.colliderect(adjusted_rect):
                 screen.blit(button_image, adjusted_rect.topleft)
+
+                # Level number label centered on button
+                num_surf = self._level_font.render(str(index + 1), True, (255, 255, 255))
+                num_rect = num_surf.get_rect(center=(adjusted_rect.centerx, adjusted_rect.centery - 8))
+                screen.blit(num_surf, num_rect)
+
+                # Star rating below level number
+                best_stars = self.level_stars.get(str(index), 0)
+                if best_stars > 0:
+                    star_str = "★" * best_stars + "☆" * (3 - best_stars)
+                    star_surf = self._level_font.render(star_str, True, (255, 215, 0))
+                    star_rect = star_surf.get_rect(center=(adjusted_rect.centerx, adjusted_rect.centery + 10))
+                    screen.blit(star_surf, star_rect)
+
+                if adjusted_rect.collidepoint(mouse_pos):
+                    hovered_index = index
+
+        # Hover tooltip
+        if hovered_index is not None:
+            _, _, unlocked = self.level_buttons[hovered_index]
+            status = "Unlocked" if unlocked else "Locked"
+            tip = f"Level {hovered_index + 1}  [{status}]"
+            tip_surf = self._tooltip_font.render(tip, True, (255, 255, 255))
+            padding = 8
+            tw = tip_surf.get_width() + padding * 2
+            th = tip_surf.get_height() + padding * 2
+            tx = min(mouse_pos[0] + 12, SCREEN_WIDTH - tw - 4)
+            ty = max(mouse_pos[1] - th - 4, 4)
+            pygame.draw.rect(screen, (30, 30, 30), (tx, ty, tw, th), border_radius=4)
+            pygame.draw.rect(screen, (120, 120, 120), (tx, ty, tw, th), 1, border_radius=4)
+            screen.blit(tip_surf, (tx + padding, ty + padding))
 
         self._draw_fade_overlay(screen)
 
@@ -128,9 +172,21 @@ class CampaignMap(Screen):
                 self.close_screen()
                 break
 
-    def update_player_progress(self, new_progress):
+    def _center_camera_on_progress(self):
+        """Center the camera on the most recently unlocked level."""
+        if self.player_progress:
+            last_idx = max(self.player_progress) if hasattr(self.player_progress, '__iter__') else 0
+            last_idx = min(last_idx, len(self.level_positions) - 1)
+            self.camera.center_on(self.level_positions[last_idx])
+        else:
+            self.camera.center_on(self.level_positions[0])
+
+    def update_player_progress(self, new_progress, level_stars=None):
         self.player_progress = new_progress
+        if level_stars is not None:
+            self.level_stars = level_stars
         self.initialize_buttons()
+        self._center_camera_on_progress()
 
     def update(self, time_delta):
         super().update(time_delta)

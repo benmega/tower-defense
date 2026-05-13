@@ -18,6 +18,7 @@ class Player:
         self.scores = {}  # Scores for each level
         self.completed_levels = []
         self.unlocked_levels = [0]  # Start with the first level unlocked
+        self.level_stars = {}  # Maps level_index (str) -> best star count
         self.skills = {}  # Skills or buffs
         self.points = 10000  # Starting with an arbitrary number of points for upgrading skills
         self.on_death_callback = on_death_callback
@@ -68,6 +69,8 @@ class Player:
             "totalScore": self.totalScore,
             "levelScores": self.scores,
             "unlocked_levels": self.unlocked_levels,
+            "completed_levels": self.completed_levels,
+            "level_stars": self.level_stars,
             "skills": self.skills,
         }
 
@@ -76,17 +79,22 @@ class Player:
         self.health = data["health"]
         self.totalScore = data["totalScore"]
         self.unlocked_levels = data["unlocked_levels"]
+        self.completed_levels = data.get("completed_levels", [])
+        self.level_stars = data.get("level_stars", {})
         self.skills = data["skills"]
         self.player_data = data
 
-    def complete_level(self, level_index):
+    def complete_level(self, level_index, stars=1):
         if level_index not in self.completed_levels:
             self.completed_levels.append(level_index)
-            # Unlock the next level if applicable
             next_level = level_index + 1
             if next_level not in self.unlocked_levels:
                 self.unlocked_levels.append(next_level)
-                self.player_data = self.to_dict()
+        # Always keep the best star rating
+        key = str(level_index)
+        if stars > self.level_stars.get(key, 0):
+            self.level_stars[key] = stars
+        self.player_data = self.to_dict()
 
 
     def can_upgrade_skill(self, skill_key):
