@@ -1,10 +1,9 @@
 import os
-import sys
 import json
 import pygame
 
 import src.config.config as configuration
-from src.utils.resource_path import resource_path
+from src.utils.resource_path import resource_path, get_save_dir
 from src.utils.screen_utils import capture_screen
 from src.board.game_board import GameBoard
 from src.board.tower_selection_panel import TowerSelectionPanel
@@ -263,35 +262,9 @@ class Game:
     def update_ui(self):
         self.UI_manager.update(self.clock.get_time() / 1000.0)
 
-    @staticmethod
-    def _save_dir() -> str:
-        """
-        Return a writable directory for save files.
-
-        When running from a frozen PyInstaller bundle the install folder may
-        be read-only (e.g. Program Files), so we store saves in
-        %APPDATA%/TowerDefense/save_data on Windows and
-        ~/.local/share/TowerDefense/save_data on other platforms.
-        When running from source we keep the original src/save_data location.
-        """
-        if getattr(sys, 'frozen', False):
-            if os.name == 'nt':
-                base = os.environ.get('APPDATA', os.path.expanduser('~'))
-            else:
-                base = os.path.join(os.path.expanduser('~'), '.local', 'share')
-            save_dir = os.path.join(base, 'TowerDefense', 'save_data')
-        else:
-            save_dir = os.path.join(
-                os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-                'save_data'
-            )
-        os.makedirs(save_dir, exist_ok=True)
-        return save_dir
-
     def save_game(self, save_slot_or_filename):
-        # Determine the filename based on the input parameter
         if isinstance(save_slot_or_filename, int):
-            filename = os.path.join(self._save_dir(), f"savegame_slot{save_slot_or_filename}.json")
+            filename = os.path.join(get_save_dir(), f"savegame_slot{save_slot_or_filename}.json")
         else:
             filename = save_slot_or_filename
 
@@ -306,9 +279,8 @@ class Game:
             print(f"Failed to save game: {e}")
 
     def load_game(self, save_slot_or_filename):
-        # Determine the filename based on the input parameter
         if isinstance(save_slot_or_filename, int):
-            filename = os.path.join(self._save_dir(), f"savegame_slot{save_slot_or_filename}.json")
+            filename = os.path.join(get_save_dir(), f"savegame_slot{save_slot_or_filename}.json")
         else:
             filename = save_slot_or_filename
         try:

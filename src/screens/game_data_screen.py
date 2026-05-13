@@ -7,7 +7,7 @@ import pygame_gui
 from src.config.config import UI_BUTTON_SIZE, SCREEN_WIDTH
 from src.game.game_state import GameState
 from src.screens.screen import Screen
-from src.utils.resource_path import resource_path
+from src.utils.resource_path import get_save_dir
 from src.utils.layout import anchor
 import src.utils.constants as C
 from datetime import datetime
@@ -18,15 +18,10 @@ class GameDataScreen(Screen):
         super().__init__(ui_manager, "assets/images/screens/game_data_screen.png")
         self.load_buttons = []
         self.save_buttons = []
-        self.save_slot_relative_paths = [
-            "src/save_data/savegame_slot1.json",
-            "src/save_data/savegame_slot2.json",
-            "src/save_data/savegame_slot3.json",
-            "src/save_data/savegame_slot4.json",
-            "src/save_data/savegame_slot5.json",
-            "src/save_data/savegame_slot6.json"
+        _save_dir = get_save_dir()
+        self.save_slot_files = [
+            os.path.join(_save_dir, f"savegame_slot{i+1}.json") for i in range(6)
         ]
-        self.save_slot_files = [resource_path(path) for path in self.save_slot_relative_paths]
         self.mode = 'load'
         self.load_save_button_size = UI_BUTTON_SIZE[0] * 6, UI_BUTTON_SIZE[1]
         self.create_buttons(ui_manager)

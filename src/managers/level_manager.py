@@ -4,6 +4,8 @@ import sys
 
 import pygame
 
+from src.config.config import DEBUG
+
 from src.board.wave_panel import WavePanel
 from src.config.config import LEVELS_JSON_PATH
 from src.game.level import Level
@@ -62,9 +64,6 @@ class LevelManager:
         else:
             return None  # No more levels
 
-    def start_next_level(self):
-        self.start_level()
-
     def get_current_level(self):
         if self.current_level_index != -1 and self.current_level_index < len(self.levels):
             return self.levels[self.current_level_index]
@@ -110,15 +109,18 @@ class LevelManager:
             if level_index < 0 or level_index >= len(self.levels):
                 print(f"ERROR: Invalid level index {level_index}. Available levels: 0-{len(self.levels)-1}")
                 return
-            print(f"Starting level {level_index + 1}")
+            if DEBUG:
+                print(f"Starting level {level_index + 1}")
             self.current_level_index = level_index
         else:
             next_level_index = self.current_level_index + 1
             if next_level_index < len(self.levels):
                 self.current_level_index = next_level_index
-                print(f"Starting next level: {self.current_level_index + 1}")
+                if DEBUG:
+                    print(f"Starting next level: {self.current_level_index + 1}")
             else:
-                print("All levels completed!")
+                if DEBUG:
+                    print("All levels completed!")
                 return
 
         self.current_level = self.levels[self.current_level_index]

@@ -1,9 +1,6 @@
 from src.config.config import PLAYER_GOLD, PLAYER_HEALTH
-import os
-import json
 
 from src.screens.skills_screen import all_skills
-from src.utils.helpers import get_asset_path
 
 
 class Player:
@@ -50,19 +47,6 @@ class Player:
         if self.on_death_callback:
             self.on_death_callback()
 
-    def save_game(self, filename="src/save_data/savegame_slot1.json"):
-        full_path = get_asset_path(filename) if not os.path.isabs(filename) else filename
-        os.makedirs(os.path.dirname(full_path), exist_ok=True)
-        with open(full_path, 'w') as f:
-            json.dump(self.player_data, f, indent=4)
-
-    def load_data(self, player_data):
-        self.gold = player_data['player']['gold']
-        self.health = player_data['player']['health']
-        self.scores = player_data['player']['score']
-        self.unlocked_levels = player_data['player']['unlocked_levels']
-        self.skills = player_data['player']['skills']
-
     def to_dict(self):
         return {
             "gold": self.gold,
@@ -73,16 +57,19 @@ class Player:
             "completed_levels": self.completed_levels,
             "level_stars": self.level_stars,
             "skills": self.skills,
+            "points": self.points,
         }
 
     def from_dict(self, data):
         self.gold = data["gold"]
         self.health = data["health"]
         self.totalScore = data["totalScore"]
+        self.scores = data.get("levelScores", {})
         self.unlocked_levels = data["unlocked_levels"]
         self.completed_levels = data.get("completed_levels", [])
         self.level_stars = data.get("level_stars", {})
         self.skills = data["skills"]
+        self.points = data.get("points", 10000)
         self.player_data = data
 
     def complete_level(self, level_index, stars=1):
@@ -136,7 +123,6 @@ class Player:
         new_level = current_level + 1
         self.skills[skill_key] = new_level
 
-        print(f"Upgraded {skill_key} to level {new_level}. Points remaining: {self.points}.")
         self._update_ui()
 
 

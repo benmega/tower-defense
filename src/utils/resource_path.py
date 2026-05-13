@@ -53,6 +53,27 @@ def get_base_path() -> str:
 BASE_PATH: str = get_base_path()
 
 
+def get_save_dir() -> str:
+    """
+    Return a writable directory for save files.
+
+    Frozen builds may install to a read-only location (e.g. Program Files),
+    so saves go to %APPDATA%/TowerDefense/save_data on Windows and
+    ~/.local/share/TowerDefense/save_data elsewhere.
+    When running from source, uses <project_root>/save_data.
+    """
+    if getattr(sys, 'frozen', False):
+        if os.name == 'nt':
+            base = os.environ.get('APPDATA', os.path.expanduser('~'))
+        else:
+            base = os.path.join(os.path.expanduser('~'), '.local', 'share')
+        save_dir = os.path.join(base, 'TowerDefense', 'save_data')
+    else:
+        save_dir = os.path.join(BASE_PATH, 'save_data')
+    os.makedirs(save_dir, exist_ok=True)
+    return save_dir
+
+
 def resource_path(relative_path: str) -> str:
     """
     Return the absolute path to a resource, anchored to BASE_PATH.

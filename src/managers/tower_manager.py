@@ -47,35 +47,15 @@ class TowerManager(EntityManager):
             self.towers.append(tower)
             self.play_build_sound()
         else:
-            print(f"Unknown tower type: {self.selected_tower_type}")
+            if DEBUG:
+                print(f"Unknown tower type: {self.selected_tower_type}")
 
     def play_build_sound(self):
         if self.build_sound:
             self.build_sound.play()
 
-    def upgrade_tower(self, tower_id, upgrade_type):
-        """ Upgrades a tower based on an upgrade type. """
-        for tower in self.towers:
-            if tower.id == tower_id:
-                tower.upgrade(upgrade_type)
-                break
-
-    def remove_tower(self, tower_id):
-        """ Removes a tower based on its ID. """
-        self.towers = [tower for tower in self.towers if tower.id != tower_id]
-
     def get_towers(self):
-        """ Returns a list of all towers. """
         return self.towers
-
-    def handle_attacks(self, enemies):
-        """ Calls each tower's attack method, passing in the list of enemies. """
-        for tower in self.towers:
-            tower.attack(enemies)
-
-    def serialize_towers(self):
-        """ Prepares tower data for saving to a file or for transitioning between levels. """
-        return [tower.serialize() for tower in self.towers]
 
     def draw_towers(self, screen):
         """ Draws all towers onto the screen. """
@@ -126,9 +106,11 @@ class TowerManager(EntityManager):
                                   count=14, color=C.RGB_AMBER, speed=3.0, spread=math.pi*2, life=0.7)
                 return True
             else:
-                print("Invalid position for tower.")
+                if DEBUG:
+                    print("Invalid position for tower.")
         else:
-            print("Not enough gold to build tower.")
+            if DEBUG:
+                print("Not enough gold to build tower.")
         return False
 
     def handle_click(self, pos):
