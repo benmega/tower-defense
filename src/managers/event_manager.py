@@ -11,40 +11,34 @@ class EventManager:
         for event in pygame.event.get():
             game.UI_manager.process_events(event)
 
-            # UI sound feedback
-            if event.type == pygame.USEREVENT and hasattr(event, 'user_type'):
-                if event.user_type == pygame_gui.UI_BUTTON_PRESSED:
-                    game.audio_manager.play_ui_click()
-                elif event.user_type == pygame_gui.UI_BUTTON_ON_HOVERED:
-                    game.audio_manager.play_ui_hover()
-
             if event.type == pygame.QUIT:
                 game.is_running = False
                 return
 
-            if event.type == pygame.USEREVENT:
-                self._handle_ui_event(event, game)
+            # pygame_gui 0.6+ uses dedicated event type IDs (not pygame.USEREVENT)
+            if event.type == pygame_gui.UI_BUTTON_PRESSED:
+                game.audio_manager.play_ui_click()
+                self._handle_button_pressed(event.ui_element, game)
+            elif event.type == pygame_gui.UI_BUTTON_ON_HOVERED:
+                game.audio_manager.play_ui_hover()
+            elif event.type == pygame_gui.UI_HORIZONTAL_SLIDER_MOVED:
+                self._dispatch_slider(event.ui_element, event.value, game)
+            elif event.type == pygame_gui.UI_CONFIRMATION_DIALOG_CONFIRMED:
+                game.UI_manager.game_data_screen.on_confirmation(game)
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 self._handle_mouse_event(event, game)
             elif event.type == pygame.KEYDOWN:
                 self._handle_key_event(event, game)
 
-    def _handle_ui_event(self, event, game):
-        if not hasattr(event, 'user_type'):
-            return
-        if event.user_type == pygame_gui.UI_BUTTON_PRESSED:
-            self._dispatch_button(event.ui_element, game)
-            # Secondary handlers that coexist with the primary per-state dispatch
-            from src.game.game_state import GameState
-            if game.current_state == GameState.PLAYING:
-                game.UI_manager.player_info_panel.handle_events(event, game)
-                game.tower_info_panel.handle_events(event, game)
-            elif game.current_state == GameState.PAUSED:
-                game.UI_manager.pause_screen.handle_events(event, game)
-        elif event.user_type == pygame_gui.UI_HORIZONTAL_SLIDER_MOVED:
-            self._dispatch_slider(event.ui_element, event.value, game)
-        elif event.user_type == pygame_gui.UI_CONFIRMATION_DIALOG_CONFIRMED:
-            game.UI_manager.game_data_screen.on_confirmation(game)
+    def _handle_button_pressed(self, ui_element, game):
+        """Route a button press to the correct handler(s) for the current game state."""
+        self._dispatch_button(ui_element, game)
+        # Secondary handlers for states that have inline panels
+        if game.current_state == GameState.PLAYING:
+            game.UI_manager.player_info_panel.handle_button(ui_element, game)
+            game.tower_info_panel.handle_button(ui_element, game)
+        elif game.current_state == GameState.PAUSED:
+            game.UI_manager.pause_screen.handle_button(ui_element, game)
 
     def _handle_key_event(self, event, game):
         if event.key == pygame.K_ESCAPE:

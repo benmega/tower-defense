@@ -160,22 +160,20 @@ class PlayerInfoPanel:
         for element in self.ui_elements:
             element.visible = visible
 
-    def handle_events(self, event, game):
+    def handle_button(self, ui_element, game):
         """Handle button clicks for HUD buttons."""
-        if event.type == pygame.USEREVENT:
-            if event.user_type == pygame_gui.UI_BUTTON_PRESSED:
-                if event.ui_element == self.build_button:
-                    game.is_build_mode = not game.is_build_mode
-                    if not game.is_build_mode:
-                        game.tower_selection_panel.deselect()
-                elif event.ui_element == self.pause_button:
-                    game.state_manager.change_state(GameState.PAUSED)
-                elif event.ui_element == self.speed_button:
-                    if configuration.GAME_SPEED_MULTIPLIER == 1.0:
-                        configuration.GAME_SPEED_MULTIPLIER = 2.0
-                        self.speed_button.set_text(">>2x")
-                    else:
-                        configuration.GAME_SPEED_MULTIPLIER = 1.0
-                        self.speed_button.set_text("1x")
-                elif event.ui_element == self.ranges_button:
-                    game.tower_manager.toggle_ranges()
+        if ui_element == self.build_button:
+            game.is_build_mode = not game.is_build_mode
+            if not game.is_build_mode:
+                game.tower_selection_panel.deselect()
+        elif ui_element == self.pause_button:
+            game.state_manager.change_state(GameState.PAUSED)
+        elif ui_element == self.speed_button:
+            if configuration.GAME_SPEED_MULTIPLIER == 1.0:
+                configuration.GAME_SPEED_MULTIPLIER = 2.0
+                self.speed_button.set_text(">>2x")
+            else:
+                configuration.GAME_SPEED_MULTIPLIER = 1.0
+                self.speed_button.set_text("1x")
+        elif ui_element == self.ranges_button:
+            game.tower_manager.toggle_ranges()

@@ -102,19 +102,17 @@ class PauseScreen:
             sub_rect = sub.get_rect(centerx=SCREEN_WIDTH // 2, y=panel_y + 52)
             screen.blit(sub, sub_rect)
 
-    def handle_events(self, event, game):
-        if event.type == pygame.USEREVENT:
-            if event.user_type == pygame_gui.UI_BUTTON_PRESSED:
-                if event.ui_element == self.resume_button:
-                    self.close_screen()
-                    game.state_manager.change_state(GameState.PLAYING)
-                elif event.ui_element == self.restart_button:
-                    self.close_screen()
-                    level_index = game.level_manager.current_level_index
-                    game.initialize_game(level_index)
-                elif event.ui_element == self.options_button:
-                    game.state_manager.change_state(GameState.OPTIONS)
-                elif event.ui_element == self.quit_button:
-                    self.close_screen()
-                    game.set_gameboard_ui_visibility(False)
-                    game.state_manager.change_state(GameState.MAIN_MENU)
+    def handle_button(self, ui_element, game):
+        if ui_element == self.resume_button:
+            self.close_screen()
+            game.state_manager.change_state(GameState.PLAYING)
+        elif ui_element == self.restart_button:
+            self.close_screen()
+            level_index = game.level_manager.current_level_index
+            game.initialize_game(level_index)
+        elif ui_element == self.options_button:
+            game.state_manager.change_state(GameState.OPTIONS)
+        elif ui_element == self.quit_button:
+            self.close_screen()
+            game.set_gameboard_ui_visibility(False)
+            game.state_manager.change_state(GameState.MAIN_MENU)
