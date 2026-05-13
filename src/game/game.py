@@ -75,6 +75,8 @@ class Game:
         self._last_dt = 0.0
         self._game_surface = pygame.Surface((configuration.SCREEN_WIDTH, configuration.SCREEN_HEIGHT))
         self._campaign_win_played = False
+        self._invalid_placement_timer = 0.0
+        self._invalid_placement_pos = None
 
     def initialize_game(self, level_num=-1):
         self.level_manager.load_levels()
@@ -322,6 +324,8 @@ class Game:
             return
 
         mouse_x, mouse_y = pygame.mouse.get_pos()
+        if self.tower_selection_panel.is_within_panel((mouse_x, mouse_y)):
+            return
         # Snap to nearest grid cell
         grid_x = (mouse_x // configuration.TILE_SIZE[0]) * configuration.TILE_SIZE[0]
         grid_y = (mouse_y // configuration.TILE_SIZE[1]) * configuration.TILE_SIZE[1]
@@ -353,6 +357,17 @@ class Game:
                 (int(tower_center_x), int(tower_center_y)),
                 int(default_range), 1
             )
+
+        # Decay invalid-placement flash
+        if self._invalid_placement_timer > 0:
+            self._invalid_placement_timer -= self._last_dt
+            if self._invalid_placement_pos:
+                alpha = min(255, int(255 * self._invalid_placement_timer / 0.8))
+                font = pygame.font.Font(None, 20)
+                surf = font.render("Can't place here!", True, (255, 80, 80))
+                surf.set_alpha(alpha)
+                fx, fy = self._invalid_placement_pos
+                self.screen.blit(surf, (fx - surf.get_width() // 2, fy - 30))
 
     def _draw_tower_ranges_to(self, surface):
         """Draw range circles for all towers onto the given surface."""

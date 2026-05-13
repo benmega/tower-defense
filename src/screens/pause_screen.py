@@ -12,6 +12,7 @@ class PauseScreen:
         self.ui_manager = ui_manager
         self.overlay = None
         self.capturedScreen = None
+        self.level_index = None
 
         panel_w, panel_h = 300, 280
         panel_x = SCREEN_WIDTH // 2 - panel_w // 2
@@ -49,12 +50,13 @@ class PauseScreen:
             visible=False
         )
 
-    def open_screen(self):
+    def open_screen(self, level_index=None):
         self.visible = True
         self.resume_button.visible = True
         self.restart_button.visible = True
         self.options_button.visible = True
         self.quit_button.visible = True
+        self.level_index = level_index
         # Capture the current screen before showing pause overlay
         self.capturedScreen = pygame.display.get_surface().copy()
         self.overlay = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT), flags=pygame.SRCALPHA)
@@ -93,6 +95,12 @@ class PauseScreen:
         title = font.render("PAUSED", True, constants.RGB_AMBER)
         title_rect = title.get_rect(centerx=SCREEN_WIDTH // 2, y=panel_y + 10)
         screen.blit(title, title_rect)
+
+        if self.level_index is not None:
+            sub_font = pygame.font.Font(None, 24)
+            sub = sub_font.render(f"Level {self.level_index + 1}", True, (180, 180, 180))
+            sub_rect = sub.get_rect(centerx=SCREEN_WIDTH // 2, y=panel_y + 52)
+            screen.blit(sub, sub_rect)
 
     def handle_events(self, event, game):
         if event.type == pygame.USEREVENT:

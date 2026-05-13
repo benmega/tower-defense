@@ -100,9 +100,12 @@ class EventManager:
                 # Check if clicking on a placed tower first
                 clicked_tower = game.tower_manager.handle_click(event.pos)
                 if not clicked_tower and game.is_build_mode and game.tower_manager.selected_tower_type is not None:
-                    game.tower_manager.add_tower_if_possible(
+                    placed = game.tower_manager.add_tower_if_possible(
                         event.pos[0], event.pos[1], game.player, game
                     )
+                    if not placed:
+                        game._invalid_placement_timer = 0.8
+                        game._invalid_placement_pos = event.pos
                     # Stay in build mode so the player can keep placing without re-selecting
 
     def _dispatch_button(self, ui_element, game):

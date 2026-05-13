@@ -38,7 +38,8 @@ class GameStateTransitionHandler:
         self.game.audio_manager.play_sfx('level_start')
 
     def open_pause_screen(self):
-        self.game.UI_manager.pause_screen.open_screen()
+        level_index = self.game.level_manager.current_level_index
+        self.game.UI_manager.pause_screen.open_screen(level_index=level_index)
         # Lower music volume while paused
         self.game.audio_manager.set_volume(music_volume=0.3)
 

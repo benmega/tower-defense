@@ -146,6 +146,15 @@ class PlayerInfoPanel:
         text_rect = health_text.get_rect(center=(x + health_bar_width // 2, y + health_bar_height // 2))
         screen.blit(health_text, text_rect)
 
+        # Keyboard shortcuts hint
+        hint_font = pygame.font.Font(None, 13)
+        hints = ["1-9: Tower  R: Ranges", "Space: Skip wave  ESC: Pause"]
+        hint_y = y + health_bar_height + 40  # below HUD buttons
+        for hint in hints:
+            hint_surf = hint_font.render(hint, True, (130, 130, 130))
+            screen.blit(hint_surf, (x, hint_y))
+            hint_y += 14
+
     def set_visibility(self, visible):
         self.visible = visible
         for element in self.ui_elements:
