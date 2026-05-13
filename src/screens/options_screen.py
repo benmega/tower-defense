@@ -39,7 +39,7 @@ class OptionsScreen(Screen):
 
         self.music_volume_slider = pygame_gui.elements.UIHorizontalSlider(
             relative_rect=slider_rects[0],
-            start_value=self.audio_manager.music_volume,
+            start_value=self.audio_manager.music_volume * 100,
             value_range=(0, 100),
             manager=self.ui_manager,
             visible=False
@@ -47,7 +47,7 @@ class OptionsScreen(Screen):
 
         self.sfx_volume_slider = pygame_gui.elements.UIHorizontalSlider(
             relative_rect=slider_rects[1],
-            start_value=self.audio_manager.sfx_volume,
+            start_value=self.audio_manager.sfx_volume * 100,
             value_range=(0, 100),
             manager=self.ui_manager,
             visible=False
@@ -98,10 +98,10 @@ class OptionsScreen(Screen):
 
     def on_slider_moved(self, ui_element, value):
         if ui_element == self.music_volume_slider:
-            pygame.mixer.music.set_volume(value / 100)
+            self.audio_manager.set_volume(music_volume=value / 100)
             self.music_value_label.set_text(f"{int(value)}%")
         elif ui_element == self.sfx_volume_slider:
-            self.audio_manager.set_sfx_volume(value)
+            self.audio_manager.set_sfx_volume(value / 100)
             self.sfx_value_label.set_text(f"{int(value)}%")
 
     def on_button_pressed(self, ui_element, game):

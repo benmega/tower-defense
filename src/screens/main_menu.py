@@ -47,7 +47,16 @@ class MainMenu:
             visible=True
         )
 
-        save_files = glob.glob('src/save_data/*.json')
+        import sys, os
+        if getattr(sys, 'frozen', False):
+            if os.name == 'nt':
+                base = os.environ.get('APPDATA', os.path.expanduser('~'))
+            else:
+                base = os.path.join(os.path.expanduser('~'), '.local', 'share')
+            _save_dir = os.path.join(base, 'TowerDefense', 'save_data')
+        else:
+            _save_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), '..', 'save_data')
+        save_files = glob.glob(os.path.join(_save_dir, '*.json'))
         if not save_files:
             self.continue_button.disable()
 

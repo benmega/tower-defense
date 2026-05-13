@@ -5,6 +5,7 @@ import pygame
 import pygame_gui
 
 from src.config.config import UI_BUTTON_SIZE, SCREEN_WIDTH
+from src.game.game_state import GameState
 from src.screens.screen import Screen
 from src.utils.resource_path import resource_path
 from src.utils.layout import anchor
@@ -99,6 +100,10 @@ class GameDataScreen(Screen):
             return f"Slot {index + 1}: Empty"
 
     def on_button_pressed(self, ui_element, game):
+        if ui_element == self.return_button:
+            self.close_screen()
+            game.state_manager.change_state(game.previous_state or GameState.MAIN_MENU)
+            return
         if ui_element == self.toggle_button:
             self.toggle_mode()
             return
