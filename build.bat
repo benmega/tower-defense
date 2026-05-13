@@ -1,33 +1,4 @@
 @echo off
-<<<<<<< HEAD
-echo Building Tower Defense for itch.io...
-
-echo Installing build dependencies...
-pip install pyinstaller pillow
-
-echo Running PyInstaller...
-pyinstaller build.spec
-
-if %errorlevel% neq 0 (
-    echo Build failed!
-    exit /b 1
-)
-
-echo Creating distribution zip...
-cd dist
-powershell -Command "Compress-Archive -Path 'TowerDefense' -DestinationPath 'TowerDefense.zip' -Force"
-cd ..
-
-if exist dist\TowerDefense.zip (
-    echo.
-    echo Build successful!
-    echo Distribution ready at: dist\TowerDefense.zip
-) else (
-    echo.
-    echo Failed to create distribution zip
-    exit /b 1
-)
-=======
 :: ============================================================
 :: build.bat  --  Build TowerDefense for distribution (itch.io)
 ::
@@ -112,8 +83,6 @@ echo.
 
 :: ------------------------------------------------------------
 :: 4. Copy save_data into the dist folder
-::    (provides pre-populated slot files so the game can load
-::     them on first run; players' actual saves go to %%APPDATA%%)
 :: ------------------------------------------------------------
 echo [4/5] Copying save_data...
 if exist "%PROJECT_ROOT%src\save_data" (
@@ -153,4 +122,3 @@ echo ============================================================
 
 endlocal
 exit /b 0
->>>>>>> claude/laughing-ardinghelli-b72776
