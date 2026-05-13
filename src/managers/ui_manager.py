@@ -10,11 +10,6 @@ from src.screens.skills_screen import SkillsScreen
 from src.screens.pause_screen import PauseScreen
 
 
-def capture_screen():
-    # Capture the current display surface
-    return pygame.display.get_surface().copy()
-
-
 class UIManager(pygame_gui.UIManager):
     def __init__(self, window_size, theme_path, game):
         super().__init__(window_size, theme_path)

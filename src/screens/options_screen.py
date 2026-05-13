@@ -106,6 +106,8 @@ class OptionsScreen(Screen):
 
     def on_button_pressed(self, ui_element, game):
         if ui_element == self.back_button:
-            game.state_manager.change_state(GameState.MAIN_MENU, self)
+            self.close_screen()
+            dest = game.previous_state if game.previous_state else GameState.MAIN_MENU
+            game.state_manager.change_state(dest)
         elif ui_element == self.fullscreen_toggle:
             pygame.display.toggle_fullscreen()

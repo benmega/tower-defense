@@ -2,10 +2,7 @@ import pygame
 
 from src.game.game_state import GameState
 from src.screens.level_completion import LevelCompletionScreen
-
-
-def capture_screen():
-    return pygame.display.get_surface().copy()
+from src.utils.screen_utils import capture_screen
 
 
 class GameStateTransitionHandler:
@@ -57,8 +54,18 @@ class GameStateTransitionHandler:
         if screen.screen_type != 'completion':
             screen.screen_type = 'completion'
 
+        # Star rating: 3 = no damage taken, 2 = healthy (>50 hp), 1 = survived
+        health = self.game.player.health
+        stars = 3 if health >= 100 else (2 if health > 50 else 1)
+
+        # Auto-save progress
+        try:
+            self.game.save_game(1)
+        except Exception as e:
+            print(f"Auto-save failed: {e}")
+
         self.game.audio_manager.play_sfx('level_complete')
-        self.game.UI_manager.level_end_screen.open_screen()
+        self.game.UI_manager.level_end_screen.open_screen(stars=stars)
 
     def open_defeat_screen(self):
         self.game.UI_manager.level_end_screen.capturedScreen = capture_screen()

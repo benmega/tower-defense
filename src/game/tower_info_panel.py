@@ -1,7 +1,7 @@
 import pygame
 import pygame_gui
 
-from src.config.config import SCREEN_WIDTH, SCREEN_HEIGHT, UI_BUTTON_SIZE, GAME_BOARD_SCREEN_SIZE
+from src.config.config import SCREEN_WIDTH, SCREEN_HEIGHT, UI_BUTTON_SIZE, GAME_BOARD_SCREEN_SIZE, TOWER_TYPES
 import src.utils.constants as constants
 
 
@@ -12,8 +12,8 @@ class TowerInfoPanel:
         self.tower = None
 
         # Panel dimensions
-        self.panel_width = 220
-        self.panel_height = 200
+        self.panel_width = 230
+        self.panel_height = 230
         self.panel_x = GAME_BOARD_SCREEN_SIZE[0] + 15
         self.panel_y = SCREEN_HEIGHT - self.panel_height - 20
 
@@ -35,10 +35,24 @@ class TowerInfoPanel:
             visible=False
         )
 
-    def show(self, tower):
+    def show(self, tower, player_gold=None):
         self.visible = True
         self.tower = tower
-        self.upgrade_button.visible = tower.can_upgrade()
+        if tower.can_upgrade():
+            can_afford = player_gold is None or player_gold >= tower.upgrade_cost
+            label = f'Upgrade ({tower.upgrade_cost}g)' if can_afford else f'Upgrade ({tower.upgrade_cost}g) ✗'
+            self.upgrade_button.set_text(label)
+            self.upgrade_button.visible = True
+            if can_afford:
+                self.upgrade_button.enable()
+            else:
+                self.upgrade_button.disable()
+        else:
+            self.upgrade_button.set_text('Max Level')
+            self.upgrade_button.disable()
+            self.upgrade_button.visible = True
+        self.sell_button.set_text(f'Sell ({tower.sell_value}g)')
+        self.sell_button.enable()
         self.sell_button.visible = True
 
     def hide(self):
@@ -63,23 +77,29 @@ class TowerInfoPanel:
             1, border_radius=constants.RADIUS_MD
         )
 
-        # Tower info text
         font = pygame.font.Font(None, 20)
+        small_font = pygame.font.Font(None, 17)
         tower = self.tower
 
+        # Next-level stats for upgrade preview
+        next_dmg = int(tower.damage * 1.25) if tower.can_upgrade() else None
+        next_range = int(tower.attack_range * 1.1) if tower.can_upgrade() else None
+
         lines = [
-            f"{tower.tower_type}",
-            f"Damage: {int(tower.damage)}",
-            f"Range: {int(tower.attack_range)}",
-            f"Speed: {tower.attack_speed}",
-            f"Value: {tower.sell_value}g"
+            (f"{tower.tower_type}  [Lv {tower.upgrade_level}]", font, constants.RGB_AMBER),
+            (f"Damage: {int(tower.damage)}" + (f" → {next_dmg}" if next_dmg else ""), font, (255, 255, 255)),
+            (f"Range:  {int(tower.attack_range)}" + (f" → {next_range}" if next_range else ""), font, (255, 255, 255)),
+            (f"Speed:  {tower.attack_speed}", font, (255, 255, 255)),
         ]
+        desc = TOWER_TYPES.get(tower.tower_type, {}).get('description', '')
+        if desc:
+            lines.append((desc, small_font, (180, 180, 180)))
 
         y = self.panel_y + 10
-        for line in lines:
-            text = font.render(line, True, (255, 255, 255))
-            screen.blit(text, (self.panel_x + 10, y))
-            y += 18
+        for text_str, f, color in lines:
+            surf = f.render(text_str, True, color)
+            screen.blit(surf, (self.panel_x + 10, y))
+            y += f.size("A")[1] + 2
 
     def handle_events(self, event, game):
         if event.type == pygame.USEREVENT:

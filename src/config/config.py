@@ -42,62 +42,77 @@ TOWER_TYPES = {
     'Advanced': {
         'cost': 150,
         'image_path': 'assets/images/towers/advanced_tower.png',
+        'description': 'Faster, stronger shots than Basic. Good all-rounder.',
     },
     'Basic': {
         'image_path': 'assets/images/towers/basic_tower.png',
         'cost': 100,
+        'description': 'Cheap starter tower. Low damage, decent range.',
     },
     'Cannon': {
         'image_path': 'assets/images/towers/cannon_tower.png',
         'cost': 250,
+        'description': 'Fires a slow shell that explodes on impact, damaging nearby enemies.',
     },
     'Debuff': {
         'image_path': 'assets/images/towers/debuff_tower.png',
         'cost': 800,
+        'description': 'Weakens enemies so they take more damage from all towers.',
     },
     'Electric': {
         'image_path': 'assets/images/towers/electric_tower.png',
         'cost': 400,
+        'description': 'Chains lightning between nearby enemies. Great vs. swarms.',
     },
     'Flame': {
         'image_path': 'assets/images/towers/flame_tower.png',
         'cost': 300,
+        'description': 'Sets enemies on fire. Burn damage continues after the hit.',
     },
     'Frost': {
         'image_path': 'assets/images/towers/frost_tower.png',
         'cost': 350,
+        'description': 'Slows enemies, giving other towers more time to fire.',
     },
     'GoldBoost': {
         'image_path': 'assets/images/towers/gold_boost_tower.png',
         'cost': 750,
+        'description': 'Increases gold earned from enemies killed in its range.',
     },
     'Laser': {
         'image_path': 'assets/images/towers/laser_tower.png',
         'cost': 450,
+        'description': 'Continuous beam deals sustained damage. Ideal for tanks.',
     },
     'Missile': {
         'image_path': 'assets/images/towers/missile_tower.png',
         'cost': 500,
+        'description': 'Homing missiles with splash damage. Effective vs. flying enemies.',
     },
     'Multi': {
         'image_path': 'assets/images/towers/multi_target_tower.png',
         'cost': 650,
+        'description': 'Attacks multiple enemies at once. Excellent crowd control.',
     },
     'Poison': {
         'image_path': 'assets/images/towers/poison_tower.png',
         'cost': 550,
+        'description': 'Poisons enemies over time. Damage stacks with multiple hits.',
     },
     'Sniper': {
         'image_path': 'assets/images/towers/sniper_tower.png',
         'cost': 200,
+        'description': 'Long range, high damage shot that pierces through enemies.',
     },
     'SpeedBoost': {
         'image_path': 'assets/images/towers/speed_boost_tower.png',
         'cost': 700,
+        'description': 'Increases attack speed of nearby towers.',
     },
     'Splash': {
         'image_path': 'assets/images/towers/splash_tower.png',
         'cost': 600,
+        'description': 'Area-of-effect attack that hits all enemies in a radius.',
     },
 }
 

@@ -47,15 +47,22 @@ class PlayerInfoPanel:
             manager=self.ui_manager)
         self.ui_elements.append(self.enemy_count_label)
 
+        # Wave counter label
+        self.wave_label = pygame_gui.elements.UILabel(
+            relative_rect=pygame.Rect((start_x, start_y + 3 * (label_height + spacing)), (panel_width, label_height)),
+            text="Wave: -",
+            manager=self.ui_manager)
+        self.ui_elements.append(self.wave_label)
+
         # Health bar (label only, drawn in draw() method)
         self.health_label = pygame_gui.elements.UILabel(
-            relative_rect=pygame.Rect((start_x, start_y + 3 * (label_height + spacing)), (panel_width, 20)),
+            relative_rect=pygame.Rect((start_x, start_y + 4 * (label_height + spacing)), (panel_width, 20)),
             text="",
             manager=self.ui_manager)
         self.ui_elements.append(self.health_label)
 
         # HUD Buttons
-        button_start_y = start_y + 4 * (label_height + spacing) + 20
+        button_start_y = start_y + 5 * (label_height + spacing) + 20
         btn_spacing = 5
         btn_width = int(panel_width / 4 - btn_spacing)
 
@@ -95,11 +102,17 @@ class PlayerInfoPanel:
         )
         self.ui_elements.append(self.ranges_button)
 
-    def update(self, enemy_manager):
+    def update(self, enemy_manager, current_level=None, level_index=None, is_build_mode=False):
         self.enemy_manager_ref = enemy_manager
         self.gold_label.set_text(f"Gold: {self.player.gold}")
         self.score_label.set_text(f"Score: {self.player.levelScore}")
         self.enemy_count_label.set_text(f"Enemies: {len(enemy_manager.entities)}")
+        self.build_button.set_text("Cancel" if is_build_mode else "Build")
+        if current_level is not None:
+            wave_num = current_level.current_wave_index + 1
+            total_waves = len(current_level.enemy_wave_list)
+            level_tag = f"  (Lv {level_index + 1})" if level_index is not None else ""
+            self.wave_label.set_text(f"Wave: {wave_num}/{total_waves}{level_tag}")
 
     def draw(self, screen):
         if not self.visible:
@@ -108,7 +121,7 @@ class PlayerInfoPanel:
         # Draw health bar
         panel_width = screen.get_width() - GAME_BOARD_SCREEN_SIZE[0]
         start_x = screen.get_width() - panel_width - 2
-        health_bar_y = 10 + 3 * 36
+        health_bar_y = 10 + 4 * 36
 
         health_bar_width = panel_width - 20
         health_bar_height = 20
@@ -143,12 +156,9 @@ class PlayerInfoPanel:
         if event.type == pygame.USEREVENT:
             if event.user_type == pygame_gui.UI_BUTTON_PRESSED:
                 if event.ui_element == self.build_button:
-                    # Toggle build mode
                     game.is_build_mode = not game.is_build_mode
-                    if game.is_build_mode:
-                        self.build_button.set_text("Exit")
-                    else:
-                        self.build_button.set_text("Build")
+                    if not game.is_build_mode:
+                        game.tower_selection_panel.deselect()
                 elif event.ui_element == self.pause_button:
                     game.state_manager.change_state(GameState.PAUSED)
                 elif event.ui_element == self.speed_button:

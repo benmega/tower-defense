@@ -13,11 +13,12 @@ class PauseScreen:
         self.overlay = None
         self.capturedScreen = None
 
-        panel_w, panel_h = 300, 220
+        panel_w, panel_h = 300, 280
         panel_x = SCREEN_WIDTH // 2 - panel_w // 2
         panel_y = SCREEN_HEIGHT // 2 - panel_h // 2
         btn_x = SCREEN_WIDTH // 2 - UI_BUTTON_SIZE[0] // 2
         btn_start_y = panel_y + 50
+        btn_stride = UI_BUTTON_SIZE[1] + constants.SPACE_LG
 
         self.resume_button = pygame_gui.elements.UIButton(
             relative_rect=pygame.Rect((btn_x, btn_start_y), UI_BUTTON_SIZE),
@@ -26,19 +27,22 @@ class PauseScreen:
             object_id=pygame_gui.core.ObjectID(class_id="@button"),
             visible=False
         )
+        self.restart_button = pygame_gui.elements.UIButton(
+            relative_rect=pygame.Rect((btn_x, btn_start_y + btn_stride), UI_BUTTON_SIZE),
+            text='Restart Level',
+            manager=self.ui_manager,
+            object_id=pygame_gui.core.ObjectID(class_id="@button"),
+            visible=False
+        )
         self.options_button = pygame_gui.elements.UIButton(
-            relative_rect=pygame.Rect(
-                (btn_x, btn_start_y + UI_BUTTON_SIZE[1] + constants.SPACE_LG), UI_BUTTON_SIZE
-            ),
+            relative_rect=pygame.Rect((btn_x, btn_start_y + btn_stride * 2), UI_BUTTON_SIZE),
             text='Options',
             manager=self.ui_manager,
             object_id=pygame_gui.core.ObjectID(class_id="@button"),
             visible=False
         )
         self.quit_button = pygame_gui.elements.UIButton(
-            relative_rect=pygame.Rect(
-                (btn_x, btn_start_y + (UI_BUTTON_SIZE[1] + constants.SPACE_LG) * 2), UI_BUTTON_SIZE
-            ),
+            relative_rect=pygame.Rect((btn_x, btn_start_y + btn_stride * 3), UI_BUTTON_SIZE),
             text='Quit to Menu',
             manager=self.ui_manager,
             object_id=pygame_gui.core.ObjectID(class_id="@button"),
@@ -48,6 +52,7 @@ class PauseScreen:
     def open_screen(self):
         self.visible = True
         self.resume_button.visible = True
+        self.restart_button.visible = True
         self.options_button.visible = True
         self.quit_button.visible = True
         # Capture the current screen before showing pause overlay
@@ -58,6 +63,7 @@ class PauseScreen:
     def close_screen(self):
         self.visible = False
         self.resume_button.visible = False
+        self.restart_button.visible = False
         self.options_button.visible = False
         self.quit_button.visible = False
 
@@ -69,7 +75,7 @@ class PauseScreen:
         if self.overlay:
             screen.blit(self.overlay, (0, 0))
 
-        panel_w, panel_h = 300, 220
+        panel_w, panel_h = 300, 280
         panel_x = SCREEN_WIDTH // 2 - panel_w // 2
         panel_y = SCREEN_HEIGHT // 2 - panel_h // 2
         pygame.draw.rect(
@@ -89,17 +95,18 @@ class PauseScreen:
         screen.blit(title, title_rect)
 
     def handle_events(self, event, game):
-        # Resume on Escape while paused
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_ESCAPE:
-                game.state_manager.change_state(GameState.PLAYING)
         if event.type == pygame.USEREVENT:
             if event.user_type == pygame_gui.UI_BUTTON_PRESSED:
                 if event.ui_element == self.resume_button:
+                    self.close_screen()
                     game.state_manager.change_state(GameState.PLAYING)
+                elif event.ui_element == self.restart_button:
+                    self.close_screen()
+                    level_index = game.level_manager.current_level_index
+                    game.initialize_game(level_index)
                 elif event.ui_element == self.options_button:
                     game.state_manager.change_state(GameState.OPTIONS)
                 elif event.ui_element == self.quit_button:
+                    self.close_screen()
                     game.set_gameboard_ui_visibility(False)
                     game.state_manager.change_state(GameState.MAIN_MENU)
-                    self.close_screen()

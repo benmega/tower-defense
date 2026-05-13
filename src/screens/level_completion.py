@@ -6,10 +6,7 @@ from src.config.config import UI_BUTTON_SIZE, GAME_BOARD_SCREEN_SIZE, SCREEN_WID
 from src.game.game_state import GameState
 from src.utils.helpers import load_scaled_image
 from src.utils.layout import center_rect, stack_rects
-
-
-def capture_screen():
-    return pygame.display.get_surface().copy()
+from src.utils.screen_utils import capture_screen
 
 
 def draw_star(surface, color, center, size):
@@ -95,16 +92,32 @@ class LevelCompletionScreen:
             self._draw_stars(screen)
 
     def _draw_stars(self, screen):
-        """Draw 1-3 stars above the buttons."""
+        """Draw 1-3 stars and star-rating criteria."""
         star_y = self.y + 40
-        star_color = (255, 215, 0)
+        gold = (255, 215, 0)
+        grey = (120, 120, 120)
 
-        if self.stars >= 1:
-            draw_star(screen, star_color, (self.x + self.width // 2 - 30, star_y), 12)
-        if self.stars >= 2:
-            draw_star(screen, star_color, (self.x + self.width // 2, star_y), 12)
-        if self.stars >= 3:
-            draw_star(screen, star_color, (self.x + self.width // 2 + 30, star_y), 12)
+        centers = [
+            (self.x + self.width // 2 - 36, star_y),
+            (self.x + self.width // 2,      star_y),
+            (self.x + self.width // 2 + 36, star_y),
+        ]
+        for i, center in enumerate(centers):
+            color = gold if self.stars >= i + 1 else grey
+            draw_star(screen, color, center, 14)
+
+        # Criteria hint
+        font = pygame.font.Font(None, 18)
+        criteria = [
+            (gold,  "★★★  No damage taken"),
+            (gold if self.stars >= 2 else grey, "★★    Health above 50"),
+            (gold if self.stars >= 1 else grey, "★      Survived"),
+        ]
+        cy = star_y + 28
+        for color, text in criteria:
+            surf = font.render(text, True, color)
+            screen.blit(surf, surf.get_rect(centerx=self.x + self.width // 2, y=cy))
+            cy += surf.get_height() + 2
 
     def update(self, time_delta):
         self.ui_manager.update(time_delta)

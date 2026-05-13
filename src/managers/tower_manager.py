@@ -13,7 +13,7 @@ class TowerManager(EntityManager):
         super().__init__()
         self.player = player  # Reference to the player object to access skills
         self.towers = []
-        self.selected_tower_type = 'Basic'
+        self.selected_tower_type = None
         self.selected_tower = None
         self.show_ranges = False
         self.tower_types = {

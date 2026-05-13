@@ -5,6 +5,7 @@ import pygame
 
 import src.config.config as configuration
 from src.utils.resource_path import resource_path
+from src.utils.screen_utils import capture_screen
 from src.board.game_board import GameBoard
 from src.board.tower_selection_panel import TowerSelectionPanel
 from src.entities.Player import Player
@@ -21,11 +22,6 @@ from src.managers.ui_manager import UIManager
 from src.effects.particle_system import ParticleSystem
 from src.effects.screen_shake import ScreenShake
 from src.utils import constants as C
-
-
-def capture_screen():
-    # Capture the current display surface
-    return pygame.display.get_surface().copy()
 
 
 class Game:
@@ -137,11 +133,12 @@ class Game:
 
             # Draw UI overlays directly (not affected by shake)
             self.tower_selection_panel.draw()
+            self._draw_wave_countdown(current_level)
             # Draw placement preview
             self._draw_placement_preview()
             # Update and draw tower info panel
             if self.tower_manager.selected_tower:
-                self.tower_info_panel.show(self.tower_manager.selected_tower)
+                self.tower_info_panel.show(self.tower_manager.selected_tower, self.player.gold)
             else:
                 self.tower_info_panel.hide()
             self.tower_info_panel.draw(self.screen)
@@ -192,7 +189,12 @@ class Game:
             )
             if self.level_manager.current_level:
                 self.level_manager.wave_panel.update(time_delta, self.level_manager.current_level.enemy_wave_list)
-            self.UI_manager.player_info_panel.update(self.enemy_manager)
+            self.UI_manager.player_info_panel.update(
+                self.enemy_manager,
+                current_level=self.level_manager.current_level,
+                level_index=self.level_manager.current_level_index,
+                is_build_mode=self.is_build_mode,
+            )
             self.check_game_over()
 
     def check_game_over(self):
@@ -297,6 +299,21 @@ class Game:
     def player_on_death_callback(self):
         self.state_manager.change_state(GameState.LEVEL_DEFEAT)
         self.set_gameboard_ui_visibility(False)
+
+    def _draw_wave_countdown(self, current_level):
+        """Show next-wave countdown just above the selection panel."""
+        if not current_level:
+            return
+        now = pygame.time.get_ticks()
+        panel_y = self.tower_selection_panel.panel_y
+        for wave in current_level.enemy_wave_list:
+            secs = (wave.start_time - now) / 1000.0
+            if secs > 0:
+                label = f"Next wave in: {secs:.1f}s  [SPACE to skip]"
+                font = pygame.font.Font(None, 22)
+                surf = font.render(label, True, (60, 60, 60))
+                self.screen.blit(surf, (self.screen.get_width() - surf.get_width() - 10, panel_y - surf.get_height() - 4))
+                break
 
     def _draw_placement_preview(self):
         """Draw a preview of the tower being placed, showing range and validity."""
