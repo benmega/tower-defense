@@ -77,6 +77,7 @@ class Game:
         self._campaign_win_played = False
         self._invalid_placement_timer = 0.0
         self._invalid_placement_pos = None
+        self._resource_gen_timer = 0.0
 
     def initialize_game(self, level_num=-1):
         self.level_manager.load_levels()
@@ -190,6 +191,7 @@ class Game:
                 self.enemy_manager.add_enemy(enemy)
             self.enemy_manager.update()
             self.tower_manager.update(self.enemy_manager.get_enemies(), self.projectile_manager)
+            self._tick_resource_generation(time_delta)
             self.projectile_manager.update_entities()
             self.collision_manager.handle_group_collisions(
                 self.enemy_manager.entities, self.projectile_manager.projectiles
@@ -216,6 +218,20 @@ class Game:
                 print("Campaign finished")
                 return True
         return False
+
+    def _tick_resource_generation(self, time_delta):
+        """Award passive gold from resource_generation skill (per tower, per 5s)."""
+        gen_level = self.player.skills.get('resource_generation', 0)
+        if gen_level == 0:
+            return
+        self._resource_gen_timer += time_delta
+        if self._resource_gen_timer >= 5.0:
+            self._resource_gen_timer -= 5.0
+            tower_count = len(self.tower_manager.towers)
+            if tower_count > 0:
+                gold = tower_count * gen_level
+                self.player.add_gold(gold)
+                self.UI_manager.player_info_panel.gold_label.set_text(f"Gold: {self.player.gold}")
 
     def enemy_defeated_callback(self, enemy):
         self.player.levelScore += enemy.score_value
