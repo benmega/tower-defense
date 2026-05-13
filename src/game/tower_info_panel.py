@@ -107,6 +107,10 @@ class TowerInfoPanel:
                 if event.ui_element == self.upgrade_button and self.tower:
                     if game.player.spend_gold(self.tower.upgrade_cost):
                         self.tower.upgrade()
+                        import src.utils.constants as C
+                        game.particles.emit(self.tower.x + 16, self.tower.y + 16,
+                                           count=18, color=C.RGB_AMBER, speed=3.5, life=0.7)
+                        game.tower_manager.play_build_sound()
                         # Update button visibility
                         self.upgrade_button.visible = self.tower.can_upgrade()
                 elif event.ui_element == self.sell_button and self.tower:

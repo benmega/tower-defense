@@ -141,12 +141,14 @@ class LevelCompletionScreen:
     def update(self, time_delta):
         self.ui_manager.update(time_delta)
 
-    def open_screen(self, stars: int = 1, score: int = 0, wave: int = 0, total_waves: int = 0):
+    def open_screen(self, stars: int = 1, score: int = 0, wave: int = 0, total_waves: int = 0, has_next_level: bool = True):
         self.visible = True
         self.stars = stars
         self.final_score = score
         self.wave_reached = wave
         self.total_waves = total_waves
+        if self.screen_type == 'completion':
+            self.next_level_button.set_text('Next Level' if has_next_level else 'Back to Map')
         self.next_level_button.visible = True
         self.replay_button.visible = True
         self.main_menu_button.visible = True
@@ -168,6 +170,12 @@ class LevelCompletionScreen:
 
     def on_button_pressed(self, ui_element, game):
         if ui_element == self.next_level_button:
+            if self.screen_type == 'completion':
+                next_idx = game.level_manager.current_level_index + 1
+                if next_idx < len(game.level_manager.levels):
+                    self.close_screen()
+                    game.initialize_game(next_idx)
+                    return
             game.state_manager.change_state(GameState.CAMPAIGN_MAP, self)
             game.UI_manager.player_info_panel.set_visibility(False)
         elif ui_element == self.replay_button:

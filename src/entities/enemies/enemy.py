@@ -133,11 +133,16 @@ class Enemy(pygame.sprite.Sprite):
         pygame.draw.rect(screen, (180, 0, 0), (x, y, bar_w, bar_h))
         pygame.draw.rect(screen, (0, 200, 0), (x, y, fill, bar_h))
 
-        # Blue border overlay when slowed
+        # Blue tint when slowed
         if self.slow_effect_active:
-            slow_surf = pygame.Surface((self.rect.width, self.rect.height), pygame.SRCALPHA)
-            slow_surf.fill((60, 120, 255, 70))
-            screen.blit(slow_surf, self.rect.topleft)
+            tint = pygame.Surface((self.rect.width, self.rect.height), pygame.SRCALPHA)
+            tint.fill((60, 120, 255, 70))
+            screen.blit(tint, self.rect.topleft)
+        # Green tint when poisoned
+        if self.poisoned:
+            tint = pygame.Surface((self.rect.width, self.rect.height), pygame.SRCALPHA)
+            tint.fill((0, 200, 60, 80))
+            screen.blit(tint, self.rect.topleft)
 
     def apply_gold_boost(self, boost_factor):
         # Apply gold boost. Only one boost allowed per enemy

@@ -68,12 +68,15 @@ class GameStateTransitionHandler:
 
         level = self.game.level_manager.current_level
         total_waves = len(level.enemy_wave_list) if level else 0
+        current_idx = self.game.level_manager.current_level_index
+        has_next = current_idx + 1 < len(self.game.level_manager.levels)
         self.game.audio_manager.play_sfx('level_complete')
         self.game.UI_manager.level_end_screen.open_screen(
             stars=stars,
             score=self.game.player.levelScore,
             wave=total_waves,
             total_waves=total_waves,
+            has_next_level=has_next,
         )
 
     def open_defeat_screen(self):
