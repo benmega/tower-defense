@@ -45,3 +45,5 @@ class EnemyManager(EntityManager):
 
     def draw(self, screen):
         self.entities.draw(screen)
+        for enemy in self.entities:
+            enemy.draw_health_bar(screen)

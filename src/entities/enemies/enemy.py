@@ -15,6 +15,7 @@ class Enemy(pygame.sprite.Sprite):
         self.image = load_scaled_image(image_path, TILE_SIZE).convert_alpha()
         self.rect = self.image.get_rect(topleft=path[0])
         self.health = health
+        self.max_health = health
         self.speed = speed
         self.path = path
         self.path_index = 0
@@ -120,6 +121,23 @@ class Enemy(pygame.sprite.Sprite):
                 self.poisoned = False
                 self.poison_damage = 0
 
+
+    def draw_health_bar(self, screen):
+        if self.state == 'dead':
+            return
+        bar_w = self.rect.width
+        bar_h = 4
+        x = self.rect.left
+        y = self.rect.top - 6
+        fill = max(0, int(bar_w * self.health / self.max_health))
+        pygame.draw.rect(screen, (180, 0, 0), (x, y, bar_w, bar_h))
+        pygame.draw.rect(screen, (0, 200, 0), (x, y, fill, bar_h))
+
+        # Blue border overlay when slowed
+        if self.slow_effect_active:
+            slow_surf = pygame.Surface((self.rect.width, self.rect.height), pygame.SRCALPHA)
+            slow_surf.fill((60, 120, 255, 70))
+            screen.blit(slow_surf, self.rect.topleft)
 
     def apply_gold_boost(self, boost_factor):
         # Apply gold boost. Only one boost allowed per enemy
