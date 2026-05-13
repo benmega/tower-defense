@@ -113,8 +113,8 @@ class LevelCompletionScreen:
         # Criteria hint
         font = pygame.font.Font(None, 18)
         criteria = [
-            (gold,  "★★★  No damage taken"),
-            (gold if self.stars >= 2 else grey, "★★    Health above 50"),
+            (gold,  "★★★  Full health"),
+            (gold if self.stars >= 2 else grey, "★★    Health above 50%"),
             (gold if self.stars >= 1 else grey, "★      Survived"),
         ]
         cy = star_y + 28

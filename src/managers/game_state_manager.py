@@ -47,7 +47,8 @@ class GameStateTransitionHandler:
         self.game.UI_manager.level_end_screen.capturedScreen = capture_screen()
         screen = self.game.UI_manager.level_end_screen
         health = self.game.player.health
-        stars = 3 if health >= 100 else (2 if health > 50 else 1)
+        max_health = getattr(self.game.player, 'max_health', 100)
+        stars = 3 if health >= max_health else (2 if health > max_health * 0.5 else 1)
         self.game.player.complete_level(self.game.level_manager.current_level_index, stars=stars)
         self.game.UI_manager.campaign_map.update_player_progress(
             self.game.player.player_data['unlocked_levels'],

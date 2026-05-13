@@ -95,6 +95,10 @@ class Game:
             self.state_manager.change_state(GameState.MAIN_MENU)
             return
 
+        # Reset speed to 1x at level start
+        configuration.GAME_SPEED_MULTIPLIER = 1.0
+        self.UI_manager.player_info_panel.speed_button.set_text("1x")
+
         self.player.start_level()
         self.enemy_manager.reset()
         if level_num > -1:
