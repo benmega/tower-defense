@@ -18,13 +18,17 @@ class Camera:
     def center_on(self, target_position):
         self.position.x = target_position[0] - self.viewport_size[0] / 2
         self.position.y = target_position[1] - self.viewport_size[1] / 2
+        self.position.x = max(0, min(self.map_size.x - self.viewport_size.x, self.position.x))
+        self.position.y = max(0, min(self.map_size.y - self.viewport_size.y, self.position.y))
 
     def move(self, dx, dy):
         self.position.x = max(0, min(self.map_size.x - self.viewport_size.x, self.position.x + dx))
         self.position.y = max(0, min(self.map_size.y - self.viewport_size.y, self.position.y + dy))
 
     def get_visible_area(self):
-        return pygame.Rect(self.position.x, self.position.y, self.viewport_size.x, self.viewport_size.y)
+        x = max(0, min(int(self.position.x), int(self.map_size.x - self.viewport_size.x)))
+        y = max(0, min(int(self.position.y), int(self.map_size.y - self.viewport_size.y)))
+        return pygame.Rect(x, y, int(self.viewport_size.x), int(self.viewport_size.y))
 
 
 def _generate_level_positions(count: int, cols: int = 6) -> list:
