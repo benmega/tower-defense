@@ -10,6 +10,7 @@ class Player:
     def __init__(self, update_ui_callback, on_death_callback):
         self.gold = PLAYER_GOLD
         self.health = PLAYER_HEALTH
+        self.max_health = PLAYER_HEALTH
         self.totalScore = 0
         self.levelScore = 0
         #self.player_progress = {'unlocked_levels': [0]}  # list of completed levels
@@ -146,5 +147,6 @@ class Player:
 
     def start_level(self):
         self.gold = PLAYER_GOLD + self.skills.get('additional_gold', 0) * 100
-        self.health = PLAYER_HEALTH + self.skills.get('additional_health', 0) * 100
+        self.max_health = PLAYER_HEALTH + self.skills.get('additional_health', 0) * 100
+        self.health = self.max_health
         self.levelScore = 0

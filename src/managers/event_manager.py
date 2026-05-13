@@ -61,6 +61,12 @@ class EventManager:
                 game.UI_manager.level_end_screen.close_screen()
                 game.UI_manager.player_info_panel.set_visibility(False)
                 game.state_manager.change_state(GameState.CAMPAIGN_MAP)
+            elif game.current_state == GameState.SKILLS:
+                game.UI_manager.skills_screen.close_screen()
+                game.state_manager.change_state(game.previous_state or GameState.CAMPAIGN_MAP)
+            elif game.current_state == GameState.OPTIONS:
+                game.UI_manager.options_screen.close_screen()
+                game.state_manager.change_state(game.previous_state or GameState.MAIN_MENU)
         elif game.current_state == GameState.PLAYING:
             # Number keys 1-9 select towers by index
             num_keys = [pygame.K_1, pygame.K_2, pygame.K_3, pygame.K_4, pygame.K_5,

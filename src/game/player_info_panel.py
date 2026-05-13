@@ -132,7 +132,7 @@ class PlayerInfoPanel:
         pygame.draw.rect(screen, constants.RGB_BG_MID, (x, y, health_bar_width, health_bar_height), border_radius=4)
 
         # Fill
-        max_health = 100
+        max_health = getattr(self.player, 'max_health', 100)
         fill_w = int(health_bar_width * self.player.health / max_health) if max_health > 0 else 0
         color = constants.RGB_HEALTH_GREEN if self.player.health / max_health > 0.5 else constants.RGB_HEALTH_RED
         pygame.draw.rect(screen, color, (x, y, fill_w, health_bar_height), border_radius=4)
@@ -142,7 +142,7 @@ class PlayerInfoPanel:
 
         # Health text
         font = pygame.font.Font(None, 14)
-        health_text = font.render(f"Health: {self.player.health}/100", True, (255, 255, 255))
+        health_text = font.render(f"Health: {self.player.health}/{max_health}", True, (255, 255, 255))
         text_rect = health_text.get_rect(center=(x + health_bar_width // 2, y + health_bar_height // 2))
         screen.blit(health_text, text_rect)
 
@@ -171,10 +171,9 @@ class PlayerInfoPanel:
                 elif event.ui_element == self.pause_button:
                     game.state_manager.change_state(GameState.PAUSED)
                 elif event.ui_element == self.speed_button:
-                    # Toggle between 1x and 2x speed
                     if configuration.GAME_SPEED_MULTIPLIER == 1.0:
                         configuration.GAME_SPEED_MULTIPLIER = 2.0
-                        self.speed_button.set_text("2x")
+                        self.speed_button.set_text(">>2x")
                     else:
                         configuration.GAME_SPEED_MULTIPLIER = 1.0
                         self.speed_button.set_text("1x")
