@@ -90,6 +90,8 @@ class Player:
             next_level = level_index + 1
             if next_level not in self.unlocked_levels:
                 self.unlocked_levels.append(next_level)
+        # Accumulate total score
+        self.totalScore += self.levelScore
         # Always keep the best star rating
         key = str(level_index)
         if stars > self.level_stars.get(key, 0):

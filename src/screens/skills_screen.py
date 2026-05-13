@@ -84,6 +84,10 @@ all_skills = {
 }
 
 
+def _skill_display_name(key: str) -> str:
+    return key.replace('_', ' ').title()
+
+
 class SkillsScreen(Screen):
     def __init__(self, ui_manager, player):
         super().__init__(ui_manager, "assets/images/screens/skills_background.png")
@@ -108,6 +112,28 @@ class SkillsScreen(Screen):
         self.initialize_skill_buttons()
         self.initialize_skill_points_label()
 
+    def _prereqs_met(self, skill_key):
+        prereqs = all_skills[skill_key].get('prerequisites', [])
+        return all(self.player.skills.get(p, 0) > 0 for p in prereqs)
+
+    def _skill_button_text(self, skill_key):
+        skill_info = all_skills[skill_key]
+        skill_level = self.player.skills.get(skill_key, 0)
+        name = _skill_display_name(skill_key)
+        if skill_level >= skill_info['max_level']:
+            return f"{name} (MAX)"
+        cost = skill_info['cost_per_level'][skill_level]
+        return f"{name} Lv {skill_level}  [{cost}pts]"
+
+    def _skill_tooltip(self, skill_key):
+        skill_info = all_skills[skill_key]
+        desc = skill_info['description']
+        prereqs = skill_info.get('prerequisites', [])
+        if prereqs:
+            prereq_names = ', '.join(_skill_display_name(p) for p in prereqs)
+            desc += f"  |  Requires: {prereq_names}"
+        return desc
+
     def initialize_skill_buttons(self):
         self.skill_buttons.clear()
         layout = self.grid_layout
@@ -117,26 +143,20 @@ class SkillsScreen(Screen):
             skill_info = all_skills[skill_key]
             skill_level = self.player.skills.get(skill_key, 0)
 
-            if skill_level >= skill_info['max_level']:
-                cost_text = 'MAX'
-            else:
-                cost_text = f"{skill_info['cost_per_level'][skill_level]}pts"
-
-            button_text = f"{skill_key} (Lv {skill_level})\nNext: {cost_text}"
-
             x = layout['margin_left'] + column * (layout['cell_w'] + layout['gap'])
             y = layout['margin_top'] + row * (layout['cell_h'] + layout['gap'])
 
             button = pygame_gui.elements.UIButton(
                 relative_rect=pygame.Rect([x, y], (layout['cell_w'], layout['cell_h'])),
-                text=button_text,
+                text=self._skill_button_text(skill_key),
                 manager=self.ui_manager,
-                tool_tip_text=skill_info['description'],
+                tool_tip_text=self._skill_tooltip(skill_key),
                 visible=self.visible
             )
 
             is_maxed = skill_level >= skill_info['max_level']
-            if is_maxed:
+            prereqs_met = self._prereqs_met(skill_key)
+            if is_maxed or not prereqs_met:
                 button.disable()
 
             self.add_ui_element(button)
@@ -168,37 +188,32 @@ class SkillsScreen(Screen):
         if game.player.can_upgrade_skill(skill_key):
             game.player.upgrade_skill(skill_key)
             new_level = game.player.skills[skill_key]
-
+            btn = self.skill_buttons[skill_index]
+            btn.set_text(self._skill_button_text(skill_key))
             if new_level >= skill_info['max_level']:
-                cost_text = 'MAX'
-                self.skill_buttons[skill_index].disable()
-            else:
-                cost_text = f"{skill_info['cost_per_level'][new_level]}pts"
-
-            button_text = f"{skill_key} (Lv {new_level})\nNext: {cost_text}"
-            self.skill_buttons[skill_index].set_text(button_text)
+                btn.disable()
             self.skill_points_label.set_text(f"Skill Points: {self.player.points}")
             game.audio_manager.play_sfx('skill_unlocked')
+            # Re-evaluate all buttons: buying a skill may unlock prerequisites for others
+            self._refresh_button_states()
+
+    def _refresh_button_states(self):
+        all_skills_keys = list(all_skills.keys())
+        for i, button in enumerate(self.skill_buttons):
+            skill_key = all_skills_keys[i]
+            skill_info = all_skills[skill_key]
+            skill_level = self.player.skills.get(skill_key, 0)
+            button.set_text(self._skill_button_text(skill_key))
+            is_maxed = skill_level >= skill_info['max_level']
+            prereqs_met = self._prereqs_met(skill_key)
+            if is_maxed or not prereqs_met:
+                button.disable()
+            else:
+                button.enable()
 
     def open_screen(self):
         super().open_screen()
-        for button_index, button in enumerate(self.skill_buttons):
-            all_skills_keys = list(all_skills.keys())
-            skill_key = all_skills_keys[button_index]
-            skill_info = all_skills[skill_key]
-            skill_level = self.player.skills.get(skill_key, 0)
-
-            if skill_level >= skill_info['max_level']:
-                cost_text = 'MAX'
-                button.disable()
-            else:
-                cost_text = f"{skill_info['cost_per_level'][skill_level]}pts"
-                button.enable()
-
-            button_text = f"{skill_key} (Lv {skill_level})\nNext: {cost_text}"
-            button.set_text(button_text)
-            button.visible = True
-
+        self._refresh_button_states()
         if self.skill_points_label:
             self.skill_points_label.set_text(f"Skill Points: {self.player.points}")
             self.skill_points_label.visible = True

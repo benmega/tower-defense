@@ -104,7 +104,8 @@ class Game:
         self.is_running = True
         self.state_manager.change_state(GameState.MAIN_MENU)
         while self.is_running:
-            self.frame_time_delta = self.clock.tick(configuration.FPS) / 1000.0
+            raw_dt = self.clock.tick(configuration.FPS) / 1000.0
+            self.frame_time_delta = raw_dt * configuration.GAME_SPEED_MULTIPLIER
             self.event_manager.process_events(self)
             self.update(self.frame_time_delta)
             self.draw()

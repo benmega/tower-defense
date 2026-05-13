@@ -1,6 +1,6 @@
-# tower.py
 from src.entities.entity import Entity
 from src.config.config import DEBUG, TOWER_TYPES, TILE_SIZE
+import src.config.config as configuration
 from src.utils.helpers import load_scaled_image
 
 DEFAULT_TOWER_RANGE = 100
@@ -67,7 +67,7 @@ class Tower(Entity):
         """
         Update the tower's state, potentially launching attacks if enemies are in range.
         """
-        self.cooldown -= 1  # Decrease cooldown by 1 per frame
+        self.cooldown -= configuration.GAME_SPEED_MULTIPLIER
         if self.cooldown <= 0:
             self.cooldown = self.attack_speed
             for enemy in enemies:
