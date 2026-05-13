@@ -1,5 +1,6 @@
 import pygame
 
+import src.config.config as configuration
 from src.entities.enemies.enemy import Enemy
 from src.entities.entity import Entity
 from src.config.config import PROJECTILE_IMAGE_PATH, DEBUG, SCREEN_HEIGHT, SCREEN_WIDTH, TILE_SIZE
@@ -54,8 +55,9 @@ class Projectile(Entity):
         if distance > 0:
             dir_x, dir_y = dir_x / distance, dir_y / distance
 
-        self.rect.x += dir_x * self.speed
-        self.rect.y += dir_y * self.speed
+        effective_speed = self.speed * configuration.GAME_SPEED_MULTIPLIER
+        self.rect.x += dir_x * effective_speed
+        self.rect.y += dir_y * effective_speed
 
         if self.reached_target():
             self.hit_target()  # Apply damage if needed
@@ -63,7 +65,8 @@ class Projectile(Entity):
         elif self.out_of_bounds():
             self.state = 'expired'  # Set state to expired regardless of hit
     def reached_target(self):
-        return ((self.rect.x - self.target.rect.x) ** 2 + (self.rect.y - self.target.rect.y) ** 2) ** 0.5 <= self.speed
+        effective_speed = self.speed * configuration.GAME_SPEED_MULTIPLIER
+        return ((self.rect.x - self.target.rect.x) ** 2 + (self.rect.y - self.target.rect.y) ** 2) ** 0.5 <= effective_speed
 
     def out_of_bounds(self):
         return not (0 <= self.rect.x <= SCREEN_WIDTH and 0 <= self.rect.y <= SCREEN_HEIGHT)

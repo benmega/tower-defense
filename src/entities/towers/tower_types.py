@@ -1,3 +1,4 @@
+import src.config.config as configuration
 from src.config.config import TOWER_TYPES
 from src.effects.damage_effects import AoeDamageEffect
 from src.entities.towers.tower import Tower
@@ -26,7 +27,7 @@ class FlameTower(Tower):
 
     def update(self, enemies, projectile_manager):
         is_primary_target = True
-        self.cooldown -= 1
+        self.cooldown -= configuration.GAME_SPEED_MULTIPLIER
         if self.cooldown <= 0:
             self.cooldown = self.attack_speed
             for enemy in enemies:
