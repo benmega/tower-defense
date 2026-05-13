@@ -219,7 +219,8 @@ class Game:
 
     def enemy_defeated_callback(self, enemy):
         self.player.levelScore += enemy.score_value
-        self.player.add_gold(enemy.gold_value)
+        gold_bonus = self.player.skills.get('gold_per_kill', 0) * 2
+        self.player.add_gold(enemy.gold_value + gold_bonus)
         self.UI_manager.player_info_panel.gold_label.set_text(f"Gold: {self.player.gold}")
         self.UI_manager.player_info_panel.score_label.set_text(f"Score: {self.player.levelScore}")
         self.UI_manager.player_info_panel.enemy_count_label.set_text(f"Enemies: {len(self.enemy_manager.entities)}")

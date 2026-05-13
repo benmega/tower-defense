@@ -95,8 +95,14 @@ class TowerManager(EntityManager):
 
     def apply_initial_skill_effects(self, tower):
         """Applies initial skill effects to a tower upon creation."""
-        damage_boost_level = self.player.skills.get('damage_boost', 0)
-        tower.damage *= (1 + damage_boost_level * 0.05)  # Assuming each level increases damage by 5%
+        skills = self.player.skills
+        damage_boost = skills.get('damage_boost', 0)
+        speed_boost = skills.get('attack_speed', 0)
+        range_boost = skills.get('range_extension', 0)
+        tower.damage = int(tower.damage * (1 + damage_boost * 0.05))
+        tower.attack_range = int(tower.attack_range * (1 + range_boost * 0.06))
+        # Lower attack_speed (cooldown) means faster — reduce by 3% per level
+        tower.attack_speed = max(1, int(tower.attack_speed * (1 - speed_boost * 0.03)))
 
     def update(self, enemies, projectile_manager):
         for tower in self.towers:
