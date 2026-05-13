@@ -1,8 +1,7 @@
 import pygame
 
-
-from src.utils.helpers import load_scaled_image
 import src.config.config as configuration
+from src.utils.helpers import load_scaled_image
 from src.config.config import ENEMY_IMAGE_PATH, TILE_SIZE, DEBUG, ENEMY_GOLD_VALUE, ENEMY_SCORE_VALUE, \
     ENEMY_DAMAGE_TO_PLAYER
 
@@ -103,7 +102,7 @@ class Enemy(pygame.sprite.Sprite):
 
     def update_slow_effect(self):
         if self.slow_effect_active:
-            self.slow_effect_duration -= 1
+            self.slow_effect_duration -= configuration.GAME_SPEED_MULTIPLIER
             if self.slow_effect_duration <= 0:
                 self.speed = self.original_speed
                 self.slow_effect_active = False
@@ -115,8 +114,8 @@ class Enemy(pygame.sprite.Sprite):
 
     def update_poison_effect(self):
         if self.poisoned:
-            self.poison_duration -= 1
-            self.take_damage(self.poison_damage)
+            self.poison_duration -= configuration.GAME_SPEED_MULTIPLIER
+            self.take_damage(self.poison_damage * configuration.GAME_SPEED_MULTIPLIER)
             if self.poison_duration <= 0:
                 self.poisoned = False
                 self.poison_damage = 0
