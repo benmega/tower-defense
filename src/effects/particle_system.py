@@ -47,8 +47,9 @@ class ParticleSystem:
     def draw(self, surface):
         """Draw all particles to the surface."""
         for p in self._particles:
-            alpha = int(255 * (p.life / p.max_life))
-            r = max(1, int(p.radius * (p.life / p.max_life)))
+            frac = max(0.0, p.life / p.max_life)
+            alpha = int(255 * frac)
+            r = max(1, int(p.radius * frac))
             color = (*p.color[:3], alpha)
             tmp = pygame.Surface((r * 2, r * 2), pygame.SRCALPHA)
             pygame.draw.circle(tmp, color, (r, r), r)
