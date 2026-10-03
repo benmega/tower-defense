@@ -41,19 +41,6 @@ class UIManager(pygame_gui.UIManager):
         }
 
 
-    def set_screen(self, screen):
-        self.screen = screen
-        # Make sure to pass the screen to the components that need it
-        self.main_menu.set_screen(screen)  # Implement a set_screen method in MainMenu or directly assign if public
-        # Similarly, update other components that require the screen
-
-    def show_main_menu(self):
-        self.main_menu.visible = True
-        # Hide other components as necessary
-
-    def hide_main_menu(self):
-        self.main_menu.visible = False
-
     def draw_ui(self, screen):
         # Iterate through custom screens and draw if visible
         for screen_name, custom_screen in self.custom_screens.items():
@@ -64,20 +51,3 @@ class UIManager(pygame_gui.UIManager):
 
     def update(self, time_delta):
         super().update(time_delta)
-        # Update custom UI components if necessary
-
-    def show_screen(self, screen_name):
-        # Hide all screens first
-        self.hide_all_screens()
-
-        # Now, show the requested screen
-        if screen_name == "main_menu":
-            self.main_menu.visible = True
-        elif screen_name == "options":
-            self.options_screen.visible = True
-        # Add conditions for other screens
-
-    def hide_all_screens(self):
-        self.main_menu.visible = False
-        self.options_screen.visible = False
-        # Add lines to hide other screens

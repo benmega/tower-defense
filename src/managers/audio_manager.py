@@ -15,6 +15,9 @@ class AudioManager:
         pygame.mixer.init()
         self.music_volume = BACKGROUND_MUSIC_VOLUME
         self.sfx_volume = SOUND_EFFECTS_VOLUME
+        self.is_muted = False
+        self._muted_music_volume = 0
+        self._muted_sfx_volume = 0
 
         try:
             self.build_sound = pygame.mixer.Sound(resource_path('assets/sounds/hammer-hit-on-wood.wav'))
@@ -109,3 +112,14 @@ class AudioManager:
             sound.play()
         else:
             print(f"SFX '{sfx_name}' not found in cache")
+
+    def toggle_mute(self):
+        """Toggle mute state and save/restore volumes."""
+        if self.is_muted:
+            self.set_volume(self._muted_music_volume, self._muted_sfx_volume)
+            self.is_muted = False
+        else:
+            self._muted_music_volume = self.music_volume
+            self._muted_sfx_volume = self.sfx_volume
+            self.set_volume(0, 0)
+            self.is_muted = True

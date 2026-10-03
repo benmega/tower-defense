@@ -19,6 +19,7 @@ PLAYER_HEALTH = 100
 PLAYER_GOLD = 300
 PLAYER_SCORE = 0
 PLAYER_EARLY_WAVE_BONUS_MULTIPLIER = 2
+RESOURCE_GEN_INTERVAL_SECONDS = 5.0  # tick interval for the resource_generation skill
 
 # Default enemy attributes
 ENEMY_HEALTH = 50
@@ -36,6 +37,55 @@ SWARM_ENEMY_IMAGE_PATH = 'assets/images/enemies/swarm_enemy.png'
 TANK_ENEMY_IMAGE_PATH = 'assets/images/enemies/tank_enemy.png'
 BASIC_ENEMY_IMAGE_PATH = 'assets/images/enemies/basic_enemy.png'
 
+# Per-enemy-type tuning (health/speed/armor + type-specific mechanics)
+ENEMY_TYPES = {
+    'Basic': {
+        'health': 100,
+        'speed': 1,
+        'armor': 0.0,
+    },
+    'Fast': {
+        'health': 50,
+        'speed': 5,
+        'armor': 0.0,
+    },
+    'Flying': {
+        'health': 120,
+        'speed': 2,
+        'armor': 0.0,
+    },
+    'Swarm': {
+        'health': 30,
+        'speed': 1.5,
+        'armor': 0.0,
+    },
+    'Tank': {
+        'health': 300,
+        'speed': 1,
+        'armor': 0.20,  # 20% damage reduction — armor_piercing skill counters this
+    },
+    'Siege': {
+        'health': 200,
+        'speed': 1,
+        'armor': 0.15,  # 15% damage reduction
+    },
+    'Healer': {
+        'health': 100,
+        'speed': 1,
+        'armor': 0.10,  # 10% damage reduction — healers are resilient support units
+        'healing_range': 150,       # pixel radius healed enemies must be within
+        'healing_per_frame': 2,     # HP restored per nearby ally per frame
+    },
+    'Stealth': {
+        'health': 80,
+        'speed': 2,
+        'armor': 0.0,
+        'stealth_activation_frames': 180,  # frames without taking damage before turning invisible (3s @ 60fps)
+        'stealth_damage_reduction': 0.5,   # fraction of damage negated while stealthed
+        'stealth_alpha': 100,              # sprite alpha while stealthed (0-255)
+    },
+}
+
 
 # Tower default attributes
 TOWER_TYPES = {
@@ -43,78 +93,137 @@ TOWER_TYPES = {
         'cost': 150,
         'image_path': 'assets/images/towers/advanced_tower.png',
         'description': 'Faster, stronger shots than Basic. Good all-rounder.',
+        'damage': 15,
+        'attack_range': 110,
+        'attack_speed': 16,
     },
     'Basic': {
         'image_path': 'assets/images/towers/basic_tower.png',
         'cost': 100,
         'description': 'Cheap starter tower. Low damage, decent range.',
+        'damage': 10,
+        'attack_range': 110,
+        'attack_speed': 20,
     },
     'Cannon': {
         'image_path': 'assets/images/towers/cannon_tower.png',
         'cost': 250,
         'description': 'Fires a slow shell that explodes on impact, damaging nearby enemies.',
+        'damage': 20,
+        'attack_range': 120,
+        'attack_speed': 40,
     },
     'Debuff': {
         'image_path': 'assets/images/towers/debuff_tower.png',
         'cost': 800,
         'description': 'Weakens enemies so they take more damage from all towers.',
+        'damage': 0,
+        'attack_range': 110,
+        'attack_speed': 20,
     },
     'Electric': {
         'image_path': 'assets/images/towers/electric_tower.png',
         'cost': 400,
         'description': 'Chains lightning between nearby enemies. Great vs. swarms.',
+        'damage': 12,
+        'attack_range': 100,
+        'attack_speed': 20,
     },
     'Flame': {
         'image_path': 'assets/images/towers/flame_tower.png',
         'cost': 300,
         'description': 'Sets enemies on fire. Burn damage continues after the hit.',
+        'damage': 8,
+        'attack_range': 90,
+        'attack_speed': 18,
+        'aoe_radius': 50,
     },
     'Frost': {
         'image_path': 'assets/images/towers/frost_tower.png',
         'cost': 350,
         'description': 'Slows enemies, giving other towers more time to fire.',
+        'damage': 10,
+        'attack_range': 110,
+        'attack_speed': 22,
     },
     'GoldBoost': {
         'image_path': 'assets/images/towers/gold_boost_tower.png',
         'cost': 750,
         'description': 'Increases gold earned from enemies killed in its range.',
+        'damage': 0,
+        'attack_range': 130,
+        'attack_speed': 20,
     },
     'Laser': {
         'image_path': 'assets/images/towers/laser_tower.png',
         'cost': 450,
         'description': 'Continuous beam deals sustained damage. Ideal for tanks.',
+        'damage': 18,
+        'attack_range': 130,
+        'attack_speed': 14,
     },
     'Missile': {
         'image_path': 'assets/images/towers/missile_tower.png',
         'cost': 500,
         'description': 'Homing missiles with splash damage. Effective vs. flying enemies.',
+        'damage': 30,
+        'attack_range': 150,
+        'attack_speed': 45,
     },
     'Multi': {
         'image_path': 'assets/images/towers/multi_target_tower.png',
         'cost': 650,
         'description': 'Attacks multiple enemies at once. Excellent crowd control.',
+        'damage': 8,
+        'attack_range': 110,
+        'attack_speed': 20,
     },
     'Poison': {
         'image_path': 'assets/images/towers/poison_tower.png',
         'cost': 550,
         'description': 'Poisons enemies over time. Damage stacks with multiple hits.',
+        'damage': 0,
+        'attack_range': 100,
+        'attack_speed': 20,
     },
     'Sniper': {
         'image_path': 'assets/images/towers/sniper_tower.png',
         'cost': 200,
         'description': 'Long range, high damage shot that pierces through enemies.',
+        'damage': 25,
+        'attack_range': 220,
+        'attack_speed': 35,
     },
     'SpeedBoost': {
         'image_path': 'assets/images/towers/speed_boost_tower.png',
         'cost': 700,
         'description': 'Increases attack speed of nearby towers.',
+        'damage': 0,
+        'attack_range': 120,
+        'attack_speed': 30,
     },
     'Splash': {
         'image_path': 'assets/images/towers/splash_tower.png',
         'cost': 600,
         'description': 'Area-of-effect attack that hits all enemies in a radius.',
+        'damage': 12,
+        'attack_range': 110,
+        'attack_speed': 22,
     },
 }
+
+# Tower behavior constants
+TOWER_SELL_RATE = 0.75              # fraction of build cost refunded on sell
+TOWER_DEFAULT_SPLASH_RADIUS = 60.0  # pixel radius for the splash_damage skill's AoE
+TOWER_CRIT_DAMAGE_MULTIPLIER = 2    # damage multiplier on a critical hit
+TOWER_SPLASH_DAMAGE_FACTOR = 0.5    # fraction of base damage dealt to splash_damage skill targets
+TOWER_HEAL_ON_HIT_AMOUNT = 1        # player HP restored per healing_ability skill proc
+TOWER_MAX_UPGRADE_LEVEL = 3
+TOWER_UPGRADE_DAMAGE_MULTIPLIER = 1.25
+TOWER_UPGRADE_RANGE_MULTIPLIER = 1.1
+TOWER_UPGRADE_COST_FACTOR = 0.5     # scales with upgrade_level in the upgrade cost formula
+TOWER_PREVIEW_ALPHA = 140           # alpha of the placement-preview sprite (0-255)
+TOWER_MIN_ATTACK_SPEED = 1          # lowest cooldown (frames) attack_speed skill can reach
 
 
 # Projectile attributes
@@ -160,7 +269,7 @@ PROJECTILE_TYPES = {
         'speed': 5,
         'damage': 10,
         'effect': 'slow',
-        'slow_duration': 2,
+        'slow_duration': 60,  # frames (1s @ 60fps)
         'slow_effect': 0.5,
     },
     'Electric': {
@@ -170,6 +279,7 @@ PROJECTILE_TYPES = {
         'effect': 'chain',
         'chain_targets': 3,
         'chain_damage_reduction': 0.2,
+        'chain_jump_range': 100,  # pixel radius to find the next chain-lightning target
     },
     'Laser': {
         'image_path': 'assets/images/projectiles/laser_beam.png',
@@ -229,12 +339,17 @@ PROJECTILE_TYPES = {
         'effect': 'debuff',
         'debuff_effect': 'slow',  # Example debuff effect
         'duration': 3,
+        'damage_multiplier': 1.5,  # Extra damage taken from all towers while debuffed
     },
 }
+
+PROJECTILE_SPLASH_DAMAGE_FACTOR = 0.5  # fraction of hit damage dealt to splash/explode secondary targets
 
 
 # Level configuration
 LEVEL_COUNT = 10
+LEVEL_WAVE_INITIAL_DELAY_MS = 5000     # delay before the first wave of a level starts
+LEVEL_WAVE_SUBSEQUENT_DELAY_MS = 10000  # delay between each subsequent wave
 LEVEL_BACKGROUND_PATH = 'assets/images/gameBoardTiles/grass.png'
 GRASS_IMAGE_PATH = 'assets/images/gameBoardTiles/grass.png'
 ENTRANCE_IMAGE_PATH = 'assets/images/gameBoardTiles/entrance.png'

@@ -31,6 +31,13 @@ class Enemy(pygame.sprite.Sprite):
         self.poisoned = False
         self.poison_damage = 0
         self.poison_duration = 0
+        self.armor = 0.0  # fraction of incoming damage blocked (0.0–1.0)
+        self.debuff_active = False
+        self.damage_taken_multiplier = 1.0
+        self.debuff_duration = 0
+        self.beam_active = False
+        self.beam_damage = 0
+        self.beam_duration = 0
 
     def move(self):
 
@@ -59,14 +66,12 @@ class Enemy(pygame.sprite.Sprite):
                 self.path_index += 1
 
     def is_invisible(self):
-        if self.state == 'dead':
-            return True
-        if self.state == 'idle':
-            return True
+        return self.state in ('dead', 'idle')
 
-    def take_damage(self, amount):
+    def take_damage(self, amount, armor_pierce=0.0):
         if not self.is_invisible():
-            self.health -= amount
+            reduction = max(0.0, self.armor - armor_pierce)
+            self.health -= amount * self.damage_taken_multiplier * (1.0 - reduction)
             if self.health <= 0:
                 self.die()
 
@@ -79,20 +84,9 @@ class Enemy(pygame.sprite.Sprite):
             return  # Skip updating if the enemy is dead or inactive
         self.update_slow_effect()
         self.update_poison_effect()
+        self.update_debuff_effect()
+        self.update_beam_effect()
         self.move()
-
-    def on_collision(self, other_entity):
-        from src.entities.projectiles.projectile import Projectile
-        if isinstance(other_entity, Projectile):
-            self.take_damage(other_entity.damage)  # Apply damage
-            if self.health <= 0:
-                self.die()
-            else:
-                # Check the effect type of the projectile and apply the slow effect if necessary
-                if other_entity.effect == 'slow':
-                    self.apply_slow_effect(percentage_reduction=0.5, duration=60)  # Example values
-                if other_entity.effect == 'poison':
-                    self.apply_poison_effect(other_entity.poison_damage,other_entity.poison_duration)
 
     def apply_slow_effect(self, percentage_reduction, duration):
         if not self.slow_effect_active or self.speed > self.original_speed * (1 - percentage_reduction):
@@ -121,6 +115,32 @@ class Enemy(pygame.sprite.Sprite):
                 self.poison_damage = 0
 
 
+    def apply_debuff_effect(self, multiplier, duration):
+        if not self.debuff_active or multiplier > self.damage_taken_multiplier:
+            self.damage_taken_multiplier = multiplier
+            self.debuff_duration = duration
+            self.debuff_active = True
+
+    def update_debuff_effect(self):
+        if self.debuff_active:
+            self.debuff_duration -= configuration.GAME_SPEED_MULTIPLIER
+            if self.debuff_duration <= 0:
+                self.damage_taken_multiplier = 1.0
+                self.debuff_active = False
+
+    def apply_beam_effect(self, damage_per_tick, duration):
+        self.beam_active = True
+        self.beam_damage = damage_per_tick
+        self.beam_duration = duration
+
+    def update_beam_effect(self):
+        if self.beam_active:
+            self.beam_duration -= configuration.GAME_SPEED_MULTIPLIER
+            self.take_damage(self.beam_damage * configuration.GAME_SPEED_MULTIPLIER)
+            if self.beam_duration <= 0:
+                self.beam_active = False
+                self.beam_damage = 0
+
     def draw_health_bar(self, screen):
         if self.state == 'dead':
             return
@@ -142,8 +162,16 @@ class Enemy(pygame.sprite.Sprite):
             tint = pygame.Surface((self.rect.width, self.rect.height), pygame.SRCALPHA)
             tint.fill((0, 200, 60, 80))
             screen.blit(tint, self.rect.topleft)
+        # Purple tint when debuffed
+        if self.debuff_active:
+            tint = pygame.Surface((self.rect.width, self.rect.height), pygame.SRCALPHA)
+            tint.fill((160, 60, 200, 80))
+            screen.blit(tint, self.rect.topleft)
+        # Orange tint while under a sustained beam
+        if self.beam_active:
+            tint = pygame.Surface((self.rect.width, self.rect.height), pygame.SRCALPHA)
+            tint.fill((255, 140, 0, 70))
+            screen.blit(tint, self.rect.topleft)
 
     def apply_gold_boost(self, boost_factor):
-        # Apply gold boost. Only one boost allowed per enemy
         self.gold_value = int(max(self.gold_value, self.base_gold_value * boost_factor))
-        pass

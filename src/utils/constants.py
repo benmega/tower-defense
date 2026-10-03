@@ -49,6 +49,25 @@ RGB_HEALTH_GREEN = (39, 174, 96)
 RGB_PANEL_BG     = (37, 41, 46)       # tower_selection_panel background
 RGB_OVERLAY      = (26, 29, 34, 180)  # modal semi-transparent overlay
 
+# tower_selection_panel.py tokens (legacy light theme, kept distinct from the panel dark theme above)
+RGB_TOWER_PANEL_BG     = (200, 200, 200)
+RGB_SELECTED_HIGHLIGHT = (255, 255, 0)
+RGB_DIM_OVERLAY         = (0, 0, 0, 140)   # unaffordable-icon dim overlay
+RGB_TEXT_DISABLED      = (80, 80, 80)
+RGB_WARNING_RED        = (180, 40, 40)
+RGB_HINT_GRAY          = (100, 100, 100)
+RGB_TOOLTIP_BG         = (40, 40, 40)
+RGB_TOOLTIP_BORDER     = (120, 120, 120)
+
+# game_board.py path direction chevrons
+PATH_CHEVRON_SPEED = 20     # pixels per second
+PATH_CHEVRON_SIZE  = 6      # pixels
+RGB_PATH_CHEVRON   = (255, 215, 0, 60)  # gold, low alpha
+
+# damage_effects.py AoeDamageEffect
+AOE_EFFECT_LIFETIME_FRAMES = 10
+RGB_AOE_EFFECT = (255, 165, 0, 127)  # orange, semi-transparent
+
 # ── Spacing scale (pixels, base-4) ──────────────────────────────────
 SPACE_XS  = 4
 SPACE_SM  = 8

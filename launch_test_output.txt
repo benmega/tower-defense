@@ -1,0 +1,4 @@
+C:\Users\Ben\AppData\Local\Programs\Python\Python310\lib\site-packages\pygame_gui\core\ui_font_dictionary.py:331: UserWarning: Trying to pre-load font id:Arial_regular_12 with no paths set
+  warnings.warn('Trying to pre-load font id:' + font_id + ' with no paths set')
+C:\Users\Ben\AppData\Local\Programs\Python\Python310\lib\site-packages\pygame_gui\core\ui_font_dictionary.py:331: UserWarning: Trying to pre-load font id:Arial_bold_14 with no paths set
+  warnings.warn('Trying to pre-load font id:' + font_id + ' with no paths set')

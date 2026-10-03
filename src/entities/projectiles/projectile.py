@@ -3,31 +3,20 @@ import pygame
 import src.config.config as configuration
 from src.entities.enemies.enemy import Enemy
 from src.entities.entity import Entity
-from src.config.config import PROJECTILE_IMAGE_PATH, DEBUG, SCREEN_HEIGHT, SCREEN_WIDTH, TILE_SIZE
+from src.config.config import (
+    PROJECTILE_IMAGE_PATH, DEBUG, SCREEN_HEIGHT, SCREEN_WIDTH, TILE_SIZE, FPS,
+    PROJECTILE_SPLASH_DAMAGE_FACTOR,
+)
 from src.utils.helpers import load_scaled_image
 
 
 class Projectile(Entity):
-    '''
-    parent class for all projectile types
-    Basic Tower: A simple round projectile, like a classic cannonball, that's iron grey with a slight metallic sheen.
-    Advanced Tower: A high-velocity bullet with a futuristic design, perhaps with glowing blue trails to show advanced technology.
-    Sniper Tower: A long, thin sniper bullet with a pointed tip, designed to look like it can travel a great distance with high accuracy.
-    Cannon Tower: A large, heavy cannonball with a craggy surface, possibly with a fuse that lights up when fired.
-    Flame Tower: A fireball, engulfed in flames with trailing sparks and embers to suggest intense heat.
-    Frost Tower: An icy shard, crystalline and blue, trailing cold mist and snowflakes.
-    Electric Tower: A jagged bolt of lightning, crackling with electricity and glowing with energy.
-    Laser Tower: A thin, straight laser beam, possibly red or green, that has a bright, glowing core and fades to a lighter color at the edges.
-    Missile Tower: A sleek missile with fins, likely with a red tip, and smoke trailing behind as it flies.
-    Poison Tower: A dripping glob of green, toxic sludge, maybe with bubbles of noxious gas popping as it travels.
-    Splash Tower: A cluster of water droplets, clear and shiny, spreading out from a central point.
-    Multi-Target Tower: Multiple small, steel darts that fan out in a spread pattern.
-    SpeedBoost Tower: No projectile as it's a boost tower, but if it were to have a visual effect, a ripple of energy waves that speed up units.
-    GoldBoost Tower: Similarly, no projectile, but a visual could be a shimmering wave of golden sparkles that signifies the boost effect.
-    Debuff Tower: A dark, shadowy orb that pulses with a negative aura, diminishing the strength of enemies.
-    '''
-    def __init__(self, x, y, target, speed=0, damage=0,image_path=PROJECTILE_IMAGE_PATH,
-                 effect=None, poison_damage=0, poison_duration=0, gold_boost_factor=1 ,**kwargs):
+    def __init__(self, x, y, target, speed=0, damage=0, image_path=PROJECTILE_IMAGE_PATH,
+                 effect=None, poison_damage=0, poison_duration=0, gold_boost_factor=1,
+                 armor_pierce=0.0, slow_effect=0.5, slow_duration=60,
+                 splash_radius=0, explosion_radius=0, chain_targets=0,
+                 chain_damage_reduction=0.0, chain_jump_range=0,
+                 duration=0, damage_multiplier=1.0, **kwargs):
         super().__init__(x, y, image_path)
         self.size = tuple(element // 2 for element in TILE_SIZE)
         self.image = load_scaled_image(image_path, self.size).convert_alpha()
@@ -37,16 +26,28 @@ class Projectile(Entity):
         self.speed = speed
         self.damage = damage
         self.target = target
-        self.state = 'in-flight'  # Only one state for active projectiles
-        self.image_path = image_path
+        self.state = 'in-flight'
         self.effect = effect
         self.poison_damage = poison_damage
         self.poison_duration = poison_duration
         self.gold_boost_factor = gold_boost_factor
+        self.armor_pierce = armor_pierce
+        self.slow_effect = slow_effect
+        self.slow_duration = slow_duration
+        self.splash_radius = splash_radius
+        self.explosion_radius = explosion_radius
+        self.chain_targets = chain_targets
+        self.chain_damage_reduction = chain_damage_reduction
+        self.chain_jump_range = chain_jump_range
+        self.duration = duration
+        self.damage_multiplier = damage_multiplier
+
     def update(self):
         self.move()
 
     def move(self):
+        if self.state == 'expired':
+            return
         if DEBUG:
             print('projectile moving')
         dir_x, dir_y = self.target.rect.x - self.rect.x, self.target.rect.y - self.rect.y
@@ -60,10 +61,11 @@ class Projectile(Entity):
         self.rect.y += dir_y * effective_speed
 
         if self.reached_target():
-            self.hit_target()  # Apply damage if needed
-            self.state = 'expired'  # Set state to expired regardless of hit
+            self.target.take_damage(self.damage, armor_pierce=self.armor_pierce)
+            self.state = 'expired'
         elif self.out_of_bounds():
-            self.state = 'expired'  # Set state to expired regardless of hit
+            self.state = 'expired'
+
     def reached_target(self):
         effective_speed = self.speed * configuration.GAME_SPEED_MULTIPLIER
         return ((self.rect.x - self.target.rect.x) ** 2 + (self.rect.y - self.target.rect.y) ** 2) ** 0.5 <= effective_speed
@@ -71,30 +73,65 @@ class Projectile(Entity):
     def out_of_bounds(self):
         return not (0 <= self.rect.x <= SCREEN_WIDTH and 0 <= self.rect.y <= SCREEN_HEIGHT)
 
-    def hit_target(self):
-        # Apply damage and return True if a hit is detected
-        if self.reached_target():
-            self.target.take_damage(self.damage)
-            return True
-        return False
-
     def draw(self, screen):
         if self.image:
             screen.blit(self.image, (self.rect.x, self.rect.y))
 
-            
-    def on_collision(self, other_entity):
+    def on_collision(self, other_entity, enemies=None):
         if isinstance(other_entity, Enemy):
-            # Apply damage to the enemy
-            other_entity.take_damage(self.damage)
-            self.apply_effect()
-            # If the projectile is not piercing, mark it for removal
+            other_entity.take_damage(self.damage, armor_pierce=self.armor_pierce)
+            enemies = enemies or []
+            if self.effect == 'slow':
+                other_entity.apply_slow_effect(percentage_reduction=self.slow_effect, duration=self.slow_duration)
+            elif self.effect == 'poison':
+                other_entity.apply_poison_effect(self.poison_damage, self.poison_duration)
+            elif self.effect == 'gold_boost':
+                other_entity.apply_gold_boost(self.gold_boost_factor)
+            elif self.effect == 'splash' and self.splash_radius > 0:
+                self._apply_area_damage(other_entity, enemies, self.splash_radius)
+            elif self.effect == 'explode' and self.explosion_radius > 0:
+                self._apply_area_damage(other_entity, enemies, self.explosion_radius)
+            elif self.effect == 'chain' and self.chain_targets > 0:
+                self._apply_chain(other_entity, enemies)
+            elif self.effect == 'continuous' and self.duration > 0:
+                duration_frames = self.duration * FPS
+                other_entity.apply_beam_effect(self.damage / duration_frames, duration_frames)
+            elif self.effect == 'debuff' and self.duration > 0:
+                other_entity.apply_debuff_effect(self.damage_multiplier, self.duration * FPS)
             if not self.isPiercing:
                 self.state = 'expired'
 
-    def apply_effect(self):
-        if self.target:
-            if self.effect == 'poison':
-                self.target.apply_poison_effect(self.poison_damage, self.poison_duration)
-            if self.effect == 'gold_boost':
-                self.target.apply_gold_boost(self.gold_boost_factor)
+    def _apply_area_damage(self, primary_target, enemies, radius):
+        """Deal splash/explode damage to enemies near the primary target's impact point."""
+        cx, cy = primary_target.rect.centerx, primary_target.rect.centery
+        area_damage = self.damage * PROJECTILE_SPLASH_DAMAGE_FACTOR
+        for enemy in enemies:
+            if enemy is primary_target or enemy.state == 'dead':
+                continue
+            dx = enemy.rect.centerx - cx
+            dy = enemy.rect.centery - cy
+            if (dx * dx + dy * dy) ** 0.5 <= radius:
+                enemy.take_damage(area_damage, armor_pierce=self.armor_pierce)
+
+    def _apply_chain(self, initial_target, enemies):
+        """Jump chain-lightning damage between nearby enemies, weakening with each jump."""
+        hit = {initial_target}
+        current_target = initial_target
+        current_damage = self.damage
+        for _ in range(self.chain_targets):
+            current_damage *= (1 - self.chain_damage_reduction)
+            cx, cy = current_target.rect.centerx, current_target.rect.centery
+            candidates = [
+                enemy for enemy in enemies
+                if enemy not in hit and enemy.state != 'dead'
+                and ((enemy.rect.centerx - cx) ** 2 + (enemy.rect.centery - cy) ** 2) ** 0.5 <= self.chain_jump_range
+            ]
+            if not candidates:
+                break
+            next_target = min(
+                candidates,
+                key=lambda enemy: (enemy.rect.centerx - cx) ** 2 + (enemy.rect.centery - cy) ** 2
+            )
+            next_target.take_damage(current_damage, armor_pierce=self.armor_pierce)
+            hit.add(next_target)
+            current_target = next_target

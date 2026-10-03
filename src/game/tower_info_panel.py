@@ -1,7 +1,10 @@
 import pygame
 import pygame_gui
 
-from src.config.config import SCREEN_WIDTH, SCREEN_HEIGHT, UI_BUTTON_SIZE, GAME_BOARD_SCREEN_SIZE, TOWER_TYPES
+from src.config.config import (
+    SCREEN_WIDTH, SCREEN_HEIGHT, UI_BUTTON_SIZE, GAME_BOARD_SCREEN_SIZE, TOWER_TYPES,
+    TOWER_UPGRADE_DAMAGE_MULTIPLIER, TOWER_UPGRADE_RANGE_MULTIPLIER,
+)
 import src.utils.constants as constants
 
 
@@ -82,8 +85,8 @@ class TowerInfoPanel:
         tower = self.tower
 
         # Next-level stats for upgrade preview
-        next_dmg = int(tower.damage * 1.25) if tower.can_upgrade() else None
-        next_range = int(tower.attack_range * 1.1) if tower.can_upgrade() else None
+        next_dmg = int(tower.damage * TOWER_UPGRADE_DAMAGE_MULTIPLIER) if tower.can_upgrade() else None
+        next_range = int(tower.attack_range * TOWER_UPGRADE_RANGE_MULTIPLIER) if tower.can_upgrade() else None
 
         lines = [
             (f"{tower.tower_type}  [Lv {tower.upgrade_level}]", font, constants.RGB_AMBER),
@@ -105,16 +108,14 @@ class TowerInfoPanel:
         if ui_element == self.upgrade_button and self.tower:
             if game.player.spend_gold(self.tower.upgrade_cost):
                 self.tower.upgrade()
-                import src.utils.constants as C
                 game.particles.emit(self.tower.x + 16, self.tower.y + 16,
-                                   count=18, color=C.RGB_AMBER, speed=3.5, life=0.7)
+                                   count=18, color=constants.RGB_AMBER, speed=3.5, life=0.7)
                 game.tower_manager.play_build_sound()
                 self.upgrade_button.visible = self.tower.can_upgrade()
         elif ui_element == self.sell_button and self.tower:
             tower = self.tower
             game.tower_manager.sell_tower(tower, game.player)
-            import src.utils.constants as C
             game.particles.emit(tower.x + 16, tower.y + 16,
-                               count=12, color=C.RGB_GOLD_BRIGHT, speed=2.5, life=0.6)
+                               count=12, color=constants.RGB_GOLD_BRIGHT, speed=2.5, life=0.6)
             game.tower_manager.play_build_sound()
             self.hide()

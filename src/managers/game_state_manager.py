@@ -49,6 +49,8 @@ class GameStateTransitionHandler:
         health = self.game.player.health
         max_health = getattr(self.game.player, 'max_health', 100)
         stars = 3 if health >= max_health else (2 if health > max_health * 0.5 else 1)
+        points_earned = {1: 3, 2: 5, 3: 8}[stars]
+        self.game.player.points += points_earned
         self.game.player.complete_level(self.game.level_manager.current_level_index, stars=stars)
         self.game.UI_manager.campaign_map.update_player_progress(
             self.game.player.player_data['unlocked_levels'],
@@ -78,6 +80,7 @@ class GameStateTransitionHandler:
             wave=total_waves,
             total_waves=total_waves,
             has_next_level=has_next,
+            points_earned=points_earned,
         )
 
     def open_defeat_screen(self):

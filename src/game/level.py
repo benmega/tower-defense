@@ -3,7 +3,7 @@ import os
 
 import pygame
 
-from src.config.config import LEVELS_JSON_PATH
+from src.config.config import LEVELS_JSON_PATH, LEVEL_WAVE_INITIAL_DELAY_MS, LEVEL_WAVE_SUBSEQUENT_DELAY_MS
 from src.entities.enemies.enemy_wave import EnemyWave
 from src.utils.resource_path import resource_path
 
@@ -22,8 +22,8 @@ class Level:
         self.level_number = level_number
         self.active_waves = []  # list of wave objects
         self.current_wave_index = -1
-        self.wave_initial_delay = 5000
-        self.wave_subsequent_delay = 10000  # 10 seconds in milliseconds for subsequent waves
+        self.wave_initial_delay = LEVEL_WAVE_INITIAL_DELAY_MS
+        self.wave_subsequent_delay = LEVEL_WAVE_SUBSEQUENT_DELAY_MS
         self.initialize_wave_start_times()
 
     def initialize_wave_start_times(self):

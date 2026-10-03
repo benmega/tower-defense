@@ -13,73 +13,85 @@ all_skills = {
         "description": "Increases starting gold",
         "max_level": 10,
         "cost_per_level": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-        "prerequisites": []
+        "prerequisites": [],
+        "effect_per_level": 50,  # +50 starting gold per level
     },
     "gold_per_kill": {
         "description": "Increases gold earned per kill",
         "max_level": 10,
         "cost_per_level": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
-        "prerequisites": []
+        "prerequisites": [],
+        "effect_per_level": 2,  # +2 bonus gold per kill per level
     },
     "additional_health": {
         "description": "Increases player's health",
         "max_level": 10,
         "cost_per_level": [2, 3, 5, 7, 9, 11, 13, 15, 17, 20],
-        "prerequisites": []
+        "prerequisites": [],
+        "effect_per_level": 25,  # +25 max HP per level
     },
     "damage_boost": {
         "description": "Increases tower damage",
         "max_level": 10,
         "cost_per_level": [3, 4, 5, 7, 9, 12, 15, 18, 21, 25],
-        "prerequisites": ["additional_gold"]
+        "prerequisites": ["additional_gold"],
+        "effect_per_level": 0.05,  # +5% tower damage per level
     },
     "attack_speed": {
         "description": "Increases tower attack speed",
         "max_level": 8,
         "cost_per_level": [3, 5, 7, 9, 12, 15, 19, 24],
-        "prerequisites": ["gold_per_kill"]
+        "prerequisites": ["gold_per_kill"],
+        "effect_per_level": 0.03,  # -3% attack cooldown per level
     },
     "range_extension": {
         "description": "Increases tower range",
         "max_level": 5,
         "cost_per_level": [4, 8, 12, 17, 23],
-        "prerequisites": ["additional_health"]
+        "prerequisites": ["additional_health"],
+        "effect_per_level": 0.06,  # +6% tower range per level
     },
     "critical_hit_chance": {
         "description": "Increases chance of towers dealing critical damage",
         "max_level": 7,
         "cost_per_level": [5, 10, 15, 21, 28, 36, 45],
-        "prerequisites": ["damage_boost"]
+        "prerequisites": ["damage_boost"],
+        "effect_per_level": 0.05,  # +5% crit chance per level, max 35%
     },
     "healing_ability": {
         "description": "Grants towers a chance to heal a portion of damage dealt",
         "max_level": 6,
         "cost_per_level": [6, 12, 18, 25, 33, 42],
-        "prerequisites": ["attack_speed", "damage_boost"]
+        "prerequisites": ["attack_speed", "damage_boost"],
+        "effect_per_level": 0.05,  # +5% heal-on-hit chance per level, max 30%
     },
     "tower_build_discount": {
         "description": "Reduces the cost of building new towers",
         "max_level": 8,
         "cost_per_level": [2, 4, 6, 8, 11, 14, 18, 23],
-        "prerequisites": ["range_extension"]
+        "prerequisites": ["range_extension"],
+        "effect_per_level": 0.05,  # -5% build cost per level, max 40%
     },
     "resource_generation": {
         "description": "Towers passively generate a small amount of gold over time",
         "max_level": 4,
         "cost_per_level": [5, 10, 16, 23],
-        "prerequisites": ["critical_hit_chance"]
+        "prerequisites": ["critical_hit_chance"],
+        "effect_per_level": 1,  # +1 gold per tower per tick per level
     },
     "splash_damage": {
         "description": "Grants towers a chance to deal splash damage",
         "max_level": 5,
         "cost_per_level": [7, 14, 22, 31, 41],
-        "prerequisites": ["healing_ability", "critical_hit_chance"]
+        "prerequisites": ["healing_ability", "critical_hit_chance"],
+        "effect_per_level": 0.15,  # +15% splash-proc chance per level, max 75%
     },
     "armor_piercing": {
         "description": "Towers ignore a portion of enemy armor",
         "max_level": 7,
         "cost_per_level": [3, 7, 12, 18, 25, 33, 42],
-        "prerequisites": ["splash_damage", "tower_build_discount"]
+        "prerequisites": ["splash_damage", "tower_build_discount"],
+        "effect_per_level": 0.05,  # +5% armor pierced per level, max 35%
     }
 }
 
@@ -156,7 +168,9 @@ class SkillsScreen(Screen):
 
             is_maxed = skill_level >= skill_info['max_level']
             prereqs_met = self._prereqs_met(skill_key)
-            if is_maxed or not prereqs_met:
+            can_afford = (skill_level < skill_info['max_level'] and
+                          self.player.points >= skill_info['cost_per_level'][skill_level])
+            if is_maxed or not prereqs_met or not can_afford:
                 button.disable()
 
             self.add_ui_element(button)
@@ -206,7 +220,9 @@ class SkillsScreen(Screen):
             button.set_text(self._skill_button_text(skill_key))
             is_maxed = skill_level >= skill_info['max_level']
             prereqs_met = self._prereqs_met(skill_key)
-            if is_maxed or not prereqs_met:
+            can_afford = (skill_level < skill_info['max_level'] and
+                          self.player.points >= skill_info['cost_per_level'][skill_level])
+            if is_maxed or not prereqs_met or not can_afford:
                 button.disable()
             else:
                 button.enable()

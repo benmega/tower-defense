@@ -10,7 +10,6 @@ class Player:
         self.max_health = PLAYER_HEALTH
         self.totalScore = 0
         self.levelScore = 0
-        #self.player_progress = {'unlocked_levels': [0]}  # list of completed levels
         self.player_data = {}
         self.update_ui_callback = update_ui_callback  # Function to call when UI needs to be updated
         self.scores = {}  # Scores for each level
@@ -18,7 +17,7 @@ class Player:
         self.unlocked_levels = [0]  # Start with the first level unlocked
         self.level_stars = {}  # Maps level_index (str) -> best star count
         self.skills = {}  # Skills or buffs
-        self.points = 10000  # Starting with an arbitrary number of points for upgrading skills
+        self.points = 0  # Earned by completing levels (3 / 5 / 8 per star rating)
         self.on_death_callback = on_death_callback
 
     def add_gold(self, amount):
@@ -33,7 +32,7 @@ class Player:
         return False
 
     def heal(self, amount):
-        self.health += amount
+        self.health = min(self.health + amount, self.max_health)
         self._update_ui()
 
     def take_damage(self, damage):
@@ -69,7 +68,7 @@ class Player:
         self.completed_levels = data.get("completed_levels", [])
         self.level_stars = data.get("level_stars", {})
         self.skills = data["skills"]
-        self.points = data.get("points", 10000)
+        self.points = data.get("points", 0)
         self.player_data = data
 
     def complete_level(self, level_index, stars=1):
@@ -132,7 +131,9 @@ class Player:
             self.update_ui_callback()
 
     def start_level(self):
-        self.gold = PLAYER_GOLD + self.skills.get('additional_gold', 0) * 100
-        self.max_health = PLAYER_HEALTH + self.skills.get('additional_health', 0) * 100
+        gold_per_level = all_skills['additional_gold']['effect_per_level']
+        health_per_level = all_skills['additional_health']['effect_per_level']
+        self.gold = PLAYER_GOLD + self.skills.get('additional_gold', 0) * gold_per_level
+        self.max_health = PLAYER_HEALTH + self.skills.get('additional_health', 0) * health_per_level
         self.health = self.max_health
         self.levelScore = 0

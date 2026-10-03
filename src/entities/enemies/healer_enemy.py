@@ -1,13 +1,16 @@
-from src.config.config import HEALER_ENEMY_IMAGE_PATH
+from src.config.config import HEALER_ENEMY_IMAGE_PATH, ENEMY_TYPES
 from src.entities.enemies.enemy import Enemy
 
 
 class HealerEnemy(Enemy):
-    HEALING_RANGE = 150
-    HEALING_PER_FRAME = 2
+    _STATS = ENEMY_TYPES['Healer']
+    HEALING_RANGE = _STATS['healing_range']
+    HEALING_PER_FRAME = _STATS['healing_per_frame']
 
     def __init__(self, path, image_path=HEALER_ENEMY_IMAGE_PATH):
-        super().__init__(health=100, speed=1, path=path, image_path=image_path)
+        stats = ENEMY_TYPES['Healer']
+        super().__init__(health=stats['health'], speed=stats['speed'], path=path, image_path=image_path)
+        self.armor = stats['armor']
 
     def update(self, entities=None):
         super().update(entities)

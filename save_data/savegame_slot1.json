@@ -1,0 +1,23 @@
+{
+    "player": {
+        "gold": 469,
+        "health": 80,
+        "totalScore": 3500,
+        "levelScores": {},
+        "unlocked_levels": [
+            0,
+            1,
+            2
+        ],
+        "completed_levels": [
+            0,
+            1
+        ],
+        "level_stars": {
+            "0": 2,
+            "1": 2
+        },
+        "skills": {},
+        "points": 10
+    }
+}

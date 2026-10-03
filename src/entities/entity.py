@@ -1,5 +1,3 @@
-from typing import Optional
-
 import pygame
 from pygame import Surface
 
@@ -41,7 +39,7 @@ class Entity(pygame.sprite.Sprite):
         if self.active and self.image:
             screen.blit(self.image, self.rect.topleft)
 
-    def on_collision(self, other_entity):
+    def on_collision(self, other_entity, enemies=None):
         # Collision handling logic, to be overridden by subclasses
         pass
 

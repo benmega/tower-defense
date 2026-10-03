@@ -31,6 +31,7 @@ class LevelCompletionScreen:
         self.final_score = 0
         self.wave_reached = 0
         self.total_waves = 0
+        self.points_earned = 0
 
         modal_w = int(SCREEN_WIDTH * 0.38)
         modal_h = int(SCREEN_HEIGHT * 0.48)
@@ -132,6 +133,8 @@ class LevelCompletionScreen:
                 lines.append(f"Waves cleared: {self.total_waves}/{self.total_waves}")
             else:
                 lines.append(f"Wave reached: {self.wave_reached}/{self.total_waves}")
+        if self.points_earned > 0:
+            lines.append(f"Skill Points: +{self.points_earned}")
         cy = self.y + self.height // 2 - 30
         for line in lines:
             surf = font.render(line, True, (220, 220, 220))
@@ -141,12 +144,14 @@ class LevelCompletionScreen:
     def update(self, time_delta):
         self.ui_manager.update(time_delta)
 
-    def open_screen(self, stars: int = 1, score: int = 0, wave: int = 0, total_waves: int = 0, has_next_level: bool = True):
+    def open_screen(self, stars: int = 1, score: int = 0, wave: int = 0, total_waves: int = 0,
+                    has_next_level: bool = True, points_earned: int = 0):
         self.visible = True
         self.stars = stars
         self.final_score = score
         self.wave_reached = wave
         self.total_waves = total_waves
+        self.points_earned = points_earned
         if self.screen_type == 'completion':
             self.next_level_button.set_text('Next Level' if has_next_level else 'Back to Map')
         self.next_level_button.visible = True

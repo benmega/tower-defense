@@ -4,13 +4,17 @@
       "Bash(xargs wc *)",
       "Bash(git add *)",
       "Bash(pip install *)",
-      "Read(//c/Users/Ben/PycharmProjects/towerDefense/**)",
+      "Read(//c/Users/Ben/ProgrammingProjects/towerDefense/**)",
       "Bash(bash build.bat)",
-      "PowerShell(cmd /c \"C:\\\\Users\\\\Ben\\\\PycharmProjects\\\\towerDefense\\\\.claude\\\\worktrees\\\\laughing-ardinghelli-b72776\\\\build.bat\")",
+      "PowerShell(cmd /c \"C:\\\\Users\\\\Ben\\\\ProgrammingProjects\\\\towerDefense\\\\.claude\\\\worktrees\\\\laughing-ardinghelli-b72776\\\\build.bat\")",
       "Bash(git commit -m 'Fix: include xml module in PyInstaller build *)",
       "Bash(git commit -m 'Fix: update pygame-gui to 0.5.5 and adjust build.spec module exclusions *)",
       "Bash(python -m py_compile src/main.py src/game/game.py src/managers/*.py)",
-      "Bash(timeout 5 python -c ' *)"
+      "Bash(timeout 5 python -c ' *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git restore *)",
+      "Bash(gh pr *)",
+      "Bash(python -c ' *)"
     ]
   }
 }

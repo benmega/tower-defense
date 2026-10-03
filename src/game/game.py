@@ -8,6 +8,7 @@ from src.utils.screen_utils import capture_screen
 from src.board.game_board import GameBoard
 from src.board.tower_selection_panel import TowerSelectionPanel
 from src.entities.Player import Player
+from src.entities.towers.tower import Tower
 from src.game.game_state import GameState
 from src.managers.audio_manager import AudioManager
 from src.managers.collision_manager import CollisionManager
@@ -20,6 +21,8 @@ from src.managers.tower_manager import TowerManager
 from src.managers.ui_manager import UIManager
 from src.effects.particle_system import ParticleSystem
 from src.effects.screen_shake import ScreenShake
+from src.game.tower_info_panel import TowerInfoPanel
+from src.screens.skills_screen import all_skills
 from src.utils import constants as C
 
 
@@ -63,8 +66,6 @@ class Game:
         self.previous_state = None
         self.is_build_mode = False  # Start in selection mode, not build mode
         self.frame_time_delta = 0.0
-        # Initialize tower info panel after UI_manager
-        from src.game.tower_info_panel import TowerInfoPanel
         self.tower_info_panel = TowerInfoPanel(self.UI_manager)
 
         # Initialize particle system and screen shake
@@ -219,22 +220,23 @@ class Game:
         return False
 
     def _tick_resource_generation(self, time_delta):
-        """Award passive gold from resource_generation skill (per tower, per 5s)."""
+        """Award passive gold from resource_generation skill (per tower, per interval)."""
         gen_level = self.player.skills.get('resource_generation', 0)
         if gen_level == 0:
             return
         self._resource_gen_timer += time_delta
-        if self._resource_gen_timer >= 5.0:
-            self._resource_gen_timer -= 5.0
+        interval = configuration.RESOURCE_GEN_INTERVAL_SECONDS
+        if self._resource_gen_timer >= interval:
+            self._resource_gen_timer -= interval
             tower_count = len(self.tower_manager.towers)
             if tower_count > 0:
-                gold = tower_count * gen_level
+                gold = tower_count * gen_level * all_skills['resource_generation']['effect_per_level']
                 self.player.add_gold(gold)
                 self.UI_manager.player_info_panel.gold_label.set_text(f"Gold: {self.player.gold}")
 
     def enemy_defeated_callback(self, enemy):
         self.player.levelScore += enemy.score_value
-        gold_bonus = self.player.skills.get('gold_per_kill', 0) * 2
+        gold_bonus = self.player.skills.get('gold_per_kill', 0) * all_skills['gold_per_kill']['effect_per_level']
         self.player.add_gold(enemy.gold_value + gold_bonus)
         self.UI_manager.player_info_panel.gold_label.set_text(f"Gold: {self.player.gold}")
         self.UI_manager.player_info_panel.score_label.set_text(f"Score: {self.player.levelScore}")
@@ -329,8 +331,6 @@ class Game:
         else:
             tint_color = (200, 0, 0, 100)  # Red for invalid
 
-        # Get preview surface and blit with transparency
-        from src.entities.towers.tower import Tower
         preview_surface = Tower.get_preview_surface(self.tower_manager.selected_tower_type)
         self.screen.blit(preview_surface, (grid_x, grid_y))
 
@@ -342,13 +342,13 @@ class Game:
         # Draw range circle
         tower_center_x = grid_x + configuration.TILE_SIZE[0] // 2
         tower_center_y = grid_y + configuration.TILE_SIZE[1] // 2
-        tower_class = self.tower_manager.tower_types.get(self.tower_manager.selected_tower_type)
-        if tower_class:
-            default_range = 100  # Default range
+        tower_type_info = configuration.TOWER_TYPES.get(self.tower_manager.selected_tower_type)
+        if tower_type_info:
+            preview_range = tower_type_info['attack_range']
             pygame.draw.circle(
                 self.screen, C.RGB_GOLD_BRIGHT,
                 (int(tower_center_x), int(tower_center_y)),
-                int(default_range), 1
+                int(preview_range), 1
             )
 
         # Decay invalid-placement flash

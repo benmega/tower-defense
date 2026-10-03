@@ -1,6 +1,7 @@
-from src.config.config import FAST_ENEMY_IMAGE_PATH
+from src.config.config import FAST_ENEMY_IMAGE_PATH, ENEMY_TYPES
 from src.entities.enemies.enemy import Enemy
 # Fast Enemy
 class FastEnemy(Enemy):
     def __init__(self, path, image_path=FAST_ENEMY_IMAGE_PATH):
-        super().__init__(health=50, speed=5, path=path, image_path=image_path)
+        stats = ENEMY_TYPES['Fast']
+        super().__init__(health=stats['health'], speed=stats['speed'], path=path, image_path=image_path)

@@ -4,15 +4,10 @@ import pygame
 
 from src.config.config import TILE_SIZE, GRASS_IMAGE_PATH, ENTRANCE_IMAGE_PATH, PATH_IMAGE_PATH, EXIT_IMAGE_PATH
 from src.utils.helpers import load_scaled_image
+import src.utils.constants as C
 
 
 class GameBoard:
-    """
-    Core game class responsible for initializing the game, running the main loop, handling game state transitions (
-    like starting, game over), and managing high-level game events. Potential TODOs: Implementing efficient game
-    state management, optimizing the main game loop for performance, and handling transitions between different parts
-    of the game smoothly.
-    """
 
     def __init__(self, width, height):
         """
@@ -28,14 +23,6 @@ class GameBoard:
         self.exit_image = load_scaled_image(EXIT_IMAGE_PATH, TILE_SIZE)
         if not self.grass_image:
             print("WARNING: Failed to load grass image. Game board may not render properly.")
-        # Load lava and water images for future use
-        try:
-            self.lava_image = load_scaled_image('assets/images/gameBoardTiles/lava.png', TILE_SIZE)
-            self.water_image = load_scaled_image('assets/images/gameBoardTiles/water.png', TILE_SIZE)
-        except Exception as e:
-            print(f"Failed to load lava/water images: {e}")
-            self.lava_image = self.grass_image
-            self.water_image = self.grass_image
         self.grid = [[None for _ in range(width)] for _ in range(height)]
         self.path = [(0, 0), (0, 500), (500, 500)]
         self.path_layout = self.create_path_layout(self.path)
@@ -80,9 +67,9 @@ class GameBoard:
             return
 
         spacing = TILE_SIZE[0]
-        speed = 20  # pixels per second
+        speed = C.PATH_CHEVRON_SPEED
         anim_offset = (self._path_anim_time * speed) % spacing
-        color = (255, 215, 0, 60)  # gold with low alpha
+        color = C.RGB_PATH_CHEVRON
 
         # Create overlay surface for all chevrons
         overlay = pygame.Surface((screen.get_width(), screen.get_height()), pygame.SRCALPHA)
@@ -107,7 +94,7 @@ class GameBoard:
 
                 # Perpendicular direction for chevron width
                 px, py = -ndy, ndx
-                size = 6
+                size = C.PATH_CHEVRON_SIZE
 
                 # Create chevron triangle pointing in direction of travel
                 tip = (int(cx + ndx * size), int(cy + ndy * size))
@@ -159,13 +146,10 @@ class GameBoard:
         return layout
 
     def is_valid_position(self, grid_x, grid_y):
-        '''grid_x and way are tile grid numbers not pixels'''
         return 0 <= grid_x < self.width and 0 <= grid_y < self.height
 
     def is_within_panel(self, mouse_pos):
-        # assumes board is at (0,0)
         x, y = mouse_pos
-        '''grid_x and way are pixel based not tile based'''
         return x < self.width * TILE_SIZE[0] and y < self.height * TILE_SIZE[1]
 
     def can_build_at(self, mouse_pos):

@@ -2,6 +2,7 @@ import pygame
 
 from src.config.config import TOWER_TYPES, UI_FONT_SIZE
 from src.utils.resource_path import resource_path
+import src.utils.constants as C
 
 
 class TowerSelectionPanel:
@@ -23,7 +24,7 @@ class TowerSelectionPanel:
 
     def draw(self):
         # Draw the panel background
-        pygame.draw.rect(self.screen, [200, 200, 200], [0, self.panel_y, self.screen.get_width(), self.panel_height])
+        pygame.draw.rect(self.screen, C.RGB_TOWER_PANEL_BG, [0, self.panel_y, self.screen.get_width(), self.panel_height])
 
         player_gold = getattr(self.tower_manager, 'player', None)
         player_gold = player_gold.gold if player_gold else None
@@ -34,7 +35,7 @@ class TowerSelectionPanel:
 
         # Reusable dark overlay surface for unaffordable icons
         dim_surface = pygame.Surface((self.icon_size, self.icon_size), pygame.SRCALPHA)
-        dim_surface.fill((0, 0, 0, 140))
+        dim_surface.fill(C.RGB_DIM_OVERLAY)
 
         # Draw each tower icon from preloaded images
         for index, (tower_type, tower_info) in enumerate(TOWER_TYPES.items()):
@@ -51,17 +52,17 @@ class TowerSelectionPanel:
 
             # Highlight if selected
             if tower_type == self.tower_manager.selected_tower_type:
-                pygame.draw.rect(self.screen, [255, 255, 0], [x, y, self.icon_size, self.icon_size], 3)
+                pygame.draw.rect(self.screen, C.RGB_SELECTED_HIGHLIGHT, [x, y, self.icon_size, self.icon_size], 3)
 
             # Tower name above the icon (includes hotkey hint for first 9)
             label = f"[{index + 1}] {tower_type}" if index < 9 else tower_type
-            name_color = [80, 80, 80] if not can_afford else [0, 0, 0]
+            name_color = C.RGB_TEXT_DISABLED if not can_afford else C.RGB_BLACK
             name_text = self.font.render(label, True, name_color)
             name_text_rect = name_text.get_rect(center=(x + self.icon_size // 2, y - 20))
             self.screen.blit(name_text, name_text_rect)
 
             # Tower cost below the icon — red if unaffordable
-            cost_color = [180, 40, 40] if not can_afford else [0, 0, 0]
+            cost_color = C.RGB_WARNING_RED if not can_afford else C.RGB_BLACK
             cost_text = self.font.render(f"Cost: {cost}", True, cost_color)
             cost_text_rect = cost_text.get_rect(center=(x + self.icon_size // 2, y + self.icon_size + 20))
             self.screen.blit(cost_text, cost_text_rect)
@@ -77,13 +78,13 @@ class TowerSelectionPanel:
             selected_cost = TOWER_TYPES[selected]['cost']
             if player_gold is not None and player_gold < selected_cost:
                 hint = f"Not enough gold! Need {selected_cost - player_gold} more."
-                hint_color = [180, 40, 40]
+                hint_color = C.RGB_WARNING_RED
             else:
                 hint = "Right-click or ESC to cancel"
-                hint_color = [100, 100, 100]
+                hint_color = C.RGB_HINT_GRAY
         else:
             hint = "(Select a tower to place)"
-            hint_color = [100, 100, 100]
+            hint_color = C.RGB_HINT_GRAY
         status_text = self.font.render(hint, True, hint_color)
         self.screen.blit(status_text, (self.screen.get_width() - 400, self.panel_y + 10))
 
@@ -97,13 +98,13 @@ class TowerSelectionPanel:
         if not description:
             return
         tooltip_font = pygame.font.Font(None, 22)
-        text_surf = tooltip_font.render(description, True, (255, 255, 255))
+        text_surf = tooltip_font.render(description, True, C.RGB_WHITE)
         padding = 8
         tw, th = text_surf.get_width() + padding * 2, text_surf.get_height() + padding * 2
         tx = max(0, min(icon_rect[0], self.screen.get_width() - tw))
         ty = self.panel_y - th - 4
-        pygame.draw.rect(self.screen, (40, 40, 40), (tx, ty, tw, th), border_radius=4)
-        pygame.draw.rect(self.screen, (120, 120, 120), (tx, ty, tw, th), 1, border_radius=4)
+        pygame.draw.rect(self.screen, C.RGB_TOOLTIP_BG, (tx, ty, tw, th), border_radius=4)
+        pygame.draw.rect(self.screen, C.RGB_TOOLTIP_BORDER, (tx, ty, tw, th), 1, border_radius=4)
         self.screen.blit(text_surf, (tx + padding, ty + padding))
 
     def update_selected_tower(self, new_selected_tower_type):
@@ -122,17 +123,6 @@ class TowerSelectionPanel:
                 if icon_x <= x <= icon_x + self.icon_size and icon_y <= y <= icon_y + self.icon_size:
                     self.update_selected_tower(tower_type)
                     game.is_build_mode = True
-                    break
-
-    def handle_mouse_click(self, mouse_pos):
-        # Legacy path kept for callers that don't have a game ref; build mode not toggled here.
-        x, y = mouse_pos
-        if self.is_within_panel(mouse_pos):
-            for index, tower_type in enumerate(TOWER_TYPES.keys()):
-                icon_x = 10 + index * (self.icon_size + self.icon_padding)
-                icon_y = self.panel_y + (self.panel_height - self.icon_size) // 2
-                if icon_x <= x <= icon_x + self.icon_size and icon_y <= y <= icon_y + self.icon_size:
-                    self.update_selected_tower(tower_type)
                     break
 
     def deselect(self):

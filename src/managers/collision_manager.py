@@ -24,14 +24,6 @@ class CollisionManager:
         if hasattr(entity2, 'on_collision') and callable(getattr(entity2, 'on_collision')):
             entity2.on_collision(entity1)
 
-    def handle_collisions(self, entities):
-        """ Handles collisions between individual entities. """
-        for i, entity1 in enumerate(entities):
-            for entity2 in entities[i+1:]:
-                if self.check_collision(entity1, entity2):
-                    self.resolve_collision(entity1, entity2)
-
-
     def handle_group_collisions(self, group1, group2):
         """
         Checks and handles collisions between two groups.
@@ -52,6 +44,6 @@ class CollisionManager:
         for entity1, entities2 in collisions.items():
             for entity2 in entities2:
                 if hasattr(entity1, 'on_collision') and callable(getattr(entity1, 'on_collision')):
-                    entity1.on_collision(entity2)
+                    entity1.on_collision(entity2, group2)
                 if hasattr(entity2, 'on_collision') and callable(getattr(entity2, 'on_collision')):
-                    entity2.on_collision(entity1)
+                    entity2.on_collision(entity1, group1)

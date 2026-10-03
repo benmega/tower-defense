@@ -14,7 +14,6 @@ class PlayerInfoPanel:
         self.screen = screen
         self.visible = False
         self.ui_elements = []
-        self.enemy_manager_ref = None
         self.init_ui()
         self.set_visibility(False)
 
@@ -103,7 +102,6 @@ class PlayerInfoPanel:
         self.ui_elements.append(self.ranges_button)
 
     def update(self, enemy_manager, current_level=None, level_index=None, is_build_mode=False):
-        self.enemy_manager_ref = enemy_manager
         self.gold_label.set_text(f"Gold: {self.player.gold}")
         self.score_label.set_text(f"Score: {self.player.levelScore}")
         self.enemy_count_label.set_text(f"Enemies: {len(enemy_manager.entities)}")
@@ -148,7 +146,7 @@ class PlayerInfoPanel:
 
         # Keyboard shortcuts hint
         hint_font = pygame.font.Font(None, 13)
-        hints = ["1-9: Tower  R: Ranges", "Space: Skip wave  ESC: Pause"]
+        hints = ["1-9: Tower  R: Ranges  M: Mute", "Space: Skip wave  ESC: Pause"]
         hint_y = y + health_bar_height + 40  # below HUD buttons
         for hint in hints:
             hint_surf = hint_font.render(hint, True, (130, 130, 130))

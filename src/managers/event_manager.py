@@ -4,9 +4,6 @@ from src.game.game_state import GameState
 
 
 class EventManager:
-    def __init__(self):
-        self.events = []
-
     def process_events(self, game):
         for event in pygame.event.get():
             game.UI_manager.process_events(event)
@@ -85,6 +82,8 @@ class EventManager:
                             gold_bonus = int(50 * (next_idx + 1))
                             game.player.add_gold(gold_bonus)
                             game.UI_manager.player_info_panel.gold_label.set_text(f"Gold: {game.player.gold}")
+            elif event.key == pygame.K_m:
+                game.audio_manager.toggle_mute()
 
     def _handle_mouse_event(self, event, game):
         if game.current_state == GameState.CAMPAIGN_MAP:
@@ -130,5 +129,3 @@ class EventManager:
         ui = game.UI_manager.options_screen
         ui.on_slider_moved(ui_element, value)
 
-    def add_event(self, event):
-        self.events.append(event)
