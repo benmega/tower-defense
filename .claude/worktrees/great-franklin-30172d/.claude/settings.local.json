@@ -1,9 +1,9 @@
 {
   "permissions": {
     "allow": [
-      "Bash(mkdir -p 'C:/Users/Ben/PycharmProjects/towerDefense/.claude/skills/launch')",
-      "Bash(cp -r 'C:/Users/Ben/PycharmProjects/towerDefense/tools/launch'/* 'C:/Users/Ben/PycharmProjects/towerDefense/.claude/skills/launch')",
-      "Read(//c/Users/Ben/PycharmProjects/towerDefense/.claude/skills/**)"
+      "Bash(mkdir -p 'C:/Users/Ben/ProgrammingProjects/towerDefense/.claude/skills/launch')",
+      "Bash(cp -r 'C:/Users/Ben/ProgrammingProjects/towerDefense/tools/launch'/* 'C:/Users/Ben/ProgrammingProjects/towerDefense/.claude/skills/launch')",
+      "Read(//c/Users/Ben/ProgrammingProjects/towerDefense/.claude/skills/**)"
     ]
   }
 }

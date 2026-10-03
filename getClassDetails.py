@@ -30,5 +30,5 @@ def get_class_details(directory):
     return class_details
 
 # Example usage
-directory = 'C:\\Users\\Ben\\PycharmProjects\\towerDefense\\src'  # Replace with the path to your project
+directory = 'C:\\Users\\Ben\\ProgrammingProjects\\towerDefense\\src'  # Replace with the path to your project
 print(get_class_details(directory))
